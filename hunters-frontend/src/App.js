@@ -11,7 +11,7 @@ const theme = createTheme({
     button: {
       textTransform: 'none',
     },
-    fontWeight: '600'
+    fontWeight: '600',
   },
 });
 
@@ -21,18 +21,7 @@ function App() {
       <SideNav />
       <Box marginLeft='240px'>
         <Navbar />
-        <header className='App-header'>
-          <img src={logo} className='App-logo' alt='logo' />
-          <Home />
-          <a
-            className='App-link'
-            href='https://reactjs.org'
-            target='_blank'
-            rel='noopener noreferrer'
-          >
-            Learn React
-          </a>
-        </header>
+        <Home />
       </Box>
     </ThemeProvider>
   );

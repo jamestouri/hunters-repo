@@ -1,9 +1,13 @@
-import { Box } from '@mui/material';
+import { Box, Typography } from '@mui/material';
+import { Container } from '@mui/system';
 
 export default function Home() {
   return (
-    <Box>
-       <div>Hi there</div>
-    </Box>
+    <Container>
+      <Box>
+        <Typography>Bounties for Hunters</Typography>
+        <Typography>Get paid by building out solutions for innovative companies</Typography>
+      </Box>
+    </Container>
   );
 }

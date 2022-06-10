@@ -1,28 +1,28 @@
 import React from 'react';
-import {
-  AppBar,
-  Box,
-  Button,
-  Toolbar,
-  Typography,
-} from '@mui/material';
-
+import { AppBar, Box, Button, Toolbar, Typography } from '@mui/material';
+import WalletModal from './WalletModal';
+import { useNetwork, useAddress } from '@thirdweb-dev/react';
 
 export default function Navbar() {
+  const [open, setOpen] = React.useState(false);
+  const handleOpen = () => setOpen(true);
+  const handleClose = () => setOpen(false);
+
   return (
-    <Box sx={{ flexGrow: 1}}>
+    <>
+      <WalletModal open={open} handleClose={handleClose} />
       <AppBar
-        position='fixed'
-        sx={{ backgroundColor: 'transparent', boxShadow: 'none'}}
+        position='static'
+        sx={{ backgroundColor: 'transparent', boxShadow: 'none' }}
       >
         <Toolbar sx={{ display: 'flex', justifyContent: 'space-between' }}>
-          <Typography>Hunters</Typography>
+          <Typography color='black'>Hunters</Typography>
           <Box>
             <Button>Create Bounty</Button>
-            <Button>Connect Wallet</Button>
+            <Button onClick={handleOpen}>Connect Wallet</Button>
           </Box>
         </Toolbar>
       </AppBar>
-    </Box>
+    </>
   );
 }
