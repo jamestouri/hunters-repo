@@ -1,16 +1,10 @@
 import React from 'react';
-import {
-  useMetamask,
-  useWalletConnect,
-  useCoinbaseWallet,
-} from '@thirdweb-dev/react';
+import { META_MASK, WALLET_CONNECT, COINBASE } from '../utils/constants';
 import { Button, Card, Modal } from '@mui/material';
+import { useProfile } from '../contexts/ProfileContext';
 
 export default function WalletModal({ open, handleClose }) {
-  const connectWithMetamask = useMetamask();
-  const connectWithWalletConnect = useWalletConnect();
-  const connectWithCoinbaseWallet = useCoinbaseWallet();
-
+  const { connectWallet } = useProfile();
   return (
     <Modal
       sx={{
@@ -28,16 +22,16 @@ export default function WalletModal({ open, handleClose }) {
           alignItems: 'left',
           height: 400,
           width: 550,
-          justifyContent: 'center', 
+          justifyContent: 'center',
         }}
       >
-        <Button onClick={() => connectWithMetamask()}>
+        <Button onClick={() => connectWallet(META_MASK)}>
           Connect with Metamask
         </Button>
-        <Button onClick={() => connectWithWalletConnect()}>
+        <Button onClick={() => connectWallet(WALLET_CONNECT)}>
           Connect with Wallet Connect
         </Button>
-        <Button onClick={() => connectWithCoinbaseWallet()}>
+        <Button onClick={() => connectWallet(COINBASE)}>
           Connect with Coinbase
         </Button>
       </Card>

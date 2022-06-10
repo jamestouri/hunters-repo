@@ -6,6 +6,7 @@ import reportWebVitals from './reportWebVitals';
 
 // Import thirdweb provider and Rinkeby ChainId
 import { ChainId, ThirdwebProvider } from '@thirdweb-dev/react';
+import { ProfileProvider } from './contexts/ProfileContext';
 
 // This is the chainId your dApp will work on.
 // const activeChainId = ChainId.Mainnet; When deploying to production
@@ -16,7 +17,9 @@ root.render(
   // <React.StrictMode>
   <>
     <ThirdwebProvider desiredChainId={activeChainId}>
-      <App />
+      <ProfileProvider>
+        <App />
+      </ProfileProvider>
     </ThirdwebProvider>
   </>
   // </React.StrictMode>
