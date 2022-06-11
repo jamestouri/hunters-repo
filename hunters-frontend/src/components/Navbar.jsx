@@ -2,6 +2,7 @@ import React from 'react';
 import { AppBar, Box, Button, Toolbar, Typography } from '@mui/material';
 import WalletModal from './WalletModal';
 import { useProfile } from '../contexts/ProfileContext';
+import { walletAddressShortener } from '../utils/helpers';
 
 export default function Navbar() {
   const [open, setOpen] = React.useState(false);
@@ -18,10 +19,10 @@ export default function Navbar() {
       >
         <Toolbar sx={{ display: 'flex', justifyContent: 'space-between' }}>
           <Typography color='black'>Hunters</Typography>
-          <Box>
+          <Box display='flex' alignItems='center' >
             <Button>Create Bounty</Button>
             {walletAddress ? (
-              <Typography color='black'>{walletAddress}</Typography>
+              <Typography color='black'>{walletAddressShortener(walletAddress)}</Typography>
             ) : (
               <Button onClick={handleOpen}>Connect Wallet</Button>
             )}

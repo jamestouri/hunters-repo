@@ -34,7 +34,7 @@ export default function SideNav() {
         <Typography variant='body1' sx={{ fontWeight: '600' }}>
           Time Commitment
         </Typography>
-        <Box display='flex' sx={{ alignItems: 'center' }}>
+        <Box display='flex' alignItems='center'>
           <Checkbox
             onClick={() => dispatch({ type: 'hours' })}
             sx={{ padding: 0 }}
@@ -42,7 +42,7 @@ export default function SideNav() {
           />{' '}
           <Typography>Hours</Typography>
         </Box>
-        <Box display='flex' sx={{ alignItems: 'center' }}>
+        <Box display='flex' alignItems='center'>
           <Checkbox
             onClick={() => dispatch({ type: 'days' })}
             sx={{ padding: 0 }}
@@ -50,7 +50,7 @@ export default function SideNav() {
           />{' '}
           <Typography>Days</Typography>
         </Box>
-        <Box display='flex' sx={{ alignItems: 'center' }}>
+        <Box display='flex' alignItems='center'>
           <Checkbox
             onClick={() => dispatch({ type: 'weeks' })}
             sx={{ padding: 0 }}
@@ -58,7 +58,7 @@ export default function SideNav() {
           />{' '}
           <Typography>Weeks</Typography>
         </Box>
-        <Box display='flex' sx={{ alignItems: 'center' }}>
+        <Box display='flex' alignItems='center'>
           <Checkbox
             onClick={() => dispatch({ type: 'months' })}
             sx={{ padding: 0 }}
@@ -80,7 +80,7 @@ export default function SideNav() {
         />
 
         <Typography sx={{ fontWeight: '600' }}>Experience Level</Typography>
-        <Box display='flex' sx={{ alignItems: 'center' }}>
+        <Box display='flex' alignItems='center'>
           <Checkbox
             onClick={() => dispatch({ type: 'beginner' })}
             sx={{ padding: 0 }}
@@ -88,7 +88,7 @@ export default function SideNav() {
           />{' '}
           <Typography>Beginner</Typography>
         </Box>
-        <Box display='flex' sx={{ alignItems: 'center' }}>
+        <Box display='flex' alignItems='center'>
           <Checkbox
             onClick={() => dispatch({ type: 'intermediate' })}
             sx={{ padding: 0 }}
@@ -96,7 +96,7 @@ export default function SideNav() {
           />{' '}
           <Typography>Intermediate</Typography>
         </Box>
-        <Box display='flex' sx={{ alignItems: 'center' }}>
+        <Box display='flex' alignItems='center'>
           <Checkbox
             onClick={() => dispatch({ type: 'advanced' })}
             sx={{ padding: 0 }}
@@ -110,7 +110,7 @@ export default function SideNav() {
         />
 
         <Typography sx={{ fontWeight: '600' }}>Status</Typography>
-        <Box display='flex' sx={{ alignItems: 'center' }}>
+        <Box display='flex' alignItems='center'>
           <Checkbox
             onClick={() => dispatch({ type: 'open' })}
             sx={{ padding: 0 }}
@@ -118,7 +118,7 @@ export default function SideNav() {
           />{' '}
           <Typography>Open</Typography>
         </Box>
-        <Box display='flex' sx={{ alignItems: 'center' }}>
+        <Box display='flex' alignItems='center'>
           <Checkbox
             onClick={() => dispatch({ type: 'bountyAssigned' })}
             sx={{ padding: 0 }}
@@ -126,7 +126,7 @@ export default function SideNav() {
           />{' '}
           <Typography>Bounty Assigned</Typography>
         </Box>
-        <Box display='flex' sx={{ alignItems: 'center' }}>
+        <Box display='flex' alignItems='center'>
           <Checkbox
             onClick={() => dispatch({ type: 'workSubmitted' })}
             sx={{ padding: 0 }}
@@ -134,7 +134,7 @@ export default function SideNav() {
           />{' '}
           <Typography>Work Submitted</Typography>
         </Box>
-        <Box display='flex' sx={{ alignItems: 'center' }}>
+        <Box display='flex' alignItems='center'>
           <Checkbox
             onClick={() => dispatch({ type: 'done' })}
             sx={{ padding: 0 }}
@@ -142,7 +142,7 @@ export default function SideNav() {
           />{' '}
           <Typography>Done</Typography>
         </Box>
-        <Box display='flex' sx={{ alignItems: 'center' }}>
+        <Box display='flex' alignItems='center'>
           <Checkbox
             onClick={() => dispatch({ type: 'expired' })}
             sx={{ padding: 0 }}
@@ -150,7 +150,7 @@ export default function SideNav() {
           />{' '}
           <Typography>Expired</Typography>
         </Box>
-        <Box display='flex' sx={{ alignItems: 'center' }}>
+        <Box display='flex' alignItems='center'>
           <Checkbox
             onClick={() => dispatch({ type: 'cancelled' })}
             sx={{ padding: 0 }}
