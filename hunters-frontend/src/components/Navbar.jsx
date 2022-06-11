@@ -3,6 +3,7 @@ import { AppBar, Box, Button, Toolbar, Typography } from '@mui/material';
 import WalletModal from './WalletModal';
 import { useProfile } from '../contexts/ProfileContext';
 import { walletAddressShortener } from '../utils/helpers';
+import { Link } from 'react-router-dom';
 
 export default function Navbar() {
   const [open, setOpen] = React.useState(false);
@@ -20,7 +21,7 @@ export default function Navbar() {
         <Toolbar sx={{ display: 'flex', justifyContent: 'space-between' }}>
           <Typography color='black'>Hunters</Typography>
           <Box display='flex' alignItems='center' >
-            <Button>Create Bounty</Button>
+            <Link to={`new-bounty/`} style={{textDecoration: 'none', color: 'red'}}>Create Bounty</Link>
             {walletAddress ? (
               <Typography color='black'>{walletAddressShortener(walletAddress)}</Typography>
             ) : (

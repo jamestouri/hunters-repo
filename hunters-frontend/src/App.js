@@ -1,10 +1,9 @@
-import logo from './logo.svg';
-import './App.css';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Home from './Home';
 import Navbar from './components/Navbar';
 import { ThemeProvider } from '@emotion/react';
 import { createTheme, Box } from '@mui/material';
-import SideNav from './components/SideNav';
+import NewBounty from './components/NewBounty';
 
 const theme = createTheme({
   typography: {
@@ -18,11 +17,13 @@ const theme = createTheme({
 function App() {
   return (
     <ThemeProvider theme={theme}>
-      <SideNav />
-      <Box marginLeft='240px'>
+      <Router>
         <Navbar />
-        <Home />
-      </Box>
+        <Routes>
+          <Route exact path='/' element={<Home />}></Route>
+          <Route exact path='/new-bounty/' element={<NewBounty />}></Route>
+        </Routes>
+      </Router>
     </ThemeProvider>
   );
 }

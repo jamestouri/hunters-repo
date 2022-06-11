@@ -20,5 +20,6 @@ from app import views
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/profiles/', views.profiles),
-    path('api/profile/<address>/', views.profile)
+    path('api/profile/<address>/', views.profile),
+    path('api/bounties/', views.bounties)
 ]

@@ -1,8 +1,8 @@
 from django.shortcuts import render
 from rest_framework.parsers import JSONParser
-from .serializers import ProfileSerializer
+from .serializers import ProfileSerializer, BountySerializer
 from django.http.response import JsonResponse
-from .models import Profile
+from .models import Profile, Bounty
 from rest_framework import status
 from rest_framework.decorators import api_view
 
@@ -32,3 +32,19 @@ def profile(request, address):
             return JsonResponse(None, safe=False)
         profile_serializer = ProfileSerializer(profile)
         return JsonResponse(profile_serializer.data, safe=False)
+
+
+@api_view(['GET', 'POST'])
+def bounties(request):
+    if request.method == 'GET':
+        bounties = Bounty.objects.all()
+        bounty_serializer = BountySerializer(bounties, many=True)
+        return JsonResponse(bounty_serializer.data, safe=False)
+    elif request.method == 'POST':
+        bounty_data = JSONParser().parse(request)
+        bounty_serializer = BountySerializer(data=bounty_data)
+        if bounty_serializer.is_valid():
+            bounty_serializer.save()
+            return JsonResponse(bounty_serializer.data, status=status.HTTP_201_CREATED)
+        return JsonResponse(bounty_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    return JsonResponse([])
