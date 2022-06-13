@@ -87,8 +87,7 @@ class Bounty(models.Model):
     image_attachments = ArrayField(models.CharField(
         max_length=255), blank=True, default=list)
     # Shouldn't be null=True, but we should keep the Bounty if user is deleted
-    bounty_creator = models.ForeignKey(
-        Profile, on_delete=models.SET_NULL, related_name='bounty_created', null=True)
+    bounty_creator = models.CharField(max_length=255, db_index=True)
     is_featured = models.BooleanField(
         default=False, help_text='Whether this bounty is featured')
     other_owners = models.ManyToManyField(Profile, blank=True)
@@ -98,8 +97,7 @@ class Bounty(models.Model):
         max_length=50, choices=PROJECT_LENGTHS, blank=True, db_index=True)
     bounty_category = ArrayField(models.CharField(
         max_length=50, choices=BOUNTY_CATEGORIES), default=list, blank=True)
-    bounty_owner_profile = models.ForeignKey(
-        Profile, blank=True, default=None, on_delete=models.SET_NULL, related_name='bounty_assigned', null=True)
+    bounty_owner_wallet = models.CharField(max_length=255, db_index=True)
     bounty_value_in_eth = models.DecimalField(
         max_digits=50,
         decimal_places=10,
@@ -108,16 +106,19 @@ class Bounty(models.Model):
         max_digits=100,
         decimal_places=2,
         help_text="The amount in usd users bounty creators want to pay out for the bounty")
+    # Added in Views.py
     repo_type = models.CharField(
         max_length=10, choices=REPO_TYPES, default='public')
+    # Added in Views.py
     permission_type = models.CharField(
         max_length=50, choices=PERMISSION_TYPES, default='permissionless', db_index=True)
+    # Added in Views.py
     project_type = models.CharField(
         max_length=50, choices=PROJECT_TYPES, default='traditional', db_index=True)
-    attached_job_description = models.URLField(
-        blank=True, null=True, db_index=True)
+    # Added in Views.py
     status = models.CharField(max_length=50, choices=STATUS,
                               default='open', db_index=True)
+    # Added in Views.py
     experience_level = models.CharField(
         max_length=50, choices=EXPERIENCE_LEVELS, blank=True, db_index=True)
     accepted = models.BooleanField(

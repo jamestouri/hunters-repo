@@ -9,6 +9,7 @@ from rest_framework.decorators import api_view
 
 @api_view(['GET', 'POST'])
 def profiles(request):
+    print(request)
     if request.method == 'GET':
         profiles = Profile.objects.all()
 
@@ -41,6 +42,9 @@ def bounties(request):
         bounty_serializer = BountySerializer(bounties, many=True)
         return JsonResponse(bounty_serializer.data, safe=False)
     elif request.method == 'POST':
+        bounty = request.POST.copy()
+        bounty.update({'repo_type': 'public', 'permission_type': 'permissioness',
+                      'project_type': 'traditional', 'status': 'open', 'experience_level': 'beginner'})
         bounty_data = JSONParser().parse(request)
         bounty_serializer = BountySerializer(data=bounty_data)
         if bounty_serializer.is_valid():
