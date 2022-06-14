@@ -66,21 +66,19 @@ export default function NewBounty() {
   const saveBounty = async (formData) => {
     setLoading(true);
     console.log('loading started');
-    const attachedFiles = await storeFilesInIPFS(files);
-    let check = [];
-    attachedFiles.forEach(a => check.push(a));
-    let data = {
-      ...formData,
-      bounty_creator: walletAddress,
-      image_attachments: check,
-    };
-    // add images from ipfs
+    let data = { ...formData, bounty_creator: walletAddress };
+    // Currency converter depending on which they use:
+    // This is temporary and eventually will update the price change in real time
     data = checked
       ? { ...data, bounty_value_in_usd: 1200 * data.bounty_value_in_eth }
       : {
           ...data,
           bounty_value_in_eth: (data.bounty_value_in_usd / 1200).toFixed(10),
         };
+
+    // Image files
+    const attachedFiles = await storeFilesInIPFS(files);
+    data = { ...data, image_attachments: attachedFiles };
 
     await axios
       .post(`${process.env.REACT_APP_DEV_SERVER}/api/bounties/`, {
@@ -92,7 +90,7 @@ export default function NewBounty() {
     console.log('loading ended');
   };
 
-  return (
+  return ( 
     <FormControl>
       <TextField
         {...register('title')}

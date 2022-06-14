@@ -43,6 +43,7 @@ def bounties(request):
         return JsonResponse(bounty_serializer.data, safe=False)
     elif request.method == 'POST':
         bounty_data = JSONParser().parse(request)
+        print(bounty_data)
         bounty = bounty_data['bounty']
         bounty_serializer = BountySerializer(data=bounty)
         if bounty_serializer.is_valid():
