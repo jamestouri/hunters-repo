@@ -42,13 +42,12 @@ def bounties(request):
         bounty_serializer = BountySerializer(bounties, many=True)
         return JsonResponse(bounty_serializer.data, safe=False)
     elif request.method == 'POST':
-        bounty = request.POST.copy()
-        bounty.update({'repo_type': 'public', 'permission_type': 'permissioness',
-                      'project_type': 'traditional', 'status': 'open', 'experience_level': 'beginner'})
         bounty_data = JSONParser().parse(request)
-        bounty_serializer = BountySerializer(data=bounty_data)
+        bounty = bounty_data['bounty']
+        bounty_serializer = BountySerializer(data=bounty)
         if bounty_serializer.is_valid():
             bounty_serializer.save()
             return JsonResponse(bounty_serializer.data, status=status.HTTP_201_CREATED)
+        print(bounty_serializer.errors)
         return JsonResponse(bounty_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     return JsonResponse([])

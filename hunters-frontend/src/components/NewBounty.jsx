@@ -1,12 +1,11 @@
 import { useForm } from 'react-hook-form';
 import { useState } from 'react';
-import { create } from 'ipfs-http-client';
-import FileUpload from 'react-mui-fileuploader';
 import axios from 'axios';
 import { useProfile } from '../contexts/ProfileContext';
 
 import {
   Button,
+  CircularProgress,
   FormControl,
   TextField,
   Typography,
@@ -14,7 +13,9 @@ import {
   Checkbox,
   FormControlLabel,
   Switch,
+  Select,
 } from '@mui/material';
+import { storeFilesInIPFS } from '../utils/helpers';
 
 const bountyTypes = [
   'Bug',
@@ -41,36 +42,53 @@ const bountyCategories = [
 
 const projectLength = ['Hours', 'Days', 'Weeks', 'Months'];
 
-export default function NewBounty() {
-  const [form, setForm] = useState('');
-  const [files, setFiles] = useState([]);
-  const [checked, setChecked] = useState(false);
+function showFilePaths(files) {
+  const fileArr = Array.from(files);
+  return (
+    <>
+      {fileArr.map((f) => (
+        <Typography>{f.name}</Typography>
+      ))}
+    </>
+  );
+}
 
+export default function NewBounty() {
+  const [files, setFiles] = useState([]);
+
+  const [checked, setChecked] = useState(false);
+  const [loading, setLoading] = useState(false);
   const { formState, register, handleSubmit, watch } = useForm();
   const { walletAddress } = useProfile();
   //  Bounty creator added with wallet address
   const { errors } = formState;
 
-  function saveBounty() {
-    let data = { ...files, bounty_creator: walletAddress };
+  const saveBounty = async (formData) => {
+    setLoading(true);
+    console.log('loading started');
+
+    let data = { ...formData, bounty_creator: walletAddress };
     // add images from ipfs
     data = checked
       ? { ...data, bounty_value_in_usd: 1200 * data.bounty_value_in_eth }
-      : { ...data, bounty_value_in_usd: data.bounty_value_in_eth / 1200 };
+      : { ...data, bounty_value_in_eth: (data.bounty_value_in_usd / 1200).toFixed(10) };
 
-    axios
+    const attachedFiles = await storeFilesInIPFS(files);
+
+    data = { ...data, image_attachments: attachedFiles };
+    console.log(data);
+    await axios
       .post(`${process.env.REACT_APP_DEV_SERVER}/api/bounties/`, {
         bounty: data,
       })
       .then((res) => console.log('bounty created', res))
       .catch((err) => console.log(err));
-  }
-
-  console.log(checked);
+    setLoading(false);
+    console.log('loading done');
+  };
 
   return (
     <FormControl
-    //   onSubmit={handleSubmit((data) => setForm(JSON.stringify(data)))}
     >
       <TextField
         {...register('title')}
@@ -84,7 +102,6 @@ export default function NewBounty() {
         variant='outlined'
         multiline
         rows={10}
-        maxRows={30}
         required
       />
       <TextField
@@ -105,27 +122,18 @@ export default function NewBounty() {
         variant='standard'
       />
       {/* <DropzoneArea onChange={(files) => setFiles(files)} /> */}
-      {/* <Button variant='contained' component='label'>
-        Upload File
-        <input type='file' hidden multiple onChange={(e) => setFiles([e.target.value])} />
-      </Button> */}
-      <FileUpload
-        multiFile={true}
-        disabled={false}
-        title=''
-        header=''
-        leftLabel='drag or'
-        rightLabel='to select files'
-        buttonLabel='click here'
-        buttonRemoveLabel='Remove all'
-        maxFileSize={10}
-        maxUploadFiles={0}
-        maxFilesContainerHeight={357}
-        errorSizeMessage={'fill it or move it to use the default error message'}
-        onFilesChange={(files) => setFiles(files)}
-        onError={() => console.log('hi')}
-      />
-
+      <Button variant='contained' component='label'>
+        Upload Files
+        <input
+          alt='image in here'
+          type='file'
+          name='image'
+          hidden
+          multiple
+          onChange={(e) => setFiles(e.target.files)}
+        />{' '}
+      </Button>
+      {files ? showFilePaths(files) : null}
       <FormControlLabel
         control={
           <Checkbox
@@ -171,8 +179,9 @@ export default function NewBounty() {
         ))}
       </TextField>
       <Typography>Category</Typography>
-      <TextField
+      {/* <TextField
         select
+        multiple
         fullWidth
         defaultValue=''
         inputProps={register('bounty_category', {
@@ -186,7 +195,14 @@ export default function NewBounty() {
             {option}
           </MenuItem>
         ))}
-      </TextField>
+      </TextField> */}
+      <Select {...register('bounty_category')} labelId='age' label='age' multiple defaultValue={[]}>
+        {bountyCategories.map((option) => (
+          <MenuItem value={option} key={option}>
+            {option}
+          </MenuItem>
+        ))}
+      </Select>
       <Switch
         checked={checked}
         onChange={(e) => setChecked(e.target.checked)}
@@ -217,9 +233,16 @@ export default function NewBounty() {
         placeholder='URL'
         variant='standard'
       />
-      <Button onClick={handleSubmit((data) => saveBounty(data))}>
+      <Button
+        onClick={
+          loading ? null : handleSubmit((formData) => saveBounty(formData))
+        }
+      >
         Submit
       </Button>
+      {/* <Button onClick={async () => await storeFilesInIPFS(files)}>
+        Submit
+      </Button> */}
     </FormControl>
   );
 }

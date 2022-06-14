@@ -87,17 +87,17 @@ class Bounty(models.Model):
     image_attachments = ArrayField(models.CharField(
         max_length=255), blank=True, default=list)
     # Shouldn't be null=True, but we should keep the Bounty if user is deleted
-    bounty_creator = models.CharField(max_length=255, db_index=True)
+    bounty_creator = models.CharField(max_length=255, db_index=True, null=True)
     is_featured = models.BooleanField(
         default=False, help_text='Whether this bounty is featured')
-    other_owners = models.ManyToManyField(Profile, blank=True)
+    other_owners = models.ManyToManyField(Profile, blank=True, default=None)
     bounty_type = models.CharField(
         max_length=50, choices=BOUNTY_TYPES, blank=True, db_index=True)
     project_length = models.CharField(
         max_length=50, choices=PROJECT_LENGTHS, blank=True, db_index=True)
     bounty_category = ArrayField(models.CharField(
         max_length=50, choices=BOUNTY_CATEGORIES), default=list, blank=True)
-    bounty_owner_wallet = models.CharField(max_length=255, db_index=True)
+    bounty_owner_wallet = models.CharField(max_length=255, db_index=True, blank=True, null=True)
     bounty_value_in_eth = models.DecimalField(
         max_digits=50,
         decimal_places=10,
@@ -120,9 +120,9 @@ class Bounty(models.Model):
                               default='open', db_index=True)
     # Added in Views.py
     experience_level = models.CharField(
-        max_length=50, choices=EXPERIENCE_LEVELS, blank=True, db_index=True)
+        max_length=50, choices=EXPERIENCE_LEVELS, blank=True, db_index=True, default='beginner')
     accepted = models.BooleanField(
         default=False, help_text='Whether the bounty has been done')
     canceled_on = models.DateTimeField(null=True, blank=True)
     canceled_bounty_reason = models.TextField(
-        default='', blank=True, verbose_name='Cancelation reason')
+        default='', blank=True, verbose_name='Cancelation reason', null=True)
