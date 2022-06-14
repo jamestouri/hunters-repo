@@ -9,6 +9,8 @@ from django.contrib.postgres.fields import ArrayField, JSONField
 class Profile(models.Model):
     wallet_address = models.CharField(max_length=255, unique=True, blank=False)
     # Eventually add scores and other ways of building out a profile
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
 
 
 class Bounty(models.Model):
@@ -84,7 +86,8 @@ class Bounty(models.Model):
         max_length=255, default='', blank=True)
     attached_job_url = models.URLField(blank=True, null=True, db_index=True)
     ways_to_contact = models.CharField(max_length=255, default='', blank=True)
-    image_attachments = ArrayField(models.CharField(max_length=255), blank=True, default=list)
+    image_attachments = ArrayField(models.CharField(
+        max_length=255), blank=True, default=list)
     # Shouldn't be null=True, but we should keep the Bounty if user is deleted
     bounty_creator = models.CharField(max_length=255, db_index=True, null=True)
     is_featured = models.BooleanField(
@@ -96,7 +99,8 @@ class Bounty(models.Model):
         max_length=50, choices=PROJECT_LENGTHS, blank=True, db_index=True)
     bounty_category = ArrayField(models.CharField(
         max_length=50, choices=BOUNTY_CATEGORIES), default=list, blank=True)
-    bounty_owner_wallet = models.CharField(max_length=255, db_index=True, blank=True, null=True)
+    bounty_owner_wallet = models.CharField(
+        max_length=255, db_index=True, blank=True, null=True)
     bounty_value_in_eth = models.DecimalField(
         max_digits=50,
         decimal_places=10,
@@ -125,3 +129,5 @@ class Bounty(models.Model):
     canceled_on = models.DateTimeField(null=True, blank=True)
     canceled_bounty_reason = models.TextField(
         default='', blank=True, verbose_name='Cancelation reason', null=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)

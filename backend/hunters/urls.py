@@ -21,5 +21,6 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/profiles/', views.profiles),
     path('api/profile/<address>/', views.profile),
-    path('api/bounties/', views.bounties)
+    path('api/bounties/', views.bounties),
+    path('api/bounty/<bounty_id>/', views.bounty)
 ]

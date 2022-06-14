@@ -116,15 +116,15 @@ export default function SideNav() {
             sx={{ padding: 0 }}
             value='open'
           />{' '}
-          <Typography>Open</Typography>
+          <Typography>✅ Open</Typography>
         </Box>
         <Box display='flex' alignItems='center'>
           <Checkbox
-            onClick={() => dispatch({ type: 'bountyAssigned' })}
+            onClick={() => dispatch({ type: 'started' })}
             sx={{ padding: 0 }}
-            value='bountyAssigned'
+            value='started'
           />{' '}
-          <Typography>Bounty Assigned</Typography>
+          <Typography>🚦 Started</Typography>
         </Box>
         <Box display='flex' alignItems='center'>
           <Checkbox
@@ -132,7 +132,7 @@ export default function SideNav() {
             sx={{ padding: 0 }}
             value='workSubmitted'
           />{' '}
-          <Typography>Work Submitted</Typography>
+          <Typography>📮 Work Submitted</Typography>
         </Box>
         <Box display='flex' alignItems='center'>
           <Checkbox
@@ -140,7 +140,7 @@ export default function SideNav() {
             sx={{ padding: 0 }}
             value='done'
           />{' '}
-          <Typography>Done</Typography>
+          <Typography>⌛️ Done</Typography>
         </Box>
         <Box display='flex' alignItems='center'>
           <Checkbox
@@ -148,7 +148,7 @@ export default function SideNav() {
             sx={{ padding: 0 }}
             value='expired'
           />{' '}
-          <Typography>Expired</Typography>
+          <Typography>🔒 Expired</Typography>
         </Box>
         <Box display='flex' alignItems='center'>
           <Checkbox
@@ -156,7 +156,7 @@ export default function SideNav() {
             sx={{ padding: 0 }}
             value='cancelled'
           />{' '}
-          <Typography>Cancelled</Typography>
+          <Typography>❌ Cancelled</Typography>
         </Box>
       </Box>
     </Drawer>

@@ -19,7 +19,7 @@ export async function storeFilesInIPFS(files) {
       url: IPFS_INITIALIZE,
     });
   } catch (error) {
-    console.error('IPFS error ', error);
+    console.error('❗️ IPFS error ', error);
     ipfs = undefined;
   }
   const fileArr = Array.from(files);
@@ -30,4 +30,24 @@ export async function storeFilesInIPFS(files) {
     result.push(fileURL)
   }));
   return result;
+}
+
+export function timeFromUpdateUtil(created) {
+  const timeNow = new Date();
+  const timeUpdated = new Date(created);
+  
+  const daysSince = (timeNow.getTime() - timeUpdated.getTime()) / 1000 / 3600 / 24;
+
+  switch(daysSince) {
+    case daysSince / 365 > 1:
+      return 'More than a year ago';
+    case daysSince / 30 > 1: 
+      return 'More than a month ago';
+    case daysSince / 7 > 1:
+      return 'More than a week ago';
+    case daysSince > 1:
+      return `More than ${Math.floor(daysSince)} days ago`;
+    default:
+      return 'Created Today';
+  }
 }

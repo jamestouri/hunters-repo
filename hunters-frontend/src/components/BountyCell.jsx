@@ -1,0 +1,106 @@
+import { Box, Card, CardContent, Typography } from '@mui/material';
+import { Link } from 'react-router-dom';
+
+import React from 'react';
+import { timeFromUpdateUtil } from '../utils/helpers';
+
+const stateEmojis = {
+  cancelled: '❌',
+  open: '✅',
+  done: '⌛️',
+  expired: '🔒',
+  started: '🚦',
+  submitted: '📮',
+};
+
+const stateValue = {
+  open: 'Open Bounty',
+  work_started: 'Work Started',
+  work_submitted: 'Work Submitted',
+  done: 'Done',
+  cancelled: 'Cancelled',
+  expired: 'Expired',
+};
+
+export default function BountyCell({ bounty }) {
+  const {
+    id,
+    title,
+    funding_organization,
+    state,
+    bounty_value_in_usd,
+    bounty_value_in_eth,
+    updated_at,
+  } = bounty;
+
+  return (
+    <Link to={`bounty/${id}/`} style={{ textDecoration: 'none' }}>
+      <Box marginTop={5} >
+        <Card variant='outlined' sx={{ borderRadius: 0 }}>
+          <CardContent
+            sx={{ display: 'flex', justifyContent: 'space-between' }}
+          >
+            <Box display='flex'>
+              <Box display='flex' alignItems='center'>
+                <Box
+                  sx={{
+                    height: 60,
+                    width: 60,
+                    borderRadius: 30,
+                    backgroundColor: '#1DB3F9',
+                  }}
+                />
+                <Box marginLeft={2}>
+                  <Typography
+                    variant='body1'
+                    sx={{ fontWeight: '600' }}
+                    color='black'
+                  >
+                    {title}
+                  </Typography>
+                  <Typography
+                    variant='body2'
+                    fontWeight='600'
+                    color={'#5951F6'}
+                  >
+                    {funding_organization}
+                  </Typography>
+                  <Box display='flex'>
+                    <Typography variant='body2' color='#757575'>
+                      {stateEmojis[state] + ' ' + stateValue[state]}
+                    </Typography>
+                    <Typography color='#757575'>·</Typography>
+                    <Typography variant='body2' color='#757575'>
+                      {timeFromUpdateUtil(updated_at)}
+                    </Typography>
+                  </Box>
+                </Box>
+              </Box>
+            </Box>
+            <Box display='flex'>
+              <Typography
+                color='#9f29bc'
+                height={25}
+                paddingLeft={2}
+                paddingRight={2}
+                backgroundColor={'rgb(144,44,204, 0.3)'}
+              >
+                {bounty_value_in_usd} USD
+              </Typography>
+              <Typography
+                marginLeft={3}
+                color='#e41f66'
+                height={25}
+                paddingLeft={2}
+                paddingRight={2}
+                backgroundColor={'rgb(228,31,102, 0.3)'}
+              >
+                {parseFloat(bounty_value_in_eth).toFixed(2)} ETH
+              </Typography>
+            </Box>
+          </CardContent>
+        </Card>
+      </Box>
+    </Link>
+  );
+}

@@ -21,7 +21,7 @@ export default function Navbar() {
         <Toolbar sx={{ display: 'flex', justifyContent: 'space-between' }}>
           <Typography color='black'>Hunters</Typography>
           <Box display='flex' alignItems='center' >
-            <Link to={`new-bounty/`} style={{textDecoration: 'none', color: 'red'}}>Create Bounty</Link>
+            <Link to={`bounty/new/`} style={{textDecoration: 'none', color: 'red'}}>Create Bounty</Link>
             {walletAddress ? (
               <Typography color='black'>{walletAddressShortener(walletAddress)}</Typography>
             ) : (

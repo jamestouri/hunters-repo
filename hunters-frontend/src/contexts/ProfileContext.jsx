@@ -29,7 +29,7 @@ export function ProfileProvider({ children }) {
         .get(`${process.env.REACT_APP_DEV_SERVER}/api/profile/${walletAddress}/`)
         .then((res) => {
           if (res.data) {
-            console.log('success', res);
+            console.log('👤 success', res);
           } else {
             createProfileFromWallet();
           }
@@ -45,8 +45,8 @@ export function ProfileProvider({ children }) {
       .post(`${process.env.REACT_APP_DEV_SERVER}/api/profiles/`, {
         wallet_address: walletAddress,
       })
-      .then((res) => console.log('profile successfully created', res))
-      .catch((err) => console.log(err));
+      .then((res) => console.log('👤 profile successfully created', res))
+      .catch((err) => console.log('❗️ ' + err));
   };
 
   const connectWallet = (walletSelected) => {

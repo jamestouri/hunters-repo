@@ -4,6 +4,7 @@ import Navbar from './components/Navbar';
 import { ThemeProvider } from '@emotion/react';
 import { createTheme, Box } from '@mui/material';
 import NewBounty from './components/NewBounty';
+import BountyDetails from './components/BountyDetails';
 
 const theme = createTheme({
   typography: {
@@ -21,7 +22,8 @@ function App() {
         <Navbar />
         <Routes>
           <Route exact path='/' element={<Home />}></Route>
-          <Route exact path='/new-bounty/' element={<NewBounty />}></Route>
+          <Route exact path='/bounty/new/' element={<NewBounty />}></Route>
+          <Route exact path='/bounty/:bountyId/' element={<BountyDetails />}></Route>
         </Routes>
       </Router>
     </ThemeProvider>

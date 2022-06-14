@@ -52,3 +52,12 @@ def bounties(request):
         print(bounty_serializer.errors)
         return JsonResponse(bounty_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     return JsonResponse([])
+
+
+@api_view(['GET', 'PUT', 'DELETE'])
+def bounty(request, bounty_id):
+    bounty = Bounty.objects.get(id=bounty_id)
+    if request.method == 'GET':
+        bounty_serializer = BountySerializer(bounty)
+        return JsonResponse(bounty_serializer.data, safe=False)
+
