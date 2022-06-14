@@ -66,17 +66,22 @@ export default function NewBounty() {
   const saveBounty = async (formData) => {
     setLoading(true);
     console.log('loading started');
-
-    let data = { ...formData, bounty_creator: walletAddress };
+    const attachedFiles = await storeFilesInIPFS(files);
+    let check = [];
+    attachedFiles.forEach(a => check.push(a));
+    let data = {
+      ...formData,
+      bounty_creator: walletAddress,
+      image_attachments: check,
+    };
     // add images from ipfs
     data = checked
       ? { ...data, bounty_value_in_usd: 1200 * data.bounty_value_in_eth }
-      : { ...data, bounty_value_in_eth: (data.bounty_value_in_usd / 1200).toFixed(10) };
+      : {
+          ...data,
+          bounty_value_in_eth: (data.bounty_value_in_usd / 1200).toFixed(10),
+        };
 
-    const attachedFiles = await storeFilesInIPFS(files);
-
-    data = { ...data, image_attachments: attachedFiles };
-    console.log(data);
     await axios
       .post(`${process.env.REACT_APP_DEV_SERVER}/api/bounties/`, {
         bounty: data,
@@ -84,12 +89,11 @@ export default function NewBounty() {
       .then((res) => console.log('bounty created', res))
       .catch((err) => console.log(err));
     setLoading(false);
-    console.log('loading done');
+    console.log('loading ended');
   };
 
   return (
-    <FormControl
-    >
+    <FormControl>
       <TextField
         {...register('title')}
         placeholder='title'
@@ -196,7 +200,13 @@ export default function NewBounty() {
           </MenuItem>
         ))}
       </TextField> */}
-      <Select {...register('bounty_category')} labelId='age' label='age' multiple defaultValue={[]}>
+      <Select
+        {...register('bounty_category')}
+        labelId='age'
+        label='age'
+        multiple
+        defaultValue={[]}
+      >
         {bountyCategories.map((option) => (
           <MenuItem value={option} key={option}>
             {option}
