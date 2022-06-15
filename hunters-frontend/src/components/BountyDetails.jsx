@@ -3,7 +3,12 @@ import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
 import { Button, Divider, Typography } from '@mui/material';
-import { capitalizeFirstLetter, timeFromUpdateUtil,walletAddressShortener } from '../utils/helpers';
+import {
+  capitalizeFirstLetter,
+  timeFromUpdateUtil,
+  walletAddressShortener,
+} from '../utils/helpers';
+import { useProfile } from '../contexts/ProfileContext';
 
 const experienceLevelEmoji = {
   beginner: '🟢',
@@ -16,6 +21,16 @@ export default function BountyDetails() {
   const [bounty, setBounty] = useState(null);
 
   const bountyId = params.bountyId;
+  const { walletAddress } = useProfile();
+
+  const handleAcceptedWork = async () => {
+      axios
+        .patch(`${process.env.REACT_APP_DEV_SERVER}/api/bounty/${bountyId}/`, {
+           bounty: {bounty_owner_wallet: [walletAddress]}
+        })
+        .then(res => setBounty(res.data))
+        .catch(err => console.log(err))
+  };
 
   useEffect(() => {
     axios
@@ -26,6 +41,8 @@ export default function BountyDetails() {
   if (bounty == null) {
     return null;
   }
+
+  console.log(bounty);
   return (
     <Container>
       <Box display='flex' alignItems='center'>
@@ -75,6 +92,7 @@ export default function BountyDetails() {
         </Box>
       </Box>
       <Button
+        onClick={handleAcceptedWork}
         variant='contained'
         sx={{
           marginTop: 4,
@@ -119,7 +137,10 @@ function Funder({ bountyAddress }) {
       <Typography color='#757575' fontWeight='600'>
         Funder
       </Typography>
-      <Button sx={{padding: 0, fontSize: 16}}> {walletAddressShortener(bountyAddress) }</Button>
+      <Button sx={{ padding: 0, fontSize: 16 }}>
+        {' '}
+        {walletAddressShortener(bountyAddress)}
+      </Button>
     </Box>
   );
 }

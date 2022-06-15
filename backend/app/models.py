@@ -91,6 +91,9 @@ class Bounty(models.Model):
     image_attachments = ArrayField(models.CharField(
         max_length=255), blank=True, default=list)
     # Shouldn't be null=True, but we should keep the Bounty if user is deleted
+    # Want to keep things as much web3 as possible and therefore make it specifically
+    # the wallet Address to identify users creating the bounty rather than
+    # the Profile
     bounty_creator = models.CharField(max_length=255, db_index=True, null=True)
     is_featured = models.BooleanField(
         default=False, help_text='Whether this bounty is featured')
@@ -101,8 +104,11 @@ class Bounty(models.Model):
         max_length=50, choices=PROJECT_LENGTHS, blank=True, db_index=True)
     bounty_category = ArrayField(models.CharField(
         max_length=50, choices=BOUNTY_CATEGORIES), default=list, blank=True)
-    bounty_owner_wallet = models.CharField(
-        max_length=255, db_index=True, blank=True, null=True)
+    # Want to keep things as much web3 as possible and therefore make it specifically
+    # the wallet Address to identify users working on the bounty rather than
+    # the Profile
+    bounty_owner_wallet = ArrayField(models.CharField(
+        max_length=255), blank=True, default=list)
     bounty_value_in_eth = models.DecimalField(
         max_digits=50,
         decimal_places=10,

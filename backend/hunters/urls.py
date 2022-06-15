@@ -22,5 +22,6 @@ urlpatterns = [
     path('api/profiles/', views.profiles),
     path('api/profile/<address>/', views.profile),
     path('api/bounties/', views.bounties),
-    path('api/bounty/<bounty_id>/', views.bounty)
+    path('api/bounty/<bounty_id>/', views.bounty),
+    path('api/activities/', views.activities)
 ]

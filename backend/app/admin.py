@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Profile, Bounty
+from .models import Activity, Profile, Bounty
 
 # Register your models here.
 
@@ -12,7 +12,7 @@ admin.site.register(Profile, ProfileAdmin)
 
 
 class BountyAdmin(admin.ModelAdmin):
-    profile_display = (
+    bounty_display = (
         'id',
         'title',
         'funding_orgnanization',
@@ -24,3 +24,14 @@ class BountyAdmin(admin.ModelAdmin):
         'state'
     )
 admin.site.register(Bounty, BountyAdmin)
+
+
+class ActivityAdmin(admin.ModelAdmin):
+    activity_display = (
+        'id',
+        'bounty',
+        'profile',
+        'activity_type',
+    )
+
+admin.site.register(Activity, ActivityAdmin)

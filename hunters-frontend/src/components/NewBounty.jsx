@@ -84,13 +84,13 @@ export default function NewBounty() {
       .post(`${process.env.REACT_APP_DEV_SERVER}/api/bounties/`, {
         bounty: data,
       })
-      .then((res) => console.log('bounty created', res))
+      .then((res) => console.log('✅ bounty created', res))
       .catch((err) => console.log(err));
     setLoading(false);
     console.log('loading ended');
   };
 
-  return ( 
+  return (
     <FormControl>
       <TextField
         {...register('title')}

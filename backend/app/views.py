@@ -47,20 +47,31 @@ def bounties(request):
         bounty_serializer = BountySerializer(data=bounty)
         if bounty_serializer.is_valid():
             bounty_serializer.save()
+            bounty_validated = bounty_serializer.validated_data
+            profile = Profile.objects.filter(
+                wallet_address=bounty_validated['bounty_creator']).first()
+            activity_object = {
+                'bounty': bounty_serializer.data['id'], 'profile': profile.id, 'activity_type': 'Bounty Created'}
+            activity_serializer = ActivitySerializer(data=activity_object)
+            if activity_serializer.is_valid():
+                activity_serializer.save()
+                print(activity_serializer.data)
+            print(activity_serializer.errors)
             return JsonResponse(bounty_serializer.data, status=status.HTTP_201_CREATED)
         print(bounty_serializer.errors)
         return JsonResponse(bounty_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     return JsonResponse([])
 
 
-@api_view(['GET', 'PUT', 'DELETE'])
+@api_view(['GET', 'PATCH', 'DELETE'])
 def bounty(request, bounty_id):
     bounty = Bounty.objects.get(id=bounty_id)
     if request.method == 'GET':
         bounty_serializer = BountySerializer(bounty)
         return JsonResponse(bounty_serializer.data, safe=False)
     elif request.method == 'PATCH':
-        bounty_serializer = BountySerializer(bounty, data=request.data)
+        bounty_serializer = BountySerializer(
+            bounty, data=request.data['bounty'], partial=True)
         if bounty_serializer.is_valid():
             bounty_serializer.save()
             return JsonResponse(bounty_serializer.data, status=status.HTTP_200_OK)
@@ -70,19 +81,18 @@ def bounty(request, bounty_id):
 
 def activities(request):
     if request.method == 'GET':
-        activities = Activity.objects.all() 
+        activities = Activity.objects.all()
         activity_serializer = ActivitySerializer(activities, many=True)
         return JsonResponse(activity_serializer.data, safe=False)
     elif request.method == 'POST':
         activity_data = JSONParser().parse(request)
         activity = activity_data['activity']
-        bounty = Bounty.objects.get(id=activity.bounty_id)
-        profile = Profile.objects.filter(wallet_address=activity.wallet_address).first()
-        activity.update({bounty: bounty, profile: profile})
+        profile = Profile.objects.filter(
+            wallet_address=activity.wallet_address).first()
+        activity.update({'profile': profile.id})
         activity_serializer = ActivitySerializer(data=activity)
         if activity_serializer.is_valid():
             activity_serializer.save()
             return JsonResponse(activity_serializer.data, status=status.HTTP_201_CREATED)
         print(activity_serializer.errors)
         return JsonResponse(activity_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
