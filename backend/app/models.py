@@ -142,9 +142,19 @@ class Bounty(models.Model):
 
 
 class Activity(models.Model):
+
+    ACTIVITY_TYPE = (
+        ('Bounty Created', 'Bounty Created'),
+        ('Started Work', 'Started Work'),
+        ('Work Submitted', 'Work Submitted'),
+        ('Work Approved', 'Work Approved'),
+        ('Funds Paid Out', 'Funds Paid Out'),
+        ('Left Project', 'Left Project')
+    )
+
     bounty = models.ForeignKey(Bounty, on_delete=models.CASCADE)
     profile = models.ForeignKey(Profile, on_delete=models.CASCADE)
-    activity_type = models.CharField(max_length=100)
+    activity_type = models.CharField(max_length=100, choices=ACTIVITY_TYPE)
     created_at = models.DateTimeField(auto_now_add=True)
 
 

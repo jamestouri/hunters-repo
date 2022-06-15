@@ -78,7 +78,7 @@ def bounty(request, bounty_id):
         print(bounty_serializer.errors)
         return JsonResponse(bounty_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-
+@api_view(['GET', 'POST'])
 def activities(request):
     if request.method == 'GET':
         activities = Activity.objects.all()
@@ -86,9 +86,11 @@ def activities(request):
         return JsonResponse(activity_serializer.data, safe=False)
     elif request.method == 'POST':
         activity_data = JSONParser().parse(request)
-        activity = activity_data['activity']
+        print('🔑 in here')
+        print(activity_data)
+        activity = activity_data['activities']
         profile = Profile.objects.filter(
-            wallet_address=activity.wallet_address).first()
+            wallet_address=activity['wallet_address']).first()
         activity.update({'profile': profile.id})
         activity_serializer = ActivitySerializer(data=activity)
         if activity_serializer.is_valid():

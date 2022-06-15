@@ -21,16 +21,6 @@ export default function BountyDetails() {
   const [bounty, setBounty] = useState(null);
 
   const bountyId = params.bountyId;
-  const { walletAddress } = useProfile();
-
-  const handleAcceptedWork = async () => {
-      axios
-        .patch(`${process.env.REACT_APP_DEV_SERVER}/api/bounty/${bountyId}/`, {
-           bounty: {bounty_owner_wallet: [walletAddress]}
-        })
-        .then(res => setBounty(res.data))
-        .catch(err => console.log(err))
-  };
 
   useEffect(() => {
     axios
@@ -42,7 +32,6 @@ export default function BountyDetails() {
     return null;
   }
 
-  console.log(bounty);
   return (
     <Container>
       <Box display='flex' alignItems='center'>
@@ -91,18 +80,11 @@ export default function BountyDetails() {
           <WhenCreated timeLapse={bounty.updated_at} />
         </Box>
       </Box>
-      <Button
-        onClick={handleAcceptedWork}
-        variant='contained'
-        sx={{
-          marginTop: 4,
-          borderRadius: 0,
-          boxShadow: 'none',
-          backgroundColor: '#1db3f9',
-        }}
-      >
-        Start Project
-      </Button>
+      <ButtonActionsLogic
+        bounty={bounty}
+        setBounty={setBounty}
+        bountyId={bountyId}
+      />
       <Divider sx={{ marginTop: 3, marginBottom: 3 }} />
       <Typography variant='h6' fontWeight='500'>
         Description
@@ -189,5 +171,105 @@ function WhenCreated({ timeLapse }) {
       </Typography>
       <Typography>🗓 {timeFromUpdateUtil(timeLapse)}</Typography>
     </Box>
+  );
+}
+
+function ButtonActionsLogic({ bounty, setBounty, bountyId }) {
+  const { walletAddress } = useProfile();
+  const { bounty_creator, bounty_owner_wallet } = bounty;
+
+  const handleAcceptedWork = async () => {
+    const bountyOwners = [...bounty.bounty_owner_wallet, walletAddress];
+    axios
+      .patch(`${process.env.REACT_APP_DEV_SERVER}/api/bounty/${bountyId}/`, {
+        bounty: { bounty_owner_wallet: bountyOwners },
+      })
+      .then((res) => setBounty(res.data))
+      .catch((err) => console.log(err));
+    axios
+      .post(`${process.env.REACT_APP_DEV_SERVER}/api/activities/`, {
+        activities: {
+          bounty: bounty.id,
+          wallet_address: walletAddress,
+          activity_type: 'Started Work',
+        },
+      })
+      .then((res) => console.log('⛷ activity created', res))
+      .catch((err) => console.log(err));
+  };
+
+  const handleleavingBounty = async () => {
+    const removingBountyOwner = bounty.bounty_owner_wallet.filter(
+      (o) => o !== walletAddress
+    );
+    axios
+      .patch(`${process.env.REACT_APP_DEV_SERVER}/api/bounty/${bountyId}/`, {
+        bounty: { bounty_owner_wallet: removingBountyOwner },
+      })
+      .then((res) => setBounty(res.data))
+      .catch((err) => console.log(err));
+    axios
+      .post(`${process.env.REACT_APP_DEV_SERVER}/api/activities/`, {
+        activities: {
+          bounty: bounty.id,
+          wallet_address: walletAddress,
+          activity_type: 'Left Project',
+        },
+      })
+      .then((res) => console.log('⛷ activity created', res))
+      .catch((err) => console.log(err));
+  };
+
+  if (bounty_creator === walletAddress) {
+      return null;
+  }
+
+  if (bounty_owner_wallet.includes(walletAddress)) {
+    return (
+      <>
+        <Button
+          variant='outlined'
+          sx={{
+            marginTop: 4,
+            marginRight: 2,
+            borderRadius: 0,
+            boxShadow: 'none',
+            color: '#1db3f9',
+            borderColor: '#1db3f9',
+          }}
+        >
+          Submit Project
+        </Button>
+        <Button
+          onClick={handleleavingBounty}
+          variant='outlined'
+          color='secondary'
+          sx={{
+            borderColor: '#fb1c48',
+            color: '#fb1c48',
+            marginTop: 4,
+            borderRadius: 0,
+            boxShadow: 'none',
+          }}
+        >
+          Leave Bounty
+        </Button>
+      </>
+    );
+  }
+
+  return (
+    <Button
+      onClick={handleAcceptedWork}
+      variant='contained'
+      sx={{
+        marginTop: 4,
+        borderRadius: 0,
+        boxShadow: 'none',
+        backgroundColor: '#1db3f9',
+      }}
+    >
+      Start Project
+    </Button>
   );
 }
