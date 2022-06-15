@@ -2,6 +2,8 @@ from pyexpat import model
 from statistics import mode
 from django.db import models
 from django.contrib.postgres.fields import ArrayField, JSONField
+from django.core.validators import MaxValueValidator, MinValueValidator
+
 
 # Create your models here.
 
@@ -140,4 +142,20 @@ class Activity(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
 
 
-# notification object
+class WorkSubmission(models.Model):
+    bounty = models.ForeignKey(Bounty, on_delete=models.CASCADE)
+    profile = models.ForeignKey(Profile, on_delete=models.CASCADE)
+    profile_link = models.CharField(max_length=255)
+    additional_text = models.TextField(default='', blank=True)
+    rejected = models.BooleanField(
+        default=False, help_text='If false and accepted is false, submission has not been reviewed yet')
+    accepted = models.BooleanField(
+        default=False, help_text='If false and rejected is false, submission has not been reviewed yet')
+    created_at = models.DateTimeField(auto_now_add=True)
+
+
+class FunderRating(models.Model):
+    star_rating = models.PositiveSmallIntegerField(
+        default=0, validators=[MinValueValidator(1), MaxValueValidator(100)])
+    profile = models.ForeignKey(Profile, on_delete=models.CASCADE)
+    created_at = models.DateTimeField(auto_now_add=True)
