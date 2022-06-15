@@ -131,3 +131,13 @@ class Bounty(models.Model):
         default='', blank=True, verbose_name='Cancelation reason', null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+
+
+class Activity(models.Model):
+    bounty = models.ForeignKey(Bounty, on_delete=models.CASCADE)
+    profile = models.ForeignKey(Profile, on_delete=models.CASCADE)
+    activity_type = models.CharField(max_length=100)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+
+# notification object

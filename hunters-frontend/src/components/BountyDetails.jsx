@@ -2,8 +2,8 @@ import { Box, Container } from '@mui/system';
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
-import { Divider, Typography } from '@mui/material';
-import { capitalizeFirstLetter, timeFromUpdateUtil } from '../utils/helpers';
+import { Button, Divider, Typography } from '@mui/material';
+import { capitalizeFirstLetter, timeFromUpdateUtil,walletAddressShortener } from '../utils/helpers';
 
 const experienceLevelEmoji = {
   beginner: '🟢',
@@ -64,14 +64,32 @@ export default function BountyDetails() {
         </Box>
       </Box>
       <Box display='flex' marginTop={4} justifyContent='space-between'>
-        <CreatorContactInfo contactInfo={bounty.ways_to_contact} />
+        <Box display='flex'>
+          <Funder bountyAddress={bounty.bounty_creator} />
+          <CreatorContactInfo contactInfo={bounty.ways_to_contact} />
+        </Box>
         <Box display='flex'>
           <ExperienceLevel experienceLevel={bounty.experience_level} />
           <TimeCommitment timeCommitment={bounty.project_length} />
           <WhenCreated timeLapse={bounty.updated_at} />
         </Box>
       </Box>
-      <Divider sx={{ marginTop: 5 }} />
+      <Button
+        variant='contained'
+        sx={{
+          marginTop: 4,
+          borderRadius: 0,
+          boxShadow: 'none',
+          backgroundColor: '#1db3f9',
+        }}
+      >
+        Start Project
+      </Button>
+      <Divider sx={{ marginTop: 3, marginBottom: 3 }} />
+      <Typography variant='h6' fontWeight='500'>
+        Description
+      </Typography>
+      <Typography marginTop={2}>{bounty.description}</Typography>
     </Container>
   );
 }
@@ -81,6 +99,7 @@ function BountyCategories({ categories }) {
     <Box display='flex'>
       {categories.map((c) => (
         <Typography
+          key={c}
           color='#1db3f9'
           backgroundColor='rgb(29,179,249, 0.3)'
           paddingLeft={1}
@@ -90,6 +109,17 @@ function BountyCategories({ categories }) {
           {c}
         </Typography>
       ))}
+    </Box>
+  );
+}
+
+function Funder({ bountyAddress }) {
+  return (
+    <Box marginRight={3}>
+      <Typography color='#757575' fontWeight='600'>
+        Funder
+      </Typography>
+      <Button sx={{padding: 0, fontSize: 16}}> {walletAddressShortener(bountyAddress) }</Button>
     </Box>
   );
 }
