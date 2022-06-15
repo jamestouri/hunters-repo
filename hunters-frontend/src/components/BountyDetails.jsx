@@ -2,7 +2,14 @@ import { Box, Container } from '@mui/system';
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
-import { Typography } from '@mui/material';
+import { Divider, Typography } from '@mui/material';
+import { capitalizeFirstLetter, timeFromUpdateUtil } from '../utils/helpers';
+
+const experienceLevelEmoji = {
+  beginner: '🟢',
+  intermediate: '🟦',
+  advanced: '♦',
+};
 
 export default function BountyDetails() {
   const params = useParams();
@@ -21,7 +28,7 @@ export default function BountyDetails() {
   }
   return (
     <Container>
-      <Box display='flex'>
+      <Box display='flex' alignItems='center'>
         <Box
           height={80}
           width={80}
@@ -29,7 +36,7 @@ export default function BountyDetails() {
           backgroundColor='#1DB3F9'
         />
         <Box marginLeft={2}>
-          <Box display='flex' justifyContent='space-between'>
+          <Box display='flex' alignItems='center' marginBottom={1}>
             <Typography variant='h6'>{bounty.title}</Typography>
             <Box display='flex'>
               <Typography
@@ -56,6 +63,15 @@ export default function BountyDetails() {
           <BountyCategories categories={bounty.bounty_category} />
         </Box>
       </Box>
+      <Box display='flex' marginTop={4} justifyContent='space-between'>
+        <CreatorContactInfo contactInfo={bounty.ways_to_contact} />
+        <Box display='flex'>
+          <ExperienceLevel experienceLevel={bounty.experience_level} />
+          <TimeCommitment timeCommitment={bounty.project_length} />
+          <WhenCreated timeLapse={bounty.updated_at} />
+        </Box>
+      </Box>
+      <Divider sx={{ marginTop: 5 }} />
     </Container>
   );
 }
@@ -74,6 +90,53 @@ function BountyCategories({ categories }) {
           {c}
         </Typography>
       ))}
+    </Box>
+  );
+}
+
+function CreatorContactInfo({ contactInfo }) {
+  return (
+    <Box marginRight={2}>
+      <Typography color='#757575' fontWeight='600'>
+        Point of Contact
+      </Typography>
+      <Typography>✉️ {contactInfo}</Typography>
+    </Box>
+  );
+}
+
+function ExperienceLevel({ experienceLevel }) {
+  return (
+    <Box marginRight={2}>
+      <Typography color='#757575' fontWeight='600'>
+        Experience Level
+      </Typography>
+      <Typography>
+        {experienceLevelEmoji[experienceLevel]}{' '}
+        {capitalizeFirstLetter(experienceLevel)}
+      </Typography>
+    </Box>
+  );
+}
+
+function TimeCommitment({ timeCommitment }) {
+  return (
+    <Box marginRight={2}>
+      <Typography color='#757575' fontWeight='600'>
+        Est. Length of Project
+      </Typography>
+      <Typography>⏱ {timeCommitment}</Typography>
+    </Box>
+  );
+}
+
+function WhenCreated({ timeLapse }) {
+  return (
+    <Box>
+      <Typography color='#757575' fontWeight='600'>
+        Creation Date
+      </Typography>
+      <Typography>🗓 {timeFromUpdateUtil(timeLapse)}</Typography>
     </Box>
   );
 }

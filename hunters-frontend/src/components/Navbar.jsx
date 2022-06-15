@@ -19,11 +19,20 @@ export default function Navbar() {
         sx={{ backgroundColor: 'transparent', boxShadow: 'none' }}
       >
         <Toolbar sx={{ display: 'flex', justifyContent: 'space-between' }}>
-          <Typography color='black'>Hunters</Typography>
-          <Box display='flex' alignItems='center' >
-            <Link to={`bounty/new/`} style={{textDecoration: 'none', color: 'red'}}>Create Bounty</Link>
+          <Link to={'/'} style={{ textDecoration: 'none' }}>
+            <Typography color='black'>Hunters</Typography>
+          </Link>
+          <Box display='flex' alignItems='center'>
+            <Link
+              to={`bounty/new/`}
+              style={{ textDecoration: 'none', color: 'red' }}
+            >
+              Create Bounty
+            </Link>
             {walletAddress ? (
-              <Typography color='black'>{walletAddressShortener(walletAddress)}</Typography>
+              <Typography color='black'>
+                {walletAddressShortener(walletAddress)}
+              </Typography>
             ) : (
               <Button onClick={handleOpen}>Connect Wallet</Button>
             )}
