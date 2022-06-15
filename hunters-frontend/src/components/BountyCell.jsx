@@ -31,11 +31,12 @@ export default function BountyCell({ bounty }) {
     bounty_value_in_usd,
     bounty_value_in_eth,
     updated_at,
+    project_length,
   } = bounty;
 
   return (
     <Link to={`bounty/${id}/`} style={{ textDecoration: 'none' }}>
-      <Box marginTop={5} >
+      <Box marginTop={5}>
         <Card variant='outlined' sx={{ borderRadius: 0 }}>
           <CardContent
             sx={{ display: 'flex', justifyContent: 'space-between' }}
@@ -44,9 +45,9 @@ export default function BountyCell({ bounty }) {
               <Box display='flex' alignItems='center'>
                 <Box
                   sx={{
-                    height: 60,
-                    width: 60,
-                    borderRadius: 30,
+                    height: 80,
+                    width: 80,
+                    borderRadius: 40,
                     backgroundColor: '#1DB3F9',
                   }}
                 />
@@ -59,19 +60,34 @@ export default function BountyCell({ bounty }) {
                     {title}
                   </Typography>
                   <Typography
+                    marginTop={1}
                     variant='body2'
                     fontWeight='600'
                     color={'#5951F6'}
                   >
                     {funding_organization}
                   </Typography>
-                  <Box display='flex'>
-                    <Typography variant='body2' color='#757575'>
+                  <Box display='flex' marginTop={1}>
+                    <Typography variant='body2' color='#757575' marginRight={2}>
                       {stateEmojis[state] + ' ' + stateValue[state]}
                     </Typography>
-                    <Typography color='#757575'>·</Typography>
-                    <Typography variant='body2' color='#757575'>
+                    <Typography color='#757575' marginRight={2}>
+                      ·
+                    </Typography>
+                    <Typography variant='body2' color='#757575' marginRight={2}>
                       {timeFromUpdateUtil(updated_at)}
+                    </Typography>
+                    <Typography color='#757575' marginRight={2}>
+                      ·
+                    </Typography>
+                    <Typography variant='body2' color='#757575' marginRight={2}>
+                      12 comments
+                    </Typography>
+                    <Typography color='#757575' marginRight={2}>
+                      ·
+                    </Typography>
+                    <Typography variant='body2' color='#757575' marginRight={2}>
+                      {project_length} commitment
                     </Typography>
                   </Box>
                 </Box>
