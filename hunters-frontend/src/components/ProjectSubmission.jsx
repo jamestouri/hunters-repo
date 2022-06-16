@@ -1,5 +1,5 @@
 import React from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import { useProfile } from '../contexts/ProfileContext';
 import { Box, Button, FormControl, TextField, Typography } from '@mui/material';
 import { useForm } from 'react-hook-form';
@@ -10,19 +10,22 @@ export default function ProjectSubmission() {
   const params = useParams();
   const { walletAddress } = useProfile();
   const bountyId = params.bountyId;
+  const navigate = useNavigate();
 
   const { register, handleSubmit } = useForm();
 
   const submitProject = async (formData) => {
     const data = { ...formData, wallet_address: walletAddress, bounty: bountyId };
     const activity = { bounty: bountyId, activity_type: 'Work Submitted' };
-
     await axios
       .post(`${process.env.REACT_APP_DEV_SERVER}/api/work_submissions/`, {
         work_submission: data,
         activities: activity,
       })
-      .then((res) => console.log('✅ everything worked', res))
+      .then((res) => {
+          console.log('✅ everything worked', res)
+          navigate(`/bounty/${bountyId}`)
+        })
       .catch((err) => console.log(err));
   };
 

@@ -31,7 +31,6 @@ export default function BountyDetails() {
   if (bounty == null) {
     return null;
   }
-  console.log(bounty);
   return (
     <Container>
       <Box display='flex' alignItems='center' justifyContent='space-between'>
@@ -43,7 +42,9 @@ export default function BountyDetails() {
             backgroundColor='#1DB3F9'
           />
           <Box marginLeft={2}>
-            <Typography variant='h6' marginBottom={2}>{bounty.title}</Typography>
+            <Typography variant='h6' marginBottom={2}>
+              {bounty.title}
+            </Typography>
             <BountyCategories categories={bounty.bounty_category} />
           </Box>
         </Box>
@@ -83,11 +84,7 @@ export default function BountyDetails() {
           <WhenCreated timeLapse={bounty.updated_at} />
         </Box>
       </Box>
-      <ButtonActionsLogic
-        bounty={bounty}
-        setBounty={setBounty}
-        bountyId={bountyId}
-      />
+      <ButtonActionsLogic bounty={bounty} setBounty={setBounty} />
       <Divider sx={{ marginTop: 3, marginBottom: 3 }} />
       <Typography variant='h6' fontWeight='500'>
         Description
@@ -169,8 +166,7 @@ function ExperienceLevel({ experienceLevel }) {
         Experience Level
       </Typography>
       <Typography>
-        {experienceLevelEmoji[experienceCapitalized]}{' '}
-        {experienceCapitalized}
+        {experienceLevelEmoji[experienceCapitalized]} {experienceCapitalized}
       </Typography>
     </Box>
   );
@@ -198,27 +194,23 @@ function WhenCreated({ timeLapse }) {
   );
 }
 
-function ButtonActionsLogic({ bounty, setBounty, bountyId }) {
+function ButtonActionsLogic({ bounty, setBounty }) {
   const { walletAddress } = useProfile();
   const { bounty_creator, bounty_owner_wallet } = bounty;
 
-  const handleAcceptedWork = async () => {
+  const handleAcceptWork = async () => {
     const bountyOwners = [...bounty.bounty_owner_wallet, walletAddress];
+    const startedActivity = {
+      bounty: bounty.id,
+      wallet_address: walletAddress,
+      activity_type: 'Started Work',
+    };
     axios
-      .patch(`${process.env.REACT_APP_DEV_SERVER}/api/bounty/${bountyId}/`, {
+      .patch(`${process.env.REACT_APP_DEV_SERVER}/api/bounty/${bounty.id}/`, {
         bounty: { bounty_owner_wallet: bountyOwners },
+        activities: startedActivity,
       })
       .then((res) => setBounty(res.data))
-      .catch((err) => console.log(err));
-    axios
-      .post(`${process.env.REACT_APP_DEV_SERVER}/api/activities/`, {
-        activities: {
-          bounty: bounty.id,
-          wallet_address: walletAddress,
-          activity_type: 'Started Work',
-        },
-      })
-      .then((res) => console.log('⛷ activity created', res))
       .catch((err) => console.log(err));
   };
 
@@ -226,21 +218,17 @@ function ButtonActionsLogic({ bounty, setBounty, bountyId }) {
     const removingBountyOwner = bounty.bounty_owner_wallet.filter(
       (o) => o !== walletAddress
     );
+    const leaveActivity = {
+      bounty: bounty.id,
+      wallet_address: walletAddress,
+      activity_type: 'Left Project',
+    };
     axios
-      .patch(`${process.env.REACT_APP_DEV_SERVER}/api/bounty/${bountyId}/`, {
+      .patch(`${process.env.REACT_APP_DEV_SERVER}/api/bounty/${bounty.id}/`, {
         bounty: { bounty_owner_wallet: removingBountyOwner },
+        activities: leaveActivity,
       })
       .then((res) => setBounty(res.data))
-      .catch((err) => console.log(err));
-    axios
-      .post(`${process.env.REACT_APP_DEV_SERVER}/api/activities/`, {
-        activities: {
-          bounty: bounty.id,
-          wallet_address: walletAddress,
-          activity_type: 'Left Project',
-        },
-      })
-      .then((res) => console.log('⛷ activity created', res))
       .catch((err) => console.log(err));
   };
 
@@ -284,7 +272,7 @@ function ButtonActionsLogic({ bounty, setBounty, bountyId }) {
 
   return (
     <Button
-      onClick={handleAcceptedWork}
+      onClick={handleAcceptWork}
       variant='contained'
       sx={{
         marginTop: 4,

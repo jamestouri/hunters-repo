@@ -75,6 +75,11 @@ def bounty(request, bounty_id):
             bounty, data=request.data['bounty'], partial=True)
         if bounty_serializer.is_valid():
             bounty_serializer.save()
+            if request.data['activities'] is not None:
+                activity = request.data['activities']
+                profile = Profile.objects.filter(
+                wallet_address=activity['wallet_address']).first()
+                _create_activity_object(activity, profile.id)
             return JsonResponse(bounty_serializer.data, status=status.HTTP_200_OK)
         print(bounty_serializer.errors)
         return JsonResponse(bounty_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
