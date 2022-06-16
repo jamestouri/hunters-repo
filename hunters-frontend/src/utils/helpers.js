@@ -56,3 +56,8 @@ export function timeFromUpdateUtil(created) {
 export function capitalizeFirstLetter(string) {
   return string[0].toUpperCase() + string.slice(1);
 }
+
+export function timeCreatedForActivity(created) {
+  // Activity times need to be more precise
+  
+}

@@ -15,12 +15,14 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
+from django.urls import re_path as url
 from app import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/profiles/', views.profiles),
     path('api/profile/<address>/', views.profile),
+    url(r'^api/activities/?', views.activities),
     path('api/bounties/', views.bounties),
     path('api/bounty/<bounty_id>/', views.bounty),
     path('api/activities/', views.activities),

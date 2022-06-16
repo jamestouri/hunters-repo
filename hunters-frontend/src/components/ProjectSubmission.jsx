@@ -33,7 +33,7 @@ export default function ProjectSubmission() {
     <Container>
       <FormControl>
         <Box>
-          <Typography>Subject Line</Typography>
+        <Typography>Subject Line</Typography>
           <TextField
             {...register('submission_header')}
             required

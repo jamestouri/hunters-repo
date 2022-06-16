@@ -95,6 +95,7 @@ export default function BountyDetails() {
         File Attachments
       </Typography>
       <FilesAndImages imageAttachments={bounty.image_attachments} />
+      <Activities bountyId={bounty.id} />
     </Container>
   );
 }
@@ -296,7 +297,7 @@ function FilesAndImages({ imageAttachments }) {
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
   return (
-    <Box display='flex'>
+    <Box display='flex' flexWrap='wrap'>
       {imageAttachments.map((imageURL) => (
         <React.Fragment key={imageURL}>
           <ImageEnlargeModal
@@ -310,6 +311,7 @@ function FilesAndImages({ imageAttachments }) {
             sx={{
               width: 100,
               height: 100,
+              marginRight: 5,
               cursor: 'pointer',
               borderStyle: 'solid',
               borderWidth: 1,
@@ -321,4 +323,51 @@ function FilesAndImages({ imageAttachments }) {
       ))}
     </Box>
   );
+}
+
+function Activities({ bountyId }) {
+  const [activities, setActivities] = useState([]);
+  useEffect(() => {
+    axios
+      .get(
+        `${process.env.REACT_APP_DEV_SERVER}/api/activities?bounty_id=${bountyId}`
+      )
+      .then((res) => setActivities(res.data))
+      .catch((err) => console.log(err));
+  }, []);
+  console.log(activities);
+  return (
+    <Box>
+      {activities.map((a) => (
+        <Box display='flex' key={a.id} alignItems='center'>
+          <Box
+            height={60}
+            width={60}
+            borderRadius={30}
+            backgroundColor='#1db3f9'
+          />
+          <ProfileNameFromId profileId={a.profile} />
+          <Typography>{a.activity_type}</Typography>
+          <Typography>{timeFromUpdateUtil(a.created_at)}</Typography>
+        </Box>
+      ))}
+    </Box>
+  );
+}
+
+function ProfileNameFromId({ profileId }) {
+  const [profile, setProfile] = useState(null);
+
+  useEffect(() => {
+    axios
+      .get(`${process.env.REACT_APP_DEV_SERVER}/api/profile/${profileId}/`)
+      .then((res) => setProfile(res.data))
+      .catch((err) => console.log(err));
+  }, []);
+
+  if (profile == null) {
+      return null;
+  }
+
+  return <Button>{walletAddressShortener(profile.wallet_address)}</Button>;
 }

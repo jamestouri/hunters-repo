@@ -1,4 +1,5 @@
 from os import stat
+from types import NoneType
 from django.shortcuts import render
 from rest_framework.parsers import JSONParser
 from .serializers import ActivitySerializer, ProfileSerializer, BountySerializer, WorkSubmissionSerializer
@@ -29,6 +30,8 @@ def profiles(request):
 @api_view(['GET', 'PUT', 'DELETE'])
 def profile(request, address):
     profile = Profile.objects.filter(wallet_address=address).first()
+    if profile is None:
+        profile = Profile.objects.get(id=address)
     if request.method == 'GET':
         if profile is None:
             return JsonResponse(None, safe=False)
@@ -78,7 +81,7 @@ def bounty(request, bounty_id):
             if request.data['activities'] is not None:
                 activity = request.data['activities']
                 profile = Profile.objects.filter(
-                wallet_address=activity['wallet_address']).first()
+                    wallet_address=activity['wallet_address']).first()
                 _create_activity_object(activity, profile.id)
             return JsonResponse(bounty_serializer.data, status=status.HTTP_200_OK)
         print(bounty_serializer.errors)
@@ -88,6 +91,12 @@ def bounty(request, bounty_id):
 @api_view(['GET', 'POST'])
 def activities(request):
     if request.method == 'GET':
+        bounty_id = request.GET.get('bounty_id')
+        # For activities in Bounties
+        if bounty_id is not None:
+            activities = Activity.objects.filter(bounty=bounty_id)
+            activity_serializer = ActivitySerializer(activities, many=True)
+            return JsonResponse(activity_serializer.data, safe=False)
         activities = Activity.objects.all()
         activity_serializer = ActivitySerializer(activities, many=True)
         return JsonResponse(activity_serializer.data, safe=False)
