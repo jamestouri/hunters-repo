@@ -7,9 +7,11 @@ import {
   capitalizeFirstLetter,
   timeFromUpdateUtil,
   walletAddressShortener,
+  timeCreatedForActivity,
 } from '../utils/helpers';
 import { useProfile } from '../contexts/ProfileContext';
 import ImageEnlargeModal from './modals/ImageEnlargeModal';
+import { ActivityCell } from './ActivityCell';
 
 const experienceLevelEmoji = {
   Beginner: '🟢',
@@ -90,10 +92,6 @@ export default function BountyDetails() {
         Description
       </Typography>
       <Typography marginTop={2}>{bounty.description}</Typography>
-      <Divider sx={{ marginTop: 3, marginBottom: 3 }} />
-      <Typography variant='h6' fontWeight='500' sx={{ marginBottom: 3 }}>
-        File Attachments
-      </Typography>
       <FilesAndImages imageAttachments={bounty.image_attachments} />
       <Activities bountyId={bounty.id} />
     </Container>
@@ -297,31 +295,37 @@ function FilesAndImages({ imageAttachments }) {
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
   return (
-    <Box display='flex' flexWrap='wrap'>
-      {imageAttachments.map((imageURL) => (
-        <React.Fragment key={imageURL}>
-          <ImageEnlargeModal
-            imageURL={imageURL}
-            open={open}
-            handleClose={handleClose}
-          />
-          <CardMedia
-            component='img'
-            onClick={handleOpen}
-            sx={{
-              width: 100,
-              height: 100,
-              marginRight: 5,
-              cursor: 'pointer',
-              borderStyle: 'solid',
-              borderWidth: 1,
-              borderColor: 'rgb(22,22,22, 0.2)',
-            }}
-            image={imageURL}
-          />
-        </React.Fragment>
-      ))}
-    </Box>
+    <>
+      <Divider sx={{ marginTop: 3, marginBottom: 3 }} />
+      <Typography variant='h6' fontWeight='500' sx={{ marginBottom: 3 }}>
+        File Attachments
+      </Typography>
+      <Box display='flex' flexWrap='wrap'>
+        {imageAttachments.map((imageURL) => (
+          <React.Fragment key={imageURL}>
+            <ImageEnlargeModal
+              imageURL={imageURL}
+              open={open}
+              handleClose={handleClose}
+            />
+            <CardMedia
+              component='img'
+              onClick={handleOpen}
+              sx={{
+                width: 100,
+                height: 100,
+                marginRight: 5,
+                cursor: 'pointer',
+                borderStyle: 'solid',
+                borderWidth: 1,
+                borderColor: 'rgb(22,22,22, 0.2)',
+              }}
+              image={imageURL}
+            />
+          </React.Fragment>
+        ))}
+      </Box>
+    </>
   );
 }
 
@@ -335,39 +339,20 @@ function Activities({ bountyId }) {
       .then((res) => setActivities(res.data))
       .catch((err) => console.log(err));
   }, []);
-  console.log(activities);
-  return (
-    <Box>
-      {activities.map((a) => (
-        <Box display='flex' key={a.id} alignItems='center'>
-          <Box
-            height={60}
-            width={60}
-            borderRadius={30}
-            backgroundColor='#1db3f9'
-          />
-          <ProfileNameFromId profileId={a.profile} />
-          <Typography>{a.activity_type}</Typography>
-          <Typography>{timeFromUpdateUtil(a.created_at)}</Typography>
-        </Box>
-      ))}
-    </Box>
-  );
-}
-
-function ProfileNameFromId({ profileId }) {
-  const [profile, setProfile] = useState(null);
-
-  useEffect(() => {
-    axios
-      .get(`${process.env.REACT_APP_DEV_SERVER}/api/profile/${profileId}/`)
-      .then((res) => setProfile(res.data))
-      .catch((err) => console.log(err));
-  }, []);
-
-  if (profile == null) {
-      return null;
+  if (activities == null) {
+    return null;
   }
-
-  return <Button>{walletAddressShortener(profile.wallet_address)}</Button>;
+  return (
+    <>
+      <Divider sx={{ marginTop: 3, marginBottom: 3 }} />
+      <Typography variant='h6' fontWeight='500' sx={{ marginBottom: 3 }}>
+        Activity History
+      </Typography>
+      <Box>
+        {activities.map((a) => (
+          <ActivityCell activity={a} />
+        ))}
+      </Box>
+    </>
+  );
 }
