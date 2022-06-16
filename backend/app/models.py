@@ -161,8 +161,10 @@ class Activity(models.Model):
 class WorkSubmission(models.Model):
     bounty = models.ForeignKey(Bounty, on_delete=models.CASCADE)
     profile = models.ForeignKey(Profile, on_delete=models.CASCADE)
-    profile_link = models.CharField(max_length=255)
+    submission_header = models.CharField(max_length=255, default='')
+    project_link = models.CharField(max_length=255, blank=True, default='')
     additional_text = models.TextField(default='', blank=True)
+    email = models.CharField(max_length=255, default='')
     rejected = models.BooleanField(
         default=False, help_text='If false and accepted is false, submission has not been reviewed yet')
     accepted = models.BooleanField(
@@ -172,6 +174,9 @@ class WorkSubmission(models.Model):
 
 class FunderRating(models.Model):
     star_rating = models.PositiveSmallIntegerField(
-        default=0, validators=[MinValueValidator(1), MaxValueValidator(100)])
-    profile = models.ForeignKey(Profile, on_delete=models.CASCADE)
+        default=0, validators=[MinValueValidator(0), MaxValueValidator(5)])
+    rating_creator = models.ForeignKey(Profile, on_delete=models.CASCADE, related_name='creator_id',
+                                       null=True, default=None, help_text="Profile creating the rating")
+    rating_receiver = models.ForeignKey(Profile, on_delete=models.CASCADE, related_name='receiver_id',
+                                        null=True, default=None, help_text="Profile receiving the rating")
     created_at = models.DateTimeField(auto_now_add=True)

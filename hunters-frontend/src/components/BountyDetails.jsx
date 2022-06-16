@@ -11,9 +11,9 @@ import {
 import { useProfile } from '../contexts/ProfileContext';
 
 const experienceLevelEmoji = {
-  beginner: '🟢',
-  intermediate: '🟦',
-  advanced: '♦',
+  Beginner: '🟢',
+  Intermediate: '🟦',
+  Advanced: '♦',
 };
 
 export default function BountyDetails() {
@@ -31,42 +31,44 @@ export default function BountyDetails() {
   if (bounty == null) {
     return null;
   }
-
+  console.log(bounty);
   return (
     <Container>
-      <Box display='flex' alignItems='center'>
-        <Box
-          height={80}
-          width={80}
-          borderRadius={50}
-          backgroundColor='#1DB3F9'
-        />
-        <Box marginLeft={2}>
-          <Box display='flex' alignItems='center' marginBottom={1}>
-            <Typography variant='h6'>{bounty.title}</Typography>
-            <Box display='flex'>
-              <Typography
-                color='#9f29bc'
-                height={25}
-                paddingLeft={2}
-                paddingRight={2}
-                backgroundColor='rgb(144,44,204, 0.3)'
-              >
-                {bounty.bounty_value_in_usd} USD
-              </Typography>
-              <Typography
-                marginLeft={1}
-                color='#e41f66'
-                height={25}
-                paddingLeft={2}
-                paddingRight={2}
-                backgroundColor='rgb(228,31,102, 0.3)'
-              >
-                Paid out in ETH
-              </Typography>
-            </Box>
+      <Box display='flex' alignItems='center' justifyContent='space-between'>
+        <Box display='flex'>
+          <Box
+            height={80}
+            width={80}
+            borderRadius={50}
+            backgroundColor='#1DB3F9'
+          />
+          <Box marginLeft={2}>
+            <Typography variant='h6' marginBottom={2}>{bounty.title}</Typography>
+            <BountyCategories categories={bounty.bounty_category} />
           </Box>
-          <BountyCategories categories={bounty.bounty_category} />
+        </Box>
+        <Box>
+          <Box display='flex'>
+            <Typography
+              color='#9f29bc'
+              height={25}
+              paddingLeft={2}
+              paddingRight={2}
+              backgroundColor='rgb(144,44,204, 0.3)'
+            >
+              {bounty.bounty_value_in_usd} USD
+            </Typography>
+            <Typography
+              marginLeft={1}
+              color='#e41f66'
+              height={25}
+              paddingLeft={2}
+              paddingRight={2}
+              backgroundColor='rgb(228,31,102, 0.3)'
+            >
+              Paid out in ETH
+            </Typography>
+          </Box>
         </Box>
       </Box>
       <Box display='flex' marginTop={4} justifyContent='space-between'>
@@ -75,6 +77,7 @@ export default function BountyDetails() {
           <CreatorContactInfo contactInfo={bounty.ways_to_contact} />
         </Box>
         <Box display='flex'>
+          <WorkingOnBounty bountyOwnersWallets={bounty.bounty_owner_wallet} />
           <ExperienceLevel experienceLevel={bounty.experience_level} />
           <TimeCommitment timeCommitment={bounty.project_length} />
           <WhenCreated timeLapse={bounty.updated_at} />
@@ -138,15 +141,36 @@ function CreatorContactInfo({ contactInfo }) {
   );
 }
 
+function WorkingOnBounty({ bountyOwnersWallets }) {
+  if (bountyOwnersWallets.length < 1) {
+    return null;
+  }
+  return (
+    <Box marginRight={2}>
+      <Typography color='#757575' fontWeight='600'>
+        Working on Bounty
+      </Typography>
+      <Box>
+        {bountyOwnersWallets.map((w) => (
+          <Button sx={{ padding: 0, fontSize: 16 }}>
+            {walletAddressShortener(w)}
+          </Button>
+        ))}
+      </Box>
+    </Box>
+  );
+}
+
 function ExperienceLevel({ experienceLevel }) {
+  const experienceCapitalized = capitalizeFirstLetter(experienceLevel);
   return (
     <Box marginRight={2}>
       <Typography color='#757575' fontWeight='600'>
         Experience Level
       </Typography>
       <Typography>
-        {experienceLevelEmoji[experienceLevel]}{' '}
-        {capitalizeFirstLetter(experienceLevel)}
+        {experienceLevelEmoji[experienceCapitalized]}{' '}
+        {experienceCapitalized}
       </Typography>
     </Box>
   );
@@ -221,7 +245,7 @@ function ButtonActionsLogic({ bounty, setBounty, bountyId }) {
   };
 
   if (bounty_creator === walletAddress) {
-      return null;
+    return null;
   }
 
   if (bounty_owner_wallet.includes(walletAddress)) {

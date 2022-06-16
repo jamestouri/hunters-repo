@@ -5,6 +5,7 @@ import { ThemeProvider } from '@emotion/react';
 import { createTheme, Box } from '@mui/material';
 import NewBounty from './components/NewBounty';
 import BountyDetails from './components/BountyDetails';
+import ProjectSubmission from './components/ProjectSubmission';
 
 const theme = createTheme({
   typography: {
@@ -24,6 +25,7 @@ function App() {
           <Route exact path='/' element={<Home />}></Route>
           <Route exact path='/bounty/new/' element={<NewBounty />}></Route>
           <Route exact path='/bounty/:bountyId/' element={<BountyDetails />}></Route>
+          <Route exact path='/bounty/:bountyId/submissions' element={<ProjectSubmission />}></Route>
         </Routes>
       </Router>
     </ThemeProvider>

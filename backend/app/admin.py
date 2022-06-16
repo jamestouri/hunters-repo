@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Activity, Profile, Bounty
+from .models import Activity, Profile, Bounty, WorkSubmission, FunderRating
 
 # Register your models here.
 
@@ -35,3 +35,30 @@ class ActivityAdmin(admin.ModelAdmin):
     )
 
 admin.site.register(Activity, ActivityAdmin)
+
+
+class WorkSubmissionAdmin(admin.ModelAdmin):
+    work_submission_display = (
+        'id',
+        'bounty',
+        'profile',
+        'project_link',
+        'additional_text',
+        'email',
+        'rejected',
+        'accepted',
+        'created_at'
+    )
+
+admin.site.register(WorkSubmission, WorkSubmissionAdmin)
+
+class FunderRatingAdmin(admin.ModelAdmin):
+    funder_rating_admin = (
+        'id',
+        'star_rating',
+        'rating_creator',
+        'rating_receiver',
+        'created_at',
+    )
+
+admin.site.register(FunderRating, FunderRatingAdmin)
