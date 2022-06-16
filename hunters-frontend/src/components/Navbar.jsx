@@ -1,12 +1,12 @@
-import React from 'react';
+import { useState } from 'react';
 import { AppBar, Box, Button, Toolbar, Typography } from '@mui/material';
-import WalletModal from './WalletModal';
+import WalletModal from './modals/WalletModal';
 import { useProfile } from '../contexts/ProfileContext';
 import { walletAddressShortener } from '../utils/helpers';
 import { Link } from 'react-router-dom';
 
 export default function Navbar() {
-  const [open, setOpen] = React.useState(false);
+  const [open, setOpen] = useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
   const { walletAddress } = useProfile();

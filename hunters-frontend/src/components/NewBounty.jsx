@@ -2,6 +2,7 @@ import { useForm } from 'react-hook-form';
 import { useState } from 'react';
 import axios from 'axios';
 import { useProfile } from '../contexts/ProfileContext';
+import { useNavigate } from 'react-router-dom';
 
 import {
   Button,
@@ -55,9 +56,9 @@ function showFilePaths(files) {
 
 export default function NewBounty() {
   const [files, setFiles] = useState([]);
-
   const [checked, setChecked] = useState(false);
   const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
   const { formState, register, handleSubmit, watch } = useForm();
   const { walletAddress } = useProfile();
   //  Bounty creator added with wallet address
@@ -84,7 +85,10 @@ export default function NewBounty() {
       .post(`${process.env.REACT_APP_DEV_SERVER}/api/bounties/`, {
         bounty: data,
       })
-      .then((res) => console.log('✅ bounty created', res))
+      .then((res) => {
+        console.log('✅ bounty created', res);
+        navigate(`/bounty/${res.data.id}/`);
+      })
       .catch((err) => console.log(err));
     setLoading(false);
     console.log('loading ended');
@@ -181,23 +185,6 @@ export default function NewBounty() {
         ))}
       </TextField>
       <Typography>Category</Typography>
-      {/* <TextField
-        select
-        multiple
-        fullWidth
-        defaultValue=''
-        inputProps={register('bounty_category', {
-          required: 'What category is your bounty',
-        })}
-        error={errors.currency}
-        helperText={errors.currency?.message}
-      >
-        {bountyCategories.map((option) => (
-          <MenuItem key={option} value={option}>
-            {option}
-          </MenuItem>
-        ))}
-      </TextField> */}
       <Select
         {...register('bounty_category')}
         labelId='age'

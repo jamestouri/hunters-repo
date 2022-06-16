@@ -2,13 +2,14 @@ import { Box, Container } from '@mui/system';
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
-import { Button, Divider, Typography } from '@mui/material';
+import { Button, CardMedia, Divider, Typography } from '@mui/material';
 import {
   capitalizeFirstLetter,
   timeFromUpdateUtil,
   walletAddressShortener,
 } from '../utils/helpers';
 import { useProfile } from '../contexts/ProfileContext';
+import ImageEnlargeModal from './modals/ImageEnlargeModal';
 
 const experienceLevelEmoji = {
   Beginner: '🟢',
@@ -19,7 +20,6 @@ const experienceLevelEmoji = {
 export default function BountyDetails() {
   const params = useParams();
   const [bounty, setBounty] = useState(null);
-
   const bountyId = params.bountyId;
 
   useEffect(() => {
@@ -90,6 +90,11 @@ export default function BountyDetails() {
         Description
       </Typography>
       <Typography marginTop={2}>{bounty.description}</Typography>
+      <Divider sx={{ marginTop: 3, marginBottom: 3 }} />
+      <Typography variant='h6' fontWeight='500' sx={{ marginBottom: 3 }}>
+        File Attachments
+      </Typography>
+      <FilesAndImages imageAttachments={bounty.image_attachments} />
     </Container>
   );
 }
@@ -283,5 +288,37 @@ function ButtonActionsLogic({ bounty, setBounty }) {
     >
       Start Project
     </Button>
+  );
+}
+
+function FilesAndImages({ imageAttachments }) {
+  const [open, setOpen] = useState(false);
+  const handleOpen = () => setOpen(true);
+  const handleClose = () => setOpen(false);
+  return (
+    <Box display='flex'>
+      {imageAttachments.map((imageURL) => (
+        <React.Fragment key={imageURL}>
+          <ImageEnlargeModal
+            imageURL={imageURL}
+            open={open}
+            handleClose={handleClose}
+          />
+          <CardMedia
+            component='img'
+            onClick={handleOpen}
+            sx={{
+              width: 100,
+              height: 100,
+              cursor: 'pointer',
+              borderStyle: 'solid',
+              borderWidth: 1,
+              borderColor: 'rgb(22,22,22, 0.2)',
+            }}
+            image={imageURL}
+          />
+        </React.Fragment>
+      ))}
+    </Box>
   );
 }

@@ -1,7 +1,7 @@
 import React from 'react';
-import { META_MASK, WALLET_CONNECT, COINBASE } from '../utils/constants';
+import { META_MASK, WALLET_CONNECT, COINBASE } from '../../utils/constants';
 import { Button, Card, Modal } from '@mui/material';
-import { useProfile } from '../contexts/ProfileContext';
+import { useProfile } from '../../contexts/ProfileContext';
 
 export default function WalletModal({ open, handleClose }) {
   const { connectWallet } = useProfile();
