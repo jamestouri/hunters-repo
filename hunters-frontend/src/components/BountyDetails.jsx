@@ -7,7 +7,6 @@ import {
   capitalizeFirstLetter,
   timeFromUpdateUtil,
   walletAddressShortener,
-  timeCreatedForActivity,
 } from '../utils/helpers';
 import { useProfile } from '../contexts/ProfileContext';
 import ImageEnlargeModal from './modals/ImageEnlargeModal';
@@ -350,7 +349,7 @@ function Activities({ bountyId }) {
       </Typography>
       <Box>
         {activities.map((a) => (
-          <ActivityCell activity={a} />
+          <ActivityCell key={a.id} activity={a} />
         ))}
       </Box>
     </>

@@ -8,7 +8,13 @@ import {
 
 export function ActivityCell({ activity }) {
   return (
-    <Box display='flex' key={activity.id} alignItems='center' marginTop={3}>
+    <Box
+      display='flex'
+      justifyContent='space-between'
+      key={activity.id}
+      alignItems='center'
+      marginTop={3}
+    >
       <Box display='flex'>
         <Box
           height={60}
@@ -19,10 +25,11 @@ export function ActivityCell({ activity }) {
         />
         <ProfileNameFromId profileId={activity.profile} />
       </Box>
-      <Typography sx={{marginLeft: '15%'}} >{activity.activity_type}</Typography>
-      <Typography sx={{marginLeft: '15%'}} variant='body2' color='#757575' fontWeight='600'>
+      <Typography>{activity.activity_type}</Typography>
+      <Typography variant='body2' color='#757575' fontWeight='600'>
         {timeCreatedForActivity(activity.created_at)}
       </Typography>
+      <Box />
     </Box>
   );
 }
