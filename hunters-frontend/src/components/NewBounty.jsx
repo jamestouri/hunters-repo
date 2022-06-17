@@ -6,7 +6,7 @@ import { useNavigate } from 'react-router-dom';
 
 import {
   Button,
-  CircularProgress,
+  Box,
   FormControl,
   TextField,
   Typography,
@@ -93,6 +93,10 @@ export default function NewBounty() {
     setLoading(false);
     console.log('loading ended');
   };
+
+  if (walletAddress == null) {
+    return <WalletNotConnectedText />;
+  }
 
   return (
     <FormControl>
@@ -235,9 +239,14 @@ export default function NewBounty() {
       >
         Submit
       </Button>
-      {/* <Button onClick={async () => await storeFilesInIPFS(files)}>
-        Submit
-      </Button> */}
     </FormControl>
+  );
+}
+
+function WalletNotConnectedText() {
+  return (
+    <Box display='flex' alignText='center' justifyContent='center' marginTop='33%'>
+      <Typography variant='h3'>Wallet Not Connected!</Typography>
+    </Box>
   );
 }

@@ -11,6 +11,7 @@ import {
 import { useProfile } from '../contexts/ProfileContext';
 import ImageEnlargeModal from './modals/ImageEnlargeModal';
 import { ActivityCell } from './ActivityCell';
+import WalletModal from './modals/WalletModal';
 
 const experienceLevelEmoji = {
   Beginner: '🟢',
@@ -32,7 +33,6 @@ export default function BountyDetails() {
   if (bounty == null) {
     return null;
   }
-  console.log(bounty);
   return (
     <Container>
       <Box display='flex' alignItems='center' justifyContent='space-between'>
@@ -201,21 +201,28 @@ function WhenCreated({ timeLapse }) {
 function ButtonActionsLogic({ bounty, setBounty }) {
   const { walletAddress } = useProfile();
   const { bounty_creator, bounty_owner_wallet } = bounty;
+  const [open, setOpen] = useState(false);
+  const handleOpen = () => setOpen(true);
+  const handleClose = () => setOpen(false);
 
   const handleAcceptWork = async () => {
-    const bountyOwners = [...bounty.bounty_owner_wallet, walletAddress];
-    const startedActivity = {
-      bounty: bounty.id,
-      wallet_address: walletAddress,
-      activity_type: 'Started Work',
-    };
-    axios
-      .patch(`${process.env.REACT_APP_DEV_SERVER}/api/bounty/${bounty.id}/`, {
-        bounty: { bounty_owner_wallet: bountyOwners },
-        activities: startedActivity,
-      })
-      .then((res) => setBounty(res.data))
-      .catch((err) => console.log(err));
+    if (walletAddress == null) {
+      handleOpen();
+    } else {
+      const bountyOwners = [...bounty.bounty_owner_wallet, walletAddress];
+      const startedActivity = {
+        bounty: bounty.id,
+        wallet_address: walletAddress,
+        activity_type: 'Started Work',
+      };
+      axios
+        .patch(`${process.env.REACT_APP_DEV_SERVER}/api/bounty/${bounty.id}/`, {
+          bounty: { bounty_owner_wallet: bountyOwners },
+          activities: startedActivity,
+        })
+        .then((res) => setBounty(res.data))
+        .catch((err) => console.log(err));
+    }
   };
 
   const handleleavingBounty = async () => {
@@ -238,7 +245,10 @@ function ButtonActionsLogic({ bounty, setBounty }) {
 
   if (bounty_creator === walletAddress) {
     return (
-      <Link to={`/bounty/${bounty.id}/submissions/`} style={{ textDecoration: 'none' }}>
+      <Link
+        to={`/bounty/${bounty.id}/submissions/`}
+        style={{ textDecoration: 'none' }}
+      >
         <Button
           variant='contained'
           sx={{
@@ -290,18 +300,21 @@ function ButtonActionsLogic({ bounty, setBounty }) {
   }
 
   return (
-    <Button
-      onClick={handleAcceptWork}
-      variant='contained'
-      sx={{
-        marginTop: 4,
-        borderRadius: 0,
-        boxShadow: 'none',
-        backgroundColor: '#1db3f9',
-      }}
-    >
-      Start Project
-    </Button>
+    <>
+      <WalletModal open={open} handleClose={handleClose} />
+      <Button
+        onClick={handleAcceptWork}
+        variant='contained'
+        sx={{
+          marginTop: 4,
+          borderRadius: 0,
+          boxShadow: 'none',
+          backgroundColor: '#1db3f9',
+        }}
+      >
+        Start Project
+      </Button>
+    </>
   );
 }
 

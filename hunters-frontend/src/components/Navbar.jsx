@@ -24,12 +24,14 @@ export default function Navbar() {
             <Typography color='black'>Hunters</Typography>
           </Link>
           <Box display='flex' alignItems='center'>
-            <Link
-              to={`bounty/new/`}
-              style={{ textDecoration: 'none', color: 'red' }}
-            >
-              Create Bounty
-            </Link>
+            {walletAddress ? (
+              <Link
+                to={`bounty/new/`}
+                style={{ textDecoration: 'none', color: 'red' }}
+              >
+                Create Bounty
+              </Link>
+            ) : null}
             {walletAddress ? (
               <Typography color='black'>
                 {walletAddressShortener(walletAddress)}
