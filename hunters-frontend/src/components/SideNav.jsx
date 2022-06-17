@@ -72,7 +72,7 @@ export default function SideNav() {
           onChange={(e) => setSearchValue(e.target.value)}
           variant='outlined'
           label='DAO Search'
-          sx={{ marginTop: 3, marginLeft: 1, marginRight: 3 }}
+          sx={{ marginTop: 3, marginLeft: 1, marginRight: 3, borderRadius: 0 }}
         />
         <Divider
           variant='middle'

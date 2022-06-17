@@ -86,8 +86,10 @@ export default function BountyCell({ bounty }) {
                     <Typography color='#757575' marginRight={2}>
                       ·
                     </Typography>
-                    <Typography variant='body2' color='#757575' marginRight={2}>
-                      {project_length} commitment
+                    <Typography variant='body2' color='#757575' sx={{display: 'flex'}}>
+                      Expected{' '}
+                      <Typography marginLeft={0.5} marginRight={0.5} variant='body2' color='#757575'  fontWeight='600'>{project_length}</Typography>{' '}
+                      to complete
                     </Typography>
                   </Box>
                 </Box>

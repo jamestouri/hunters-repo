@@ -33,9 +33,18 @@ export default function Navbar() {
               </Link>
             ) : null}
             {walletAddress ? (
-              <Typography color='black'>
+              <Link
+                to={'profile/'}
+                style={{
+                  textDecoration: 'none',
+                  fontSize: 16,
+                  padding: 0,
+                  marginLeft: 3,
+                  color: '#649ddf'
+                }}
+              >
                 {walletAddressShortener(walletAddress)}
-              </Typography>
+              </Link>
             ) : (
               <Button onClick={handleOpen}>Connect Wallet</Button>
             )}

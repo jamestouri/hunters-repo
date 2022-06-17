@@ -179,7 +179,6 @@ function SubmissionActionButtons({ submission }) {
       .then(() => setOpen(true));
   };
 
-  console.log(submission);
   return (
     <Box display='flex' justifyContent='flex-end'>
       {open ? (
