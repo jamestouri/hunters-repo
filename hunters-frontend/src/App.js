@@ -7,6 +7,7 @@ import NewBounty from './components/NewBounty';
 import BountyDetails from './components/BountyDetails';
 import ProjectSubmission from './components/ProjectSubmission';
 import Submissions from './components/Submissions';
+import Profile from './components/Profile';
 
 const theme = createTheme({
   typography: {
@@ -24,6 +25,7 @@ function App() {
         <Navbar />
         <Routes>
           <Route exact path='/' element={<Home />}></Route>
+          <Route exact path='/profile/' element={<Profile />}></Route>
           <Route exact path='/bounty/new/' element={<NewBounty />}></Route>
           <Route exact path='/bounty/:bountyId/' element={<BountyDetails />}></Route>
           <Route exact path='/bounty/:bountyId/submit/' element={<ProjectSubmission />}></Route>
