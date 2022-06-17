@@ -45,8 +45,7 @@ class WorkSubmissionAdmin(admin.ModelAdmin):
         'project_link',
         'additional_text',
         'email',
-        'archived',
-        'rejected',
+        'open',
         'accepted',
         'created_at'
     )

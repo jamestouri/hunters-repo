@@ -6,24 +6,23 @@ import { Box, Button, Typography } from '@mui/material';
 import ProfileNameFromId from './ProfileNameFromId';
 import { timeCreatedForActivity } from '../utils/helpers';
 
-// Find a way to make this authenticated so only the person with the wallet
+// TODO Find a way to make this authenticated so only the person with the wallet
 // address can go on this page
 export default function Submissions() {
   const [submissions, setSubmissions] = useState([]);
-  const [openButton, setOpenButton] = useState(true);
+  const [openSubmissions, setOpenSubmissions] = useState(true);
 
   const params = useParams();
   const bountyId = params.bountyId;
-  const { walletAddress } = useProfile();
 
   useEffect(() => {
     axios
       .get(
-        `${process.env.REACT_APP_DEV_SERVER}/api/work_submissions?bounty_id=${bountyId}`
+        `${process.env.REACT_APP_DEV_SERVER}/api/work_submissions?bounty_id=${bountyId}&open=${openSubmissions}`
       )
       .then((res) => setSubmissions(res.data))
       .catch((err) => console.log(err));
-  }, [openButton, bountyId]);
+  }, [openSubmissions, bountyId]);
 
   if (submissions == null) {
     return null;
@@ -32,8 +31,8 @@ export default function Submissions() {
   return (
     <Box>
       <OpenAndArchivedButtons
-        openButton={openButton}
-        setOpenButton={setOpenButton}
+        openButton={openSubmissions}
+        setOpenButton={setOpenSubmissions}
       />
       {submissions.map((s) => (
         <SubmissionCell key={s.id} submission={s} />
@@ -45,10 +44,32 @@ export default function Submissions() {
 function OpenAndArchivedButtons({ openButton, setOpenButton }) {
   return (
     <Box display='flex' justifyContent='space-around' marginBottom={5}>
-      <Button onClick={openButton === false ? () => setOpenButton(true) : null}>
+      <Button
+        sx={{
+          boxShadow: 'none',
+          borderRadius: 0,
+          color: openButton === true ? '#1db3f9' : '#757575',
+          borderColor: '#1db3f9',
+          fontWeight: openButton === true ? '600' : '500',
+          fontSize: 16,
+        }}
+        variant={openButton === true ? 'outlined' : 'standard'}
+        onClick={openButton === null ? () => setOpenButton(true) : null}
+      >
         Submissions Open
       </Button>
-      <Button onClick={openButton === true ? () => setOpenButton(false) : null}>
+      <Button
+        sx={{
+          boxShadow: 'none',
+          borderRadius: 0,
+          color: openButton === null ? '#1db3f9' : '#757575',
+          borderColor: '#1db3f9',
+          fontWeight: openButton === null ? '600' : '500',
+          fontSize: 16,
+        }}
+        variant={openButton === null ? 'outlined' : 'standard'}
+        onClick={openButton === true ? () => setOpenButton(null) : null}
+      >
         Archived
       </Button>
     </Box>
@@ -129,6 +150,46 @@ function SubmissionCell({ submission }) {
         {submission.submission_header}
       </Typography>
       <Typography marginLeft={9}>{submission.additional_text}</Typography>
+      <SubmissionActionButtons submission={submission} />
+    </Box>
+  );
+}
+
+function SubmissionActionButtons({ submission }) {
+  const [open, setOpen] = useState(submission.open);
+  const handleArchiving = async () => {
+    axios
+      .patch(
+        `${process.env.REACT_APP_DEV_SERVER}/api/work_submission/${submission.id}/`,
+        {
+          work_submission: { open: false },
+        }
+      )
+      .then(() => setOpen(false));
+  };
+
+  const handleReopening = async () => {
+    axios
+      .patch(
+        `${process.env.REACT_APP_DEV_SERVER}/api/work_submission/${submission.id}/`,
+        {
+          work_submission: { open: true },
+        }
+      )
+      .then(() => setOpen(true));
+  };
+
+  console.log(submission);
+  return (
+    <Box display='flex' justifyContent='flex-end'>
+      {open ? (
+        <Box>
+          <Button>Accept and Pay Out</Button>
+          <Button onClick={handleArchiving}>Archive</Button>
+        </Box>
+      ) : (
+        <Button onClick={handleReopening}>Reopen</Button>
+      )}
     </Box>
   );
 }

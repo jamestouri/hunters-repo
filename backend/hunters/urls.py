@@ -28,5 +28,5 @@ urlpatterns = [
     path('api/activities/', views.activities),
     path('api/work_submissions/', views.work_submissions),
     url(r'^api/work_submissions/?', views.work_submissions),
-
+    path('api/work_submission/<work_submission_id>/', views.work_submission),
 ]
