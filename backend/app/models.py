@@ -165,6 +165,9 @@ class WorkSubmission(models.Model):
     project_link = models.CharField(max_length=255, blank=True, default='')
     additional_text = models.TextField(default='', blank=True)
     email = models.CharField(max_length=255, default='')
+    archived = models.BooleanField(
+        default=False, help_text='For organizing when looking at submissions')
+    # Not needed 
     rejected = models.BooleanField(
         default=False, help_text='If false and accepted is false, submission has not been reviewed yet')
     accepted = models.BooleanField(

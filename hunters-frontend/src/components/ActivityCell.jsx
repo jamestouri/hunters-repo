@@ -1,17 +1,14 @@
-import { useState, useEffect } from 'react';
-import axios from 'axios';
-import { Button, Box, Typography } from '@mui/material';
+import { Box, Typography } from '@mui/material';
 import {
-  walletAddressShortener,
   timeCreatedForActivity,
 } from '../utils/helpers';
+import ProfileNameFromId from './ProfileNameFromId';
 
 export function ActivityCell({ activity }) {
   return (
     <Box
       display='flex'
       justifyContent='space-between'
-      key={activity.id}
       alignItems='center'
       marginTop={3}
     >
@@ -31,26 +28,5 @@ export function ActivityCell({ activity }) {
       </Typography>
       <Box />
     </Box>
-  );
-}
-
-function ProfileNameFromId({ profileId }) {
-  const [profile, setProfile] = useState(null);
-
-  useEffect(() => {
-    axios
-      .get(`${process.env.REACT_APP_DEV_SERVER}/api/profile/${profileId}/`)
-      .then((res) => setProfile(res.data))
-      .catch((err) => console.log(err));
-  }, []);
-
-  if (profile == null) {
-    return null;
-  }
-
-  return (
-    <Button sx={{ fontSize: 16, padding: 0 }}>
-      {walletAddressShortener(profile.wallet_address)}
-    </Button>
   );
 }

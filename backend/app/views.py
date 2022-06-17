@@ -117,10 +117,17 @@ def activities(request):
 @api_view(['GET', 'POST'])
 def work_submissions(request):
     if request.method == 'GET':
+        bounty_id = request.GET.get('bounty_id')
+        # For submissions in Bounties
+        if bounty_id is not None: 
+            work_submissions = WorkSubmission.objects.filter(bounty=bounty_id)
+            work_submissions_serializer = WorkSubmissionSerializer(
+                work_submissions, many=True)
+            return JsonResponse(work_submissions_serializer.data, safe=False)
         work_submissions = WorkSubmission.objects.all()
         work_submissions_serializer = WorkSubmissionSerializer(
             work_submissions, many=True)
-        return JsonResponse(work_submissions_serializer, safe=False)
+        return JsonResponse(work_submissions_serializer.data, safe=False)
     elif request.method == 'POST':
         data = JSONParser().parse(request)
         work_submission = data['work_submission']

@@ -26,5 +26,7 @@ urlpatterns = [
     path('api/bounties/', views.bounties),
     path('api/bounty/<bounty_id>/', views.bounty),
     path('api/activities/', views.activities),
-    path('api/work_submissions/', views.work_submissions)
+    path('api/work_submissions/', views.work_submissions),
+    url(r'^api/work_submissions/?', views.work_submissions),
+
 ]

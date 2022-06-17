@@ -1,6 +1,6 @@
 import { Box, Container } from '@mui/system';
 import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, Link } from 'react-router-dom';
 import axios from 'axios';
 import { Button, CardMedia, Divider, Typography } from '@mui/material';
 import {
@@ -32,6 +32,7 @@ export default function BountyDetails() {
   if (bounty == null) {
     return null;
   }
+  console.log(bounty);
   return (
     <Container>
       <Box display='flex' alignItems='center' justifyContent='space-between'>
@@ -236,7 +237,22 @@ function ButtonActionsLogic({ bounty, setBounty }) {
   };
 
   if (bounty_creator === walletAddress) {
-    return null;
+    return (
+      <Link to={`/bounty/${bounty.id}/submissions/`} style={{ textDecoration: 'none' }}>
+        <Button
+          variant='contained'
+          sx={{
+            marginTop: 4,
+            marginRight: 2,
+            borderRadius: 0,
+            boxShadow: 'none',
+            backgroundColor: '#1db3f9',
+          }}
+        >
+          Project Submissions
+        </Button>
+      </Link>
+    );
   }
 
   if (bounty_owner_wallet.includes(walletAddress)) {
