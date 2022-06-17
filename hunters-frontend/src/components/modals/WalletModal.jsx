@@ -5,6 +5,7 @@ import { useProfile } from '../../contexts/ProfileContext';
 
 export default function WalletModal({ open, handleClose }) {
   const { connectWallet } = useProfile();
+
   return (
     <Modal
       sx={{
@@ -25,13 +26,13 @@ export default function WalletModal({ open, handleClose }) {
           justifyContent: 'center',
         }}
       >
-        <Button onClick={() => connectWallet(META_MASK)}>
+        <Button onClick={() => connectWallet(META_MASK, handleClose)}>
           Connect with Metamask
         </Button>
-        <Button onClick={() => connectWallet(WALLET_CONNECT)}>
+        <Button onClick={() => connectWallet(WALLET_CONNECT, handleClose)}>
           Connect with Wallet Connect
         </Button>
-        <Button onClick={() => connectWallet(COINBASE)}>
+        <Button onClick={() => connectWallet(COINBASE, handleClose)}>
           Connect with Coinbase
         </Button>
       </Card>

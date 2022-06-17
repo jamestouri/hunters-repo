@@ -49,16 +49,16 @@ export function ProfileProvider({ children }) {
       .catch((err) => console.log('❗️ ' + err));
   };
 
-  const connectWallet = (walletSelected) => {
+  const connectWallet = (walletSelected, handleClose) => {
     switch (walletSelected) {
       case META_MASK:
-        connectWithMetamask();
+        connectWithMetamask().then(() => handleClose());
         break;
       case WALLET_CONNECT:
-        connectWithWalletConnect();
+        connectWithWalletConnect().then(() => handleClose());
         break;
       case COINBASE:
-        connectWithCoinbaseWallet();
+        connectWithCoinbaseWallet().then(() => handleClose());
         break;
       default:
         return;
