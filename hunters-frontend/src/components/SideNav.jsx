@@ -120,22 +120,6 @@ export default function SideNav() {
         </Box>
         <Box display='flex' alignItems='center'>
           <Checkbox
-            onClick={() => dispatch({ type: 'started' })}
-            sx={{ padding: 0 }}
-            value='started'
-          />{' '}
-          <Typography>🚦 Started</Typography>
-        </Box>
-        <Box display='flex' alignItems='center'>
-          <Checkbox
-            onClick={() => dispatch({ type: 'workSubmitted' })}
-            sx={{ padding: 0 }}
-            value='workSubmitted'
-          />{' '}
-          <Typography>📮 Work Submitted</Typography>
-        </Box>
-        <Box display='flex' alignItems='center'>
-          <Checkbox
             onClick={() => dispatch({ type: 'done' })}
             sx={{ padding: 0 }}
             value='done'

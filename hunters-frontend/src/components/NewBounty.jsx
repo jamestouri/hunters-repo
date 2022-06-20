@@ -14,10 +14,10 @@ import {
   MenuItem,
   Checkbox,
   FormControlLabel,
-  Switch,
   Select,
 } from '@mui/material';
 import { storeFilesInIPFS } from '../utils/helpers';
+import { Container } from '@mui/system';
 
 const bountyTypes = [
   'Bug',
@@ -106,32 +106,47 @@ export default function NewBounty() {
   }
 
   return (
-    <>
-      <FormControl>
-        <Typography>Bounty Title</Typography>
-        <TextField {...register('title')} variant='standard' required />
+    <Container>
+      <Typography variant='h4'>Create Bounty</Typography>
+      <FormControl style={{ width: '50%' }}>
+        <Typography marginTop={5}>Bounty Title</Typography>
+        <TextField
+          {...register('title')}
+          variant='standard'
+          required
+          inputProps={{ maxLength: 80 }}
+        />
 
-        <Typography marginTop={3}>Org Name</Typography>
+        <Typography marginTop={5}>Org Name</Typography>
         <TextField
           {...register('funding_organization')}
           variant='standard'
           required
+          inputProps={{ maxLength: 40 }}
         />
 
-        <Typography marginTop={3}>Org URL</Typography>
+        <Typography marginTop={5}>Org URL</Typography>
         <TextField
           {...register('orginization_url')}
           variant='standard'
           required
         />
 
-        <Typography marginTop={3}>Point of Contact Email</Typography>
-        <TextField {...register('ways_to_contact')} variant='standard' />
+        <Typography marginTop={5}>Point of Contact Email</Typography>
+        <TextField
+          type='email'
+          {...register('ways_to_contact')}
+          variant='standard'
+        />
 
-        <Typography marginTop={3} marginBottom={2}>
+        <Typography marginTop={5} marginBottom={2}>
           Upload Files and Attachments
         </Typography>
-        <Button variant='contained' component='label'>
+        <Button
+          variant='contained'
+          component='label'
+          sx={{ backgroundColor: '#1db3f9', boxShadow: 'none' }}
+        >
           Upload Files
           <input
             alt='image in here'
@@ -153,9 +168,9 @@ export default function NewBounty() {
           }
           label='Would you like to Feature your Bounty?'
         />
-        <Typography>Note: Extra costs apply</Typography>
+        <Typography fontWeight='600'>Note: Extra costs apply</Typography>
 
-        <Typography marginTop={3}>Bounty Type (Select One)</Typography>
+        <Typography marginTop={5}>Bounty Type (Select One)</Typography>
         <TextField
           select
           fullWidth
@@ -173,7 +188,7 @@ export default function NewBounty() {
           ))}
         </TextField>
 
-        <Typography marginTop={3}>Length of Project</Typography>
+        <Typography marginTop={5}>Length of Project</Typography>
         <TextField
           select
           fullWidth
@@ -190,7 +205,7 @@ export default function NewBounty() {
             </MenuItem>
           ))}
         </TextField>
-        <Typography>Category</Typography>
+        <Typography marginTop={5}>Category</Typography>
         <Select
           {...register('bounty_category')}
           labelId='age'
@@ -204,31 +219,20 @@ export default function NewBounty() {
             </MenuItem>
           ))}
         </Select>
-        <Switch
-          checked={checked}
-          onChange={(e) => setChecked(e.target.checked)}
-        />
-        {checked ? (
-          <TextField
-            {...register('bounty_value_in_eth', {
-              valueAsNumber: true,
-            })}
-            label='Bounty reward in eth'
-            variant='standard'
-            required
-          />
-        ) : (
-          <TextField
-            {...register('bounty_value_in_usd', {
-              valueAsNumber: true,
-            })}
-            label='Bounty reward in usd'
-            variant='standard'
-            required
-          />
-        )}
 
-        <Typography>Optional: url of Job Description</Typography>
+        <Typography marginTop={5}>Bounty reward in usd</Typography>
+        <Typography variant='body2' fontWeight='600' color='#757575'>
+          *will be paid out in eth
+        </Typography>
+        <TextField
+          {...register('bounty_value_in_usd', {
+            valueAsNumber: true,
+          })}
+          variant='standard'
+          required
+        />
+
+        <Typography marginTop={5}>Optional: url of Job Description</Typography>
         <TextField
           {...register('attached_job_url')}
           placeholder='URL'
@@ -236,20 +240,37 @@ export default function NewBounty() {
         />
       </FormControl>
 
-      <Typography variant='h6'>Description</Typography>
-      <Typography variant='body2'>
-        The most successful bounties will be the most in depth in what's needed!
+      <Typography marginTop={5} variant='h6'>
+        Description
       </Typography>
-      <MDEditor height={500} value={description} onChange={setDescription} />
+      <Typography fontWeight='600' color='#757575' variant='body2'>
+        The most successful bounties will be the most in depth about what's
+        needed!
+      </Typography>
+      <MDEditor
+        style={{ marginTop: 20 }}
+        height={500}
+        value={description}
+        onChange={setDescription}
+      />
 
       <Button
+        variant='contained'
+        sx={{
+          borderRadius: 0,
+          boxShadow: 'none',
+          marginTop: 5,
+          marginBottom: 20,
+          fontSize: 18,
+          backgroundColor: '#1db3f9',
+        }}
         onClick={
           loading ? null : handleSubmit((formData) => saveBounty(formData))
         }
       >
-        Submit
+        Create Bounty
       </Button>
-    </>
+    </Container>
   );
 }
 

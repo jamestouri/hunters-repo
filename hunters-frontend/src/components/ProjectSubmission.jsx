@@ -15,7 +15,11 @@ export default function ProjectSubmission() {
   const { register, handleSubmit } = useForm();
 
   const submitProject = async (formData) => {
-    const data = { ...formData, wallet_address: walletAddress, bounty: bountyId };
+    const data = {
+      ...formData,
+      wallet_address: walletAddress,
+      bounty: bountyId,
+    };
     const activity = { bounty: bountyId, activity_type: 'Work Submitted' };
     await axios
       .post(`${process.env.REACT_APP_DEV_SERVER}/api/work_submissions/`, {
@@ -23,9 +27,9 @@ export default function ProjectSubmission() {
         activities: activity,
       })
       .then((res) => {
-          console.log('✅ everything worked', res)
-          navigate(`/bounty/${bountyId}`)
-        })
+        console.log('✅ everything worked', res);
+        navigate(`/bounty/${bountyId}`);
+      })
       .catch((err) => console.log(err));
   };
 
@@ -33,7 +37,7 @@ export default function ProjectSubmission() {
     <Container>
       <FormControl>
         <Box>
-        <Typography>Subject Line</Typography>
+          <Typography>Subject Line</Typography>
           <TextField
             {...register('submission_header')}
             required
@@ -61,7 +65,10 @@ export default function ProjectSubmission() {
           />
         </Box>
         <Box marginTop={2}>
-          <Typography>email</Typography>
+          <Typography>Email</Typography>
+          <Typography variant='body2' fontWeight='600' color='#757575'>
+            *Only the Bounty Creator will see it
+          </Typography>
           <TextField
             {...register('email')}
             required

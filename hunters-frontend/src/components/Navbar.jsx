@@ -25,11 +25,10 @@ export default function Navbar() {
           </Link>
           <Box display='flex' alignItems='center'>
             {walletAddress ? (
-              <Link
-                to={`bounty/new/`}
-                style={{ textDecoration: 'none', color: 'red' }}
-              >
-                Create Bounty
+              <Link to={`bounty/new/`} style={{ textDecoration: 'none' }}>
+                <Button sx={{ marginRight: 3, padding: 0 }}>
+                  Create Bounty
+                </Button>
               </Link>
             ) : null}
             {walletAddress ? (
@@ -40,7 +39,7 @@ export default function Navbar() {
                   fontSize: 16,
                   padding: 0,
                   marginLeft: 3,
-                  color: '#649ddf'
+                  color: '#649ddf',
                 }}
               >
                 {walletAddressShortener(walletAddress)}

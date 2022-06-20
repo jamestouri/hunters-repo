@@ -66,14 +66,10 @@ class Bounty(models.Model):
         ('expired', 'expired'),
         ('reserved', 'reserved'),
         ('open', 'open'),
-        ('started', 'started'),
-        ('submitted', 'submitted'),
     ]
 
     STATE = [
         ('open', 'Open Bounty'),
-        ('work_started', 'Work Started'),
-        ('work_submitted', 'Work Submitted'),
         ('done', 'Done'),
         ('cancelled', 'Cancelled'),
         ('expired', 'Expired'),

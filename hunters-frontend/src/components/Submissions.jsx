@@ -27,7 +27,7 @@ export default function Submissions() {
   if (submissions == null) {
     return null;
   }
-  console.log('submissions', submissions);
+
   return (
     <Box>
       <OpenAndArchivedButtons
@@ -77,6 +77,23 @@ function OpenAndArchivedButtons({ openButton, setOpenButton }) {
 }
 
 function SubmissionCell({ submission }) {
+  const { walletAddress } = useProfile();
+
+  const [bounty, setBounty] = useState(null);
+
+  useEffect(() => {
+    axios
+      .get(
+        `${process.env.REACT_APP_DEV_SERVER}/api/bounty/${submission.bounty}/`
+      )
+      .then((res) => setBounty(res.data))
+      .catch((err) => console.log(err));
+  }, []);
+
+  if (bounty == null) {
+    return null;
+  }
+
   return (
     <Box
       sx={{
@@ -117,7 +134,7 @@ function SubmissionCell({ submission }) {
             variant='body2'
             color='#757575'
             fontWeight='600'
-            paddingBottom={0.5}
+            paddingBottom={0.2}
           >
             Project Link
           </Typography>
@@ -132,25 +149,29 @@ function SubmissionCell({ submission }) {
           <Typography variant='body2' color='#757575' fontWeight='600'>
             Submitted
           </Typography>
-          <Typography sx={{ padding: 1 }} variant='body2' fontWeight='600'>
+          <Typography sx={{ paddingTop: 1 }} variant='body2' fontWeight='600'>
             {timeCreatedForActivity(submission.created_at)}
           </Typography>
         </Box>
-        <Box>
-          <Typography color='#757575' variant='body2' fontWeight='600'>
-            Submitter's Email (Only the Bounty Creator will see this)
-          </Typography>
-          <Typography sx={{ padding: 1 }} variant='body2' fontWeight='600'>
-            {submission.email}
-          </Typography>
-        </Box>
+        {bounty.bounty_creator === walletAddress ? (
+          <Box>
+            <Typography color='#757575' variant='body2' fontWeight='600'>
+              Submitter's Email
+            </Typography>
+            <Typography sx={{ paddingTop: 1 }} variant='body2' fontWeight='600'>
+              {submission.email}
+            </Typography>
+          </Box>
+        ) : null}
         <Box />
       </Box>
       <Typography marginLeft={9} variant='h6' marginBottom={3}>
         {submission.submission_header}
       </Typography>
       <Typography marginLeft={9}>{submission.additional_text}</Typography>
-      <SubmissionActionButtons submission={submission} />
+      {bounty.bounty_creator === walletAddress ? (
+        <SubmissionActionButtons submission={submission} />
+      ) : null}
     </Box>
   );
 }

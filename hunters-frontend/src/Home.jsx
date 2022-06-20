@@ -14,18 +14,20 @@ export default function Home() {
       .then((res) => setBounties(res.data))
       .catch((err) => console.log(err));
   }, []);
-  console.log(bounties)
+  console.log(bounties);
   return (
     <>
       <SideNav />
       <Container sx={{ marginLeft: '240px' }}>
         <Box>
-          <Typography>Bounties for Hunters</Typography>
-          <Typography>
+          <Typography variant='h5'>Bounties for Hunters</Typography>
+          <Typography marginTop={2} fontWeight='600' color='#757575'>
             Get paid by building out solutions for innovative companies
           </Typography>
-          <Divider sx={{marginTop: 5, marginBottom: 5}}/>
-          {bounties.map(b => <BountyCell key={b.id} bounty={b}/>)}
+          <Divider sx={{ marginTop: 5, marginBottom: 5 }} />
+          {bounties.map((b) => (
+            <BountyCell key={b.id} bounty={b} />
+          ))}
         </Box>
       </Container>
     </>
