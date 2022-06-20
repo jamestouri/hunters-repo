@@ -11,6 +11,7 @@
     "@testing-library/user-event": "^13.2.1",
     "@thirdweb-dev/react": "^2.4.1",
     "@thirdweb-dev/sdk": "^2.3.8",
+    "@uiw/react-md-editor": "^3.14.4",
     "axios": "^0.27.2",
     "ethers": "^5.6.8",
     "ipfs-http-client": "^57.0.1",

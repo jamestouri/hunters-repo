@@ -12,6 +12,7 @@ import { useProfile } from '../contexts/ProfileContext';
 import ImageEnlargeModal from './modals/ImageEnlargeModal';
 import { ActivityCell } from './ActivityCell';
 import WalletModal from './modals/WalletModal';
+import MDEditor from '@uiw/react-md-editor';
 
 const experienceLevelEmoji = {
   Beginner: '🟢',
@@ -91,7 +92,11 @@ export default function BountyDetails() {
       <Typography variant='h6' fontWeight='500'>
         Description
       </Typography>
-      <Typography marginTop={2}>{bounty.description}</Typography>
+      <MDEditor.Markdown
+        style={{ padding: 15 }}
+        source={bounty.description}
+        linkTarget='_blank'
+      />
       <FilesAndImages imageAttachments={bounty.image_attachments} />
       <Activities bountyId={bounty.id} />
     </Container>
