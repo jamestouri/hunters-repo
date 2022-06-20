@@ -24,7 +24,7 @@ export default function Profile() {
       )
       .then((res) => setProfile(res.data))
       .catch((err) => console.log(err));
-  }, []);
+  }, [walletFromParam]);
 
   // TODO put this request when retrieving Profile Object
   useEffect(() => {
@@ -56,11 +56,15 @@ export default function Profile() {
           {walletAddressShortener(profile.wallet_address)}
         </Typography>
       </Box>
-      <Typography marginTop={10} variant='h5'>Bounties Created</Typography>
+      <Typography marginTop={10} variant='h5'>
+        Bounties Created
+      </Typography>
       {createdBounties.map((created) => (
         <BountyCell key={created.id} bounty={created} />
       ))}
-      <Typography marginTop={10} variant='h5'>Bounties Working On</Typography>
+      <Typography marginTop={10} variant='h5'>
+        Bounties Working On
+      </Typography>
       {ownedBounties.map((owned) => (
         <BountyCell key={owned.id} bounty={owned} />
       ))}
@@ -84,8 +88,28 @@ function ProfilePic({ profile }) {
         cursor: 'pointer',
       }}
       image={profilePic}
-    />
+    >
+      {' '}
+      <input
+        alt='image in here'
+        type='file'
+        name='image'
+        hidden
+        multiple
+        // onChange={(e) => setFiles(e.target.files)}
+      />
+    </CardMedia>
   ) : (
-    <Box height={120} width={120} borderRadius={60} backgroundColor='#1DB3F9' />
+    <Box height={120} width={120} borderRadius={60} backgroundColor='#1DB3F9'>
+      {' '}
+      <input
+        alt='image in here'
+        type='file'
+        name='image'
+        hidden
+        multiple
+        // onChange={(e) => setFiles(e.target.files)}
+      />
+    </Box>
   );
 }
