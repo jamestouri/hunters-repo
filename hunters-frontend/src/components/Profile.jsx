@@ -5,11 +5,13 @@ import { useProfile } from '../contexts/ProfileContext';
 import { walletAddressShortener } from '../utils/helpers';
 import axios from 'axios';
 import { CardMedia, Typography } from '@mui/material';
+import BountyCell from './BountyCell';
 
 export default function Profile() {
   const params = useParams();
   const [profile, setProfile] = useState(null);
-  const [ownedBounties, setOwnedBounties] = useState([]);
+  const [createdBounties, setCreatedBounties] = useState(null);
+  const [ownedBounties, setOwnedBounties] = useState(null);
 
   const walletFromParam = params.walletAddress;
   // Checking if this is the user's profile or not
@@ -27,14 +29,21 @@ export default function Profile() {
   // TODO put this request when retrieving Profile Object
   useEffect(() => {
     axios
-    .get(
-      `${process.env.REACT_APP_DEV_SERVER}/api/bounties/${walletFromParam}/`
-    )
-    .then((res) => setOwnedBounties(res.data))
-    .catch((err) => console.log(err));
-  }, [])
+      .get(
+        `${process.env.REACT_APP_DEV_SERVER}/api/bounties?bounty_creator=${walletFromParam}`
+      )
+      .then((res) => setCreatedBounties(res.data))
+      .catch((err) => console.log(err));
+  }, []);
 
-  console.log(ownedBounties);
+  useEffect(() => {
+    axios
+      .get(
+        `${process.env.REACT_APP_DEV_SERVER}/api/bounties?bounty_owner=${walletFromParam}`
+      )
+      .then((res) => setOwnedBounties(res.data))
+      .catch((err) => console.log(err));
+  }, []);
 
   if (profile == null) {
     return null;
@@ -47,6 +56,14 @@ export default function Profile() {
           {walletAddressShortener(profile.wallet_address)}
         </Typography>
       </Box>
+      <Typography marginTop={10} variant='h5'>Bounties Created</Typography>
+      {createdBounties.map((created) => (
+        <BountyCell key={created.id} bounty={created} />
+      ))}
+      <Typography marginTop={10} variant='h5'>Bounties Working On</Typography>
+      {ownedBounties.map((owned) => (
+        <BountyCell key={owned.id} bounty={owned} />
+      ))}
     </Container>
   );
 }

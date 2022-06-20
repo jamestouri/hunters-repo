@@ -5,7 +5,7 @@ from .models import Activity, Profile, Bounty, WorkSubmission, FunderRating
 
 
 class ProfileAdmin(admin.ModelAdmin):
-    profile_display = ('id', 'wallet_address', 'created_at')
+    profile_display = ('wallet_address', 'created_at')
 
 
 admin.site.register(Profile, ProfileAdmin)

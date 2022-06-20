@@ -45,8 +45,17 @@ def profile(request, address):
 def bounties(request):
     if request.method == 'GET':
         bounty_creator = request.GET.get('bounty_creator')
+        bounty_owner = request.GET.get('bounty_owner')
         if bounty_creator is not None:
             bounties = Bounty.objects.filter(bounty_creator=bounty_creator)
+
+            bounty_serializer = BountySerializer(bounties, many=True)
+            return JsonResponse(bounty_serializer.data, safe=False)
+        if bounty_owner is not None:
+            # bounty_owner_wallet is an array so needing to see if it contains 
+            # owner
+            bounties = Bounty.objects.filter(
+                            bounty_owner_wallet__contains=[bounty_owner])
             bounty_serializer = BountySerializer(bounties, many=True)
             return JsonResponse(bounty_serializer.data, safe=False)
         bounties = Bounty.objects.all()
