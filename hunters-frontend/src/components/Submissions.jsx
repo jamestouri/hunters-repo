@@ -138,7 +138,7 @@ function SubmissionCell({ submission }) {
         </Box>
         <Box>
           <Typography color='#757575' variant='body2' fontWeight='600'>
-            Submitter's Email
+            Submitter's Email (Only the Bounty Creator will see this)
           </Typography>
           <Typography sx={{ padding: 1 }} variant='body2' fontWeight='600'>
             {submission.email}

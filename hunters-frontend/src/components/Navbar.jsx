@@ -34,7 +34,7 @@ export default function Navbar() {
             ) : null}
             {walletAddress ? (
               <Link
-                to={'profile/'}
+                to={`profile/${walletAddress}/`}
                 style={{
                   textDecoration: 'none',
                   fontSize: 16,

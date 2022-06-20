@@ -1,5 +1,6 @@
 from os import stat
 from types import NoneType
+from urllib import response
 from django.shortcuts import render
 from rest_framework.parsers import JSONParser
 from .serializers import ActivitySerializer, ProfileSerializer, BountySerializer, WorkSubmissionSerializer
@@ -7,6 +8,7 @@ from django.http.response import JsonResponse
 from .models import Activity, Profile, Bounty, WorkSubmission
 from rest_framework import status
 from rest_framework.decorators import api_view
+from rest_framework.response import Response
 
 
 @api_view(['GET', 'POST'])
@@ -24,7 +26,7 @@ def profiles(request):
             profile_serializer.save()
             return JsonResponse(profile_serializer.data, status=status.HTTP_201_CREATED)
         return JsonResponse(profile_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-    return JsonResponse([])
+    return JsonResponse([], safe=False)
 
 
 @api_view(['GET', 'PUT', 'DELETE'])
@@ -39,9 +41,14 @@ def profile(request, address):
         return JsonResponse(profile_serializer.data, safe=False)
 
 
-@api_view(['GET', 'POST'])
+@ api_view(['GET', 'POST'])
 def bounties(request):
     if request.method == 'GET':
+        bounty_creator = request.GET.get('bounty_creator')
+        if bounty_creator is not None:
+            bounties = Bounty.objects.filter(bounty_creator=bounty_creator)
+            bounty_serializer = BountySerializer(bounties, many=True)
+            return JsonResponse(bounty_serializer.data, safe=False)
         bounties = Bounty.objects.all()
         bounty_serializer = BountySerializer(bounties, many=True)
         return JsonResponse(bounty_serializer.data, safe=False)
@@ -64,10 +71,10 @@ def bounties(request):
             return JsonResponse(bounty_serializer.data, status=status.HTTP_201_CREATED)
         print(bounty_serializer.errors)
         return JsonResponse(bounty_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-    return JsonResponse([])
+    return JsonResponse([], safe=False)
 
 
-@api_view(['GET', 'PATCH', 'DELETE'])
+@ api_view(['GET', 'PATCH', 'DELETE'])
 def bounty(request, bounty_id):
     bounty = Bounty.objects.get(id=bounty_id)
     if request.method == 'GET':
@@ -88,7 +95,7 @@ def bounty(request, bounty_id):
         return JsonResponse(bounty_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-@api_view(['GET', 'POST'])
+@ api_view(['GET', 'POST'])
 def activities(request):
     if request.method == 'GET':
         bounty_id = request.GET.get('bounty_id')
@@ -114,15 +121,17 @@ def activities(request):
         return JsonResponse(activity_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-@api_view(['GET', 'POST'])
+@ api_view(['GET', 'POST'])
 def work_submissions(request):
     if request.method == 'GET':
         bounty_id = request.GET.get('bounty_id')
         # For submissions in Bounties
-        if bounty_id is not None: 
+        if bounty_id is not None:
             # choosing submissions if open or archived
-            open_submissions = False if request.GET.get('open') == 'null' else True
-            work_submissions = WorkSubmission.objects.filter(bounty=bounty_id, open=open_submissions)
+            open_submissions = False if request.GET.get(
+                'open') == 'null' else True
+            work_submissions = WorkSubmission.objects.filter(
+                bounty=bounty_id, open=open_submissions)
             work_submissions_serializer = WorkSubmissionSerializer(
                 work_submissions, many=True)
             return JsonResponse(work_submissions_serializer.data, safe=False)
@@ -146,14 +155,14 @@ def work_submissions(request):
         return JsonResponse(work_submission_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-@api_view(['GET', 'PATCH', 'DELETE'])
+@ api_view(['GET', 'PATCH', 'DELETE'])
 def work_submission(request, work_submission_id):
     work_submission = WorkSubmission.objects.get(id=work_submission_id)
     if request.method == 'GET':
         work_submission_serializer = WorkSubmissionSerializer(work_submission)
         return JsonResponse(work_submission_serializer.data, safe=False)
     if request.method == 'PATCH':
-        work_submission_serializer =WorkSubmissionSerializer(
+        work_submission_serializer = WorkSubmissionSerializer(
             work_submission, data=request.data['work_submission'], partial=True)
         if work_submission_serializer.is_valid():
             work_submission_serializer.save()
@@ -167,4 +176,3 @@ def _create_activity_object(activity, profile_id):
         activity_serializer.save()
         return JsonResponse(activity_serializer.data, status=status.HTTP_201_CREATED)
     return JsonResponse(activity_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-

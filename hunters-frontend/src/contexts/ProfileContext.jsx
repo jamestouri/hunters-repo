@@ -12,9 +12,6 @@ import axios from 'axios';
 const ProfileContext = createContext({
   walletAddress: null,
   connectWallet: (walletSelected) => {},
-  bountiesStarted: [],
-  bountiesFinished: [],
-  bountiesCreated: [],
 });
 
 export function ProfileProvider({ children }) {

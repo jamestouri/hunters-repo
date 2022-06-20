@@ -9,7 +9,8 @@ from django.core.validators import MaxValueValidator, MinValueValidator
 
 
 class Profile(models.Model):
-    wallet_address = models.CharField(max_length=255, unique=True, blank=False)
+    wallet_address = models.CharField(max_length=255, unique=True, blank=False, db_index=True)
+    profile_picture = models.CharField(max_length=255, blank=True, null=True)
     # Eventually add scores and other ways of building out a profile
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)

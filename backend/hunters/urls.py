@@ -24,6 +24,7 @@ urlpatterns = [
     path('api/profile/<address>/', views.profile),
     url(r'^api/activities/?', views.activities),
     path('api/bounties/', views.bounties),
+    url(r'^api/bounties/?', views.bounties),
     path('api/bounty/<bounty_id>/', views.bounty),
     path('api/activities/', views.activities),
     path('api/work_submissions/', views.work_submissions),

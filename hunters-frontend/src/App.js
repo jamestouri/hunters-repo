@@ -25,7 +25,7 @@ function App() {
         <Navbar />
         <Routes>
           <Route exact path='/' element={<Home />}></Route>
-          <Route exact path='/profile/' element={<Profile />}></Route>
+          <Route exact path='/profile/:walletAddress' element={<Profile />}></Route>
           <Route exact path='/bounty/new/' element={<NewBounty />}></Route>
           <Route exact path='/bounty/:bountyId/' element={<BountyDetails />}></Route>
           <Route exact path='/bounty/:bountyId/submit/' element={<ProjectSubmission />}></Route>

@@ -95,3 +95,8 @@ export function timeCreatedForActivity(created) {
   }
   return minutesSince <= 1 ? 'A minute ago' : `${minutesSince} minutes ago`;
 }
+
+export function timeDateForProfile(created) {
+  const time = new Date(created);
+  return time.toLocaleDateString('EN-US');
+}
