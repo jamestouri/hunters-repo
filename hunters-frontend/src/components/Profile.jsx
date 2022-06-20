@@ -10,8 +10,8 @@ import BountyCell from './BountyCell';
 export default function Profile() {
   const params = useParams();
   const [profile, setProfile] = useState(null);
-  const [createdBounties, setCreatedBounties] = useState(null);
-  const [ownedBounties, setOwnedBounties] = useState(null);
+  const [createdBounties, setCreatedBounties] = useState([]);
+  const [ownedBounties, setOwnedBounties] = useState([]);
 
   const walletFromParam = params.walletAddress;
   // Checking if this is the user's profile or not

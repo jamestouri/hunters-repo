@@ -35,7 +35,7 @@ export default function BountyCell({ bounty }) {
   } = bounty;
 
   return (
-    <Link to={`bounty/${id}/`} style={{ textDecoration: 'none' }}>
+    <Link to={`/bounty/${id}/`} style={{ textDecoration: 'none' }}>
       <Box marginTop={5}>
         <Card variant='outlined' sx={{ borderRadius: 0 }}>
           <CardContent
