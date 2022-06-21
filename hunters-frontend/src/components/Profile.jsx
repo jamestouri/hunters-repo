@@ -7,7 +7,6 @@ import axios from 'axios';
 import { Button, CardMedia, Typography } from '@mui/material';
 import BountyCell from './BountyCell';
 
-
 export default function Profile() {
   const params = useParams();
   const [profile, setProfile] = useState(null);
@@ -16,8 +15,6 @@ export default function Profile() {
 
   const walletFromParam = params.walletAddress;
   // Checking if this is the user's profile or not
-  const { walletAddress } = useProfile();
-
   useEffect(() => {
     axios
       .get(
@@ -49,6 +46,7 @@ export default function Profile() {
   if (profile == null) {
     return null;
   }
+
   return (
     <Container>
       <Box display='flex' flexDirection='column' justifyContent='center'>
@@ -75,60 +73,66 @@ export default function Profile() {
 
 function ProfilePic({ profile }) {
   const [profilePic, setProfilePic] = useState(profile.profile_picture);
-  const [image, setImage] = useState('');
-
+  const { walletAddress } = useProfile();
   const handleImageChange = async (image) => {
     const stored = await storeFilesInIPFS(image);
     // image link in profile object
-    axios 
-        .patch(``)
+    axios
+      .patch(
+        `${process.env.REACT_APP_DEV_SERVER}/api/profile/${walletAddress}/`,
+        {
+          profile: { profile_picture: stored[0] },
+        }
+      )
+      .then((res) => setProfilePic(res.data.profile_picture))
+      .catch((err) => console.log(err));
+  };
 
-  }
+  const buttonStyle = {
+    backgroundColor: '#e41f66',
+    borderRadius: 0,
+    boxShadow: 'none',
+    height: 40,
+    fontSize: 14,
+    alignSelf: 'center',
+    marginLeft: 2,
+    '&:hover': {
+      backgroundColor: 'rgb(228,31,102, 0.7)',
+      boxShadow: 'none',
+    },
+  };
 
-  return profilePic ? (
-    <CardMedia
-      component='img'
-      sx={{
-        width: 100,
-        height: 100,
-        borderRadius: 50,
-        marginRight: 5,
-        cursor: 'pointer',
-      }}
-      image={profilePic}
-    >
-      {' '}
-      <input alt='image in here' type='file' name='image' hidden />
-    </CardMedia>
-  ) : (
+  return (
     <Box display='flex' textAlign='center'>
-      <Box
-        height={120}
-        width={120}
-        borderRadius={60}
-        backgroundColor='#1DB3F9'
-      />
-      <Button
-        component='label'
-        variant='contained'
-        sx={{
-          backgroundColor: '#e41f66',
-          borderRadius: 0,
-          boxShadow: 'none',
-          height: 40,
-          fontSize: 14,
-          alignSelf: 'center',
-          marginLeft: 2,
-        }}
-      >
-        Add Image
+      {profilePic ? (
+        <CardMedia
+          component='img'
+          sx={{
+            width: 100,
+            height: 100,
+            borderRadius: 50,
+            marginRight: 5,
+            cursor: 'pointer',
+          }}
+          image={profilePic}
+        />
+      ) : (
+        <Box
+          height={120}
+          width={120}
+          borderRadius={60}
+          backgroundColor={profile.profile_picture_initial}
+        />
+      )}
+      <Button component='label' variant='contained' sx={buttonStyle}>
+        Change Image
         <input
           alt='image in here'
           type='file'
           name='image'
           accept='.jpg, .jpeg, .png'
           hidden
-          onChange={(e) => setImage(e.target.files)}
+          onChange={(e) => handleImageChange(e.target.files)}
         />
       </Button>
     </Box>

@@ -9,6 +9,7 @@ import {
 } from '@thirdweb-dev/react';
 import { META_MASK, WALLET_CONNECT, COINBASE } from '../utils/constants';
 import axios from 'axios';
+import { initialColors } from '../utils/arrays';
 
 const ProfileContext = createContext({
   walletAddress: null,
@@ -39,9 +40,12 @@ export function ProfileProvider({ children }) {
   };
 
   const createProfileFromWallet = () => {
+
+    const initialProfileColor = initialColors[Math.floor(Math.random() * initialColors.length)]
     axios
       .post(`${process.env.REACT_APP_DEV_SERVER}/api/profiles/`, {
         wallet_address: walletAddress,
+        profile_picture_initial: initialProfileColor
       })
       .then((res) => console.log('👤 profile successfully created', res))
       .catch((err) => console.log('❗️ ' + err));
