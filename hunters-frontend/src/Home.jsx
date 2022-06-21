@@ -43,7 +43,7 @@ export default function Home() {
           >
             Hunters
           </Typography>
-          <Typography marginTop={2} fontWeight='600' color='subColor'>
+          <Typography marginTop={2} fontWeight='500' variant='h6' color='white'>
             Get paid experience by building out solutions for innovative
             companies
           </Typography>

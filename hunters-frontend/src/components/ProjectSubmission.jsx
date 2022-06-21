@@ -1,16 +1,18 @@
-import React from 'react';
+import { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useProfile } from '../contexts/ProfileContext';
 import { Box, Button, FormControl, TextField, Typography } from '@mui/material';
 import { useForm } from 'react-hook-form';
 import { Container } from '@mui/system';
 import axios from 'axios';
+import MDEditor from '@uiw/react-md-editor';
 
 export default function ProjectSubmission() {
   const params = useParams();
   const { walletAddress } = useProfile();
   const bountyId = params.bountyId;
   const navigate = useNavigate();
+  const [additionalText, setAdditionalText] = useState('');
 
   const { register, handleSubmit } = useForm();
 
@@ -19,6 +21,7 @@ export default function ProjectSubmission() {
       ...formData,
       wallet_address: walletAddress,
       bounty: bountyId,
+      additional_text: additionalText,
     };
     const activity = { bounty: bountyId, activity_type: 'Work Submitted' };
     await axios
@@ -37,7 +40,7 @@ export default function ProjectSubmission() {
     <Container>
       <FormControl>
         <Box>
-          <Typography>Subject Line</Typography>
+          <Typography fontWeight='600' color='main'>Subject Line</Typography>
           <TextField
             {...register('submission_header')}
             required
@@ -46,7 +49,7 @@ export default function ProjectSubmission() {
           />
         </Box>
         <Box marginTop={2}>
-          <Typography>Project Link</Typography>
+          <Typography fontWeight='600' color='main'>Project Link</Typography>
           <TextField
             {...register('project_link')}
             required
@@ -55,17 +58,7 @@ export default function ProjectSubmission() {
           />
         </Box>
         <Box marginTop={2}>
-          <Typography>Additional Description of Submission</Typography>
-          <TextField
-            {...register('additional_text')}
-            required
-            variant='outlined'
-            multiline
-            rows={10}
-          />
-        </Box>
-        <Box marginTop={2}>
-          <Typography>Email</Typography>
+          <Typography color='main' fontWeight='600'>Email</Typography>
           <Typography variant='body2' fontWeight='600' color='#757575'>
             *Only the Bounty Creator will see it
           </Typography>
@@ -76,10 +69,21 @@ export default function ProjectSubmission() {
             placeholder='something@hunters.com'
           />
         </Box>
-        <Button onClick={handleSubmit((formData) => submitProject(formData))}>
-          Submit
-        </Button>
       </FormControl>
+      <Box marginTop={2}>
+        <Typography>Additional Description of Submission</Typography>
+
+        <MDEditor
+          style={{ marginTop: 20 }}
+          height={500}
+          value={additionalText}
+          onChange={setAdditionalText}
+        />
+      </Box>
+
+      <Button onClick={handleSubmit((formData) => submitProject(formData))}>
+        Submit
+      </Button>
     </Container>
   );
 }
