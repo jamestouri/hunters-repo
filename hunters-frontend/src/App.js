@@ -27,7 +27,7 @@ const theme = createTheme({
 function App() {
   const size = useWindowSize();
   return (
-    <Box backgroundColor='#0f041c' height={size.height} width={size.width}>
+    <Box backgroundColor='#0f041c' width={size.width}>
       <ThemeProvider theme={theme}>
         <Router>
           <Navbar />

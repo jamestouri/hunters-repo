@@ -6,6 +6,8 @@ import { Box, Button, Typography } from '@mui/material';
 import ProfileNameFromId from './ProfileNameFromId';
 import { timeCreatedForActivity } from '../utils/helpers';
 import ProfilePicture from './ProfilePicture';
+import MDEditor from '@uiw/react-md-editor';
+import { BACKGROUND_COLOR } from '../utils/constants';
 
 // TODO Find a way to make this authenticated so only the person with the wallet
 // address can go on this page
@@ -118,7 +120,7 @@ function SubmissionCell({ submission }) {
         <Box display='flex'>
           <ProfilePicture profileAddress={submission.profile} dimension={60} />
           <Box>
-            <Typography variant='body2' color='#757575' fontWeight='600'>
+            <Typography variant='body2' color='subColor' fontWeight='600'>
               Account
             </Typography>
             <ProfileNameFromId profileId={submission.profile} />
@@ -127,7 +129,7 @@ function SubmissionCell({ submission }) {
         <Box>
           <Typography
             variant='body2'
-            color='#757575'
+            color='subColor'
             fontWeight='600'
             paddingBottom={0.2}
           >
@@ -141,29 +143,47 @@ function SubmissionCell({ submission }) {
           </Button>
         </Box>
         <Box>
-          <Typography variant='body2' color='#757575' fontWeight='600'>
+          <Typography variant='body2' color='subColor' fontWeight='600'>
             Submitted
           </Typography>
-          <Typography sx={{ paddingTop: 1 }} variant='body2' fontWeight='600'>
+          <Typography
+            sx={{ paddingTop: 1 }}
+            variant='body2'
+            fontWeight='600'
+            color='main'
+          >
             {timeCreatedForActivity(submission.created_at)}
           </Typography>
         </Box>
         {bounty.bounty_creator === walletAddress ? (
           <Box>
-            <Typography color='#757575' variant='body2' fontWeight='600'>
+            <Typography color='subColor' variant='body2' fontWeight='600'>
               Submitter's Email
             </Typography>
-            <Typography sx={{ paddingTop: 1 }} variant='body2' fontWeight='600'>
+            <Typography
+              sx={{ paddingTop: 1 }}
+              variant='body2'
+              fontWeight='600'
+              color='main'
+            >
               {submission.email}
             </Typography>
           </Box>
         ) : null}
         <Box />
       </Box>
-      <Typography marginLeft={9} variant='h6' marginBottom={3}>
+      <Typography marginLeft={9} variant='h6' marginBottom={3} color='main'>
         {submission.submission_header}
       </Typography>
-      <Typography marginLeft={9}>{submission.additional_text}</Typography>
+      <MDEditor.Markdown
+        style={{
+          padding: 15,
+          backgroundColor: BACKGROUND_COLOR,
+          color: '#edf2f4',
+        }}
+        source={bounty.description}
+        linkTarget='_blank'
+      />
       {bounty.bounty_creator === walletAddress ? (
         <SubmissionActionButtons submission={submission} />
       ) : null}
@@ -196,10 +216,12 @@ function SubmissionActionButtons({ submission }) {
   };
 
   return (
-    <Box display='flex' justifyContent='flex-end'>
+    <Box marginTop={3}>
       {open ? (
-        <Box>
-          <Button>Accept and Pay Out</Button>
+        <Box display='flex' justifyContent='space-evenly'>
+          <Button variant='contained' sx={{ borderRadius: 0 }}>
+            Accept and Pay Out
+          </Button>
           <Button onClick={handleArchiving}>Archive</Button>
         </Box>
       ) : (

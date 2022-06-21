@@ -22,8 +22,8 @@ export function ActivityCell({ activity }) {
         />
         <ProfileNameFromId profileId={activity.profile} />
       </Box>
-      <Typography>{activity.activity_type}</Typography>
-      <Typography variant='body2' color='#757575' fontWeight='600'>
+      <Typography color='main'>{activity.activity_type}</Typography>
+      <Typography variant='body2' color='subColor' fontWeight='600'>
         {timeCreatedForActivity(activity.created_at)}
       </Typography>
       <Box />

@@ -3,6 +3,11 @@ import { META_MASK, WALLET_CONNECT, COINBASE } from '../../utils/constants';
 import { Button, Card, Modal } from '@mui/material';
 import { useProfile } from '../../contexts/ProfileContext';
 
+
+const buttonStyle = {
+  color: '#000000'
+}
+
 export default function WalletModal({ open, handleClose }) {
   const { connectWallet } = useProfile();
 
@@ -26,13 +31,13 @@ export default function WalletModal({ open, handleClose }) {
           justifyContent: 'center',
         }}
       >
-        <Button onClick={() => connectWallet(META_MASK, handleClose)}>
+        <Button sx={buttonStyle} onClick={() => connectWallet(META_MASK, handleClose)}>
           Connect with Metamask
         </Button>
-        <Button onClick={() => connectWallet(WALLET_CONNECT, handleClose)}>
+        <Button sx={buttonStyle} onClick={() => connectWallet(WALLET_CONNECT, handleClose)}>
           Connect with Wallet Connect
         </Button>
-        <Button onClick={() => connectWallet(COINBASE, handleClose)}>
+        <Button sx={buttonStyle} onClick={() => connectWallet(COINBASE, handleClose)}>
           Connect with Coinbase
         </Button>
       </Card>

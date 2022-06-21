@@ -63,6 +63,7 @@ export default function NewBounty() {
   const navigate = useNavigate();
   const { formState, register, handleSubmit, watch } = useForm();
   const { walletAddress } = useProfile();
+
   //  Bounty creator added with wallet address
   const { errors } = formState;
 
@@ -72,8 +73,7 @@ export default function NewBounty() {
     let data = { ...formData, bounty_creator: walletAddress };
     // Currency converter depending on which they use:
     // This is temporary and eventually will update the price change in real time
-    data = { ...data, bounty_value_in_usd: 1200 * data.bounty_value_in_eth }
-
+    data = { ...data, bounty_value_in_usd: 1200 * data.bounty_value_in_eth };
 
     // Image files
     const attachedFiles = await storeFilesInIPFS(files);
@@ -102,17 +102,24 @@ export default function NewBounty() {
 
   return (
     <Container>
-      <Typography variant='h4'>Create Bounty</Typography>
+      <Typography color='primary' variant='h4'>
+        Create Bounty
+      </Typography>
       <FormControl style={{ width: '50%' }}>
-        <Typography marginTop={5}>Bounty Title</Typography>
+        <Typography color='primary' marginTop={5}>
+          Bounty Title
+        </Typography>
         <TextField
           {...register('title')}
           variant='standard'
           required
           inputProps={{ maxLength: 80 }}
+          sx={{ backgroundColor: 'white' }}
         />
 
-        <Typography marginTop={5}>Org Name</Typography>
+        <Typography color='primary' marginTop={5}>
+          Org Name
+        </Typography>
         <TextField
           {...register('funding_organization')}
           variant='standard'
@@ -120,27 +127,38 @@ export default function NewBounty() {
           inputProps={{ maxLength: 40 }}
         />
 
-        <Typography marginTop={5}>Org URL</Typography>
+        <Typography color='primary' marginTop={5}>
+          Org URL
+        </Typography>
         <TextField
           {...register('orginization_url')}
-          variant='standard'
+          variant='outlined'
           required
         />
 
-        <Typography marginTop={5}>Point of Contact Email</Typography>
+        <Typography color='primary' marginTop={5}>
+          Point of Contact Email
+        </Typography>
         <TextField
           type='email'
           {...register('ways_to_contact')}
           variant='standard'
         />
 
-        <Typography marginTop={5} marginBottom={2}>
+        <Typography color='primary' marginTop={5} marginBottom={2}>
           Upload Files and Attachments
         </Typography>
         <Button
           variant='contained'
           component='label'
-          sx={{ backgroundColor: '#1db3f9', boxShadow: 'none' }}
+          sx={{
+            paddingTop: 1.5,
+            paddingBottom: 1.5,
+            backgroundColor: '#1db3f9',
+            boxShadow: 'none',
+            color: 'main',
+            fontWeight: '600',
+          }}
         >
           Upload Files
           <input
@@ -163,9 +181,13 @@ export default function NewBounty() {
           }
           label='Would you like to Feature your Bounty?'
         />
-        <Typography fontWeight='600'>Note: Extra costs apply</Typography>
+        <Typography color='subColor' fontWeight='600'>
+          Note: Extra costs apply
+        </Typography>
 
-        <Typography marginTop={5}>Bounty Type (Select One)</Typography>
+        <Typography color='main' marginTop={5}>
+          Bounty Type (Select One)
+        </Typography>
         <TextField
           select
           fullWidth
@@ -183,7 +205,9 @@ export default function NewBounty() {
           ))}
         </TextField>
 
-        <Typography marginTop={5}>Length of Project</Typography>
+        <Typography color='main' marginTop={5}>
+          Length of Project
+        </Typography>
         <TextField
           select
           fullWidth
@@ -200,7 +224,9 @@ export default function NewBounty() {
             </MenuItem>
           ))}
         </TextField>
-        <Typography marginTop={5}>Category</Typography>
+        <Typography color='main' marginTop={5}>
+          Category
+        </Typography>
         <Select
           {...register('bounty_category')}
           labelId='age'
@@ -215,7 +241,9 @@ export default function NewBounty() {
           ))}
         </Select>
 
-        <Typography marginTop={5}>Bounty reward in usd</Typography>
+        <Typography color='main' marginTop={5}>
+          Bounty reward in usd
+        </Typography>
         <Typography variant='body2' fontWeight='600' color='#757575'>
           *will be paid out in eth
         </Typography>
@@ -227,7 +255,9 @@ export default function NewBounty() {
           required
         />
 
-        <Typography marginTop={5}>Optional: url of Job Description</Typography>
+        <Typography color='main' marginTop={5}>
+          Optional: url of Job Description
+        </Typography>
         <TextField
           {...register('attached_job_url')}
           placeholder='URL'
@@ -258,6 +288,7 @@ export default function NewBounty() {
           marginBottom: 20,
           fontSize: 18,
           backgroundColor: '#1db3f9',
+          color: 'main',
         }}
         onClick={
           loading ? null : handleSubmit((formData) => saveBounty(formData))
