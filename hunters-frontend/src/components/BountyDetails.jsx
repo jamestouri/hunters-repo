@@ -93,7 +93,7 @@ export default function BountyDetails() {
         Description
       </Typography>
       <MDEditor.Markdown
-        style={{ padding: 15 }}
+        style={{ padding: 15, backgroundColor: '#0f041c' }}
         source={bounty.description}
         linkTarget='_blank'
       />

@@ -10,6 +10,11 @@ import Submissions from './components/Submissions';
 import Profile from './components/Profile';
 
 const theme = createTheme({
+  palette: {
+    main: '#edf2f4',
+    primary: {main: '#edf2f4', secondary: '#949494'},
+    subColor: '#949494'
+  },
   typography: {
     button: {
       textTransform: 'none',
@@ -25,11 +30,27 @@ function App() {
         <Navbar />
         <Routes>
           <Route exact path='/' element={<Home />}></Route>
-          <Route exact path='/profile/:walletAddress' element={<Profile />}></Route>
+          <Route
+            exact
+            path='/profile/:walletAddress'
+            element={<Profile />}
+          ></Route>
           <Route exact path='/bounty/new/' element={<NewBounty />}></Route>
-          <Route exact path='/bounty/:bountyId/' element={<BountyDetails />}></Route>
-          <Route exact path='/bounty/:bountyId/submit/' element={<ProjectSubmission />}></Route>
-          <Route exact path='/bounty/:bountyId/submissions/' element={<Submissions />}></Route>
+          <Route
+            exact
+            path='/bounty/:bountyId/'
+            element={<BountyDetails />}
+          ></Route>
+          <Route
+            exact
+            path='/bounty/:bountyId/submit/'
+            element={<ProjectSubmission />}
+          ></Route>
+          <Route
+            exact
+            path='/bounty/:bountyId/submissions/'
+            element={<Submissions />}
+          ></Route>
         </Routes>
       </Router>
     </ThemeProvider>

@@ -15,24 +15,35 @@ import sideNavReducer from './reducers/sideNavReducer';
 
 export default function Home() {
   const [bounties, setBounties] = useState([]);
-  // TODO Add sideNav for filtering when needed. For now there aren't that many 
+  // TODO Add sideNav for filtering when needed. For now there aren't that many
   // bounties to filter through
   // const [state, dispatch] = useReducer(sideNavReducer, initialFilterState);
   useEffect(() => {
     axios
-      .get(
-        `${process.env.REACT_APP_DEV_SERVER}/api/bounties/`
-      )
+      .get(`${process.env.REACT_APP_DEV_SERVER}/api/bounties/`)
       .then((res) => setBounties(res.data))
       .catch((err) => console.log(err));
   }, []);
   return (
     <>
       {/* <SideNav dispatch={dispatch} /> */}
-      <Container sx={{ marginLeft: '240px' }}>
+      {/* <Container sx={{ marginLeft: '33%', width: 66% }}> */}
+      {/* TODO ^ switch back once we have SideNav in place */}
+      <Container>
         <Box>
-          <Typography variant='h4'>Hunters</Typography>
-          <Typography marginTop={2} fontWeight='600' color='#757575'>
+          <Typography
+            fontWeight='500'
+            sx={{
+              backgroundClip: 'text',
+              backgroundImage:
+                '-webkit-linear-gradient(92deg,  #e41f66 20%, #1db3f9 80%)',
+              WebkitTextFillColor: 'transparent',
+            }}
+            variant='h2'
+          >
+            Hunters
+          </Typography>
+          <Typography marginTop={2} fontWeight='600' color='subColor'>
             Get paid experience by building out solutions for innovative
             companies
           </Typography>

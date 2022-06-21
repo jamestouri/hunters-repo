@@ -21,7 +21,7 @@ export default function Navbar() {
       >
         <Toolbar sx={{ display: 'flex', justifyContent: 'space-between' }}>
           <Link to={'/'} style={{ textDecoration: 'none' }}>
-            <Typography color='black'>Hunters</Typography>
+            <Typography color='main'>Hunters</Typography>
           </Link>
           <Box display='flex' alignItems='center'>
             {walletAddress ? (

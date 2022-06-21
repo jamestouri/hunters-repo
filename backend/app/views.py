@@ -67,7 +67,6 @@ def bounties(request):
             return JsonResponse(bounty_serializer.data, safe=False)
 
         # Home page for bounties
-
         bounties = Bounty.objects.filter()
         # bounties = Bounty.objects.all()
         bounty_serializer = BountySerializer(bounties, many=True)
