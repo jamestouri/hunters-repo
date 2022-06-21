@@ -1,9 +1,9 @@
-import { CardMedia, Box, Card, CardContent, Typography } from '@mui/material';
+import { Box, Card, CardContent, Typography } from '@mui/material';
 import { Link } from 'react-router-dom';
 
-import { useEffect, useState } from 'react';
 import { timeFromUpdateUtil } from '../utils/helpers';
 import axios from 'axios';
+import ProfilePicture from './ProfilePicture';
 
 const stateEmojis = {
   cancelled: '❌',
@@ -41,7 +41,7 @@ export default function BountyCell({ bounty }) {
           >
             <Box display='flex'>
               <Box display='flex' alignItems='center'>
-                <ProfileLayout bountyCreator={bounty_creator} />
+                <ProfilePicture profileAddress={bounty_creator} />
                 <Box marginLeft={2}>
                   <Typography
                     variant='body1'
@@ -123,52 +123,5 @@ export default function BountyCell({ bounty }) {
         </Card>
       </Box>
     </Link>
-  );
-}
-
-function ProfileLayout({ bountyCreator }) {
-  const [profile, setProfile] = useState(null);
-
-  useEffect(() => {
-    axios
-      .get(`${process.env.REACT_APP_DEV_SERVER}/api/profile/${bountyCreator}/`)
-      .then((res) => setProfile(res.data))
-      .catch((err) => console.log(err));
-  }, []);
-
-  if (profile == null) {
-    return (
-      <Box
-        sx={{
-          height: 80,
-          width: 80,
-          borderRadius: 40,
-          backgroundColor: '#1DB3F9',
-        }}
-      />
-    );
-  }
-
-  return profile.profile_picture ? (
-    <CardMedia
-      component='img'
-      sx={{
-        width: 100,
-        height: 100,
-        borderRadius: 50,
-        marginRight: 5,
-        cursor: 'pointer',
-      }}
-      image={profile.profile_picture}
-    />
-  ) : (
-    <Box
-      sx={{
-        height: 80,
-        width: 80,
-        borderRadius: 40,
-        backgroundColor: profile.profile_picture_initial,
-      }}
-    />
   );
 }

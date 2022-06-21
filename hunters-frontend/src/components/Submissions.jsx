@@ -5,6 +5,7 @@ import axios from 'axios';
 import { Box, Button, Typography } from '@mui/material';
 import ProfileNameFromId from './ProfileNameFromId';
 import { timeCreatedForActivity } from '../utils/helpers';
+import ProfilePicture from './ProfilePicture';
 
 // TODO Find a way to make this authenticated so only the person with the wallet
 // address can go on this page
@@ -115,13 +116,7 @@ function SubmissionCell({ submission }) {
         marginTop={3}
       >
         <Box display='flex'>
-          <Box
-            height={60}
-            width={60}
-            borderRadius={30}
-            marginRight={2}
-            backgroundColor='#1db3f9'
-          />
+          <ProfilePicture profileAddress={submission.profile} dimension={60} />
           <Box>
             <Typography variant='body2' color='#757575' fontWeight='600'>
               Account
