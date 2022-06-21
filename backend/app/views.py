@@ -29,7 +29,7 @@ def profiles(request):
     return JsonResponse([], safe=False)
 
 
-@api_view(['GET', 'PUT', 'DELETE'])
+@api_view(['GET', 'PATCH', 'DELETE'])
 def profile(request, address):
     profile = Profile.objects.filter(wallet_address=address).first()
     if profile is None:
@@ -39,6 +39,13 @@ def profile(request, address):
             return JsonResponse(None, safe=False)
         profile_serializer = ProfileSerializer(profile)
         return JsonResponse(profile_serializer.data, safe=False)
+    if request.method == 'PATCH':
+        profile_serializer = ProfileSerializer(
+            profile, data=request.data['profile'], partial=True)
+        if profile_serializer.is_valid():
+            profile_serializer.save()
+            return JsonResponse(profile_serializer.data, status=status.HTTP_200_OK)
+        return JsonResponse(profile_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 @ api_view(['GET', 'POST'])

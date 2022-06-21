@@ -1,4 +1,5 @@
 import { createContext, useContext, useEffect } from 'react';
+// We have to change and use a new library
 import {
   useMetamask,
   useWalletConnect,

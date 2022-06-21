@@ -2,10 +2,11 @@ import { Container, Box } from '@mui/system';
 import { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { useProfile } from '../contexts/ProfileContext';
-import { walletAddressShortener } from '../utils/helpers';
+import { walletAddressShortener, storeFilesInIPFS } from '../utils/helpers';
 import axios from 'axios';
-import { CardMedia, Typography } from '@mui/material';
+import { Button, CardMedia, Typography } from '@mui/material';
 import BountyCell from './BountyCell';
+
 
 export default function Profile() {
   const params = useParams();
@@ -63,7 +64,7 @@ export default function Profile() {
         <BountyCell key={created.id} bounty={created} />
       ))}
       <Typography marginTop={10} variant='h5'>
-        Bounties Working On
+        Bounties Currently Working On
       </Typography>
       {ownedBounties.map((owned) => (
         <BountyCell key={owned.id} bounty={owned} />
@@ -74,8 +75,15 @@ export default function Profile() {
 
 function ProfilePic({ profile }) {
   const [profilePic, setProfilePic] = useState(profile.profile_picture);
+  const [image, setImage] = useState('');
 
-  console.log(profilePic);
+  const handleImageChange = async (image) => {
+    const stored = await storeFilesInIPFS(image);
+    // image link in profile object
+    axios 
+        .patch(``)
+
+  }
 
   return profilePic ? (
     <CardMedia
@@ -90,26 +98,39 @@ function ProfilePic({ profile }) {
       image={profilePic}
     >
       {' '}
-      <input
-        alt='image in here'
-        type='file'
-        name='image'
-        hidden
-        multiple
-        // onChange={(e) => setFiles(e.target.files)}
-      />
+      <input alt='image in here' type='file' name='image' hidden />
     </CardMedia>
   ) : (
-    <Box height={120} width={120} borderRadius={60} backgroundColor='#1DB3F9'>
-      {' '}
-      <input
-        alt='image in here'
-        type='file'
-        name='image'
-        hidden
-        multiple
-        // onChange={(e) => setFiles(e.target.files)}
+    <Box display='flex' textAlign='center'>
+      <Box
+        height={120}
+        width={120}
+        borderRadius={60}
+        backgroundColor='#1DB3F9'
       />
+      <Button
+        component='label'
+        variant='contained'
+        sx={{
+          backgroundColor: '#e41f66',
+          borderRadius: 0,
+          boxShadow: 'none',
+          height: 40,
+          fontSize: 14,
+          alignSelf: 'center',
+          marginLeft: 2,
+        }}
+      >
+        Add Image
+        <input
+          alt='image in here'
+          type='file'
+          name='image'
+          accept='.jpg, .jpeg, .png'
+          hidden
+          onChange={(e) => setImage(e.target.files)}
+        />
+      </Button>
     </Box>
   );
 }

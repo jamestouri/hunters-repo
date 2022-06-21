@@ -57,7 +57,6 @@ function showFilePaths(files) {
 
 export default function NewBounty() {
   const [files, setFiles] = useState([]);
-  const [checked, setChecked] = useState(false);
   const [loading, setLoading] = useState(false);
   // markdown doesn't work with useForm
   const [description, setDescription] = useState('');
@@ -73,12 +72,8 @@ export default function NewBounty() {
     let data = { ...formData, bounty_creator: walletAddress };
     // Currency converter depending on which they use:
     // This is temporary and eventually will update the price change in real time
-    data = checked
-      ? { ...data, bounty_value_in_usd: 1200 * data.bounty_value_in_eth }
-      : {
-          ...data,
-          bounty_value_in_eth: (data.bounty_value_in_usd / 1200).toFixed(10),
-        };
+    data = { ...data, bounty_value_in_usd: 1200 * data.bounty_value_in_eth }
+
 
     // Image files
     const attachedFiles = await storeFilesInIPFS(files);
