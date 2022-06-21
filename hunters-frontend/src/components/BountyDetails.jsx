@@ -158,7 +158,7 @@ function WorkingOnBounty({ bountyOwnersWallets }) {
       </Typography>
       <Box>
         {bountyOwnersWallets.map((w) => (
-          <Button sx={{ padding: 0, fontSize: 16 }}>
+          <Button key={w.id} sx={{ padding: 0, fontSize: 16 }}>
             {walletAddressShortener(w)}
           </Button>
         ))}
