@@ -13,6 +13,7 @@ import ImageEnlargeModal from './modals/ImageEnlargeModal';
 import { ActivityCell } from './ActivityCell';
 import WalletModal from './modals/WalletModal';
 import MDEditor from '@uiw/react-md-editor';
+import { BACKGROUND_COLOR } from '../utils/constants';
 
 const experienceLevelEmoji = {
   Beginner: '🟢',
@@ -45,7 +46,7 @@ export default function BountyDetails() {
             backgroundColor='#1DB3F9'
           />
           <Box marginLeft={2}>
-            <Typography variant='h6' marginBottom={2}>
+            <Typography variant='h6' marginBottom={2} color='main'>
               {bounty.title}
             </Typography>
             <BountyCategories categories={bounty.bounty_category} />
@@ -89,11 +90,15 @@ export default function BountyDetails() {
       </Box>
       <ButtonActionsLogic bounty={bounty} setBounty={setBounty} />
       <Divider sx={{ marginTop: 3, marginBottom: 3 }} />
-      <Typography variant='h6' fontWeight='500'>
+      <Typography variant='h6' fontWeight='500' color='main'>
         Description
       </Typography>
       <MDEditor.Markdown
-        style={{ padding: 15, backgroundColor: '#0f041c' }}
+        style={{
+          padding: 15,
+          backgroundColor: BACKGROUND_COLOR,
+          color: '#edf2f4',
+        }}
         source={bounty.description}
         linkTarget='_blank'
       />
@@ -142,7 +147,9 @@ function CreatorContactInfo({ contactInfo }) {
       <Typography color='#757575' fontWeight='600'>
         Point of Contact
       </Typography>
-      <Typography>✉️ {contactInfo}</Typography>
+      <Typography fontWeight='600' color='main'>
+        ✉️ {contactInfo}
+      </Typography>
     </Box>
   );
 }
@@ -174,7 +181,7 @@ function ExperienceLevel({ experienceLevel }) {
       <Typography color='#757575' fontWeight='600'>
         Experience Level
       </Typography>
-      <Typography>
+      <Typography color='main' fontWeight='600'>
         {experienceLevelEmoji[experienceCapitalized]} {experienceCapitalized}
       </Typography>
     </Box>
@@ -187,7 +194,9 @@ function TimeCommitment({ timeCommitment }) {
       <Typography color='#757575' fontWeight='600'>
         Est. Length of Project
       </Typography>
-      <Typography>⏱ {timeCommitment}</Typography>
+      <Typography fontWeight='600' color='main'>
+        ⏱ {timeCommitment}
+      </Typography>
     </Box>
   );
 }
@@ -198,7 +207,9 @@ function WhenCreated({ timeLapse }) {
       <Typography color='#757575' fontWeight='600'>
         Creation Date
       </Typography>
-      <Typography>🗓 {timeFromUpdateUtil(timeLapse)}</Typography>
+      <Typography fontWeight='600' color='main'>
+        🗓 {timeFromUpdateUtil(timeLapse)}
+      </Typography>
     </Box>
   );
 }
@@ -330,7 +341,12 @@ function FilesAndImages({ imageAttachments }) {
   return (
     <>
       <Divider sx={{ marginTop: 3, marginBottom: 3 }} />
-      <Typography variant='h6' fontWeight='500' sx={{ marginBottom: 3 }}>
+      <Typography
+        variant='h6'
+        fontWeight='500'
+        sx={{ marginBottom: 3 }}
+        color='main'
+      >
         File Attachments
       </Typography>
       <Box display='flex' flexWrap='wrap'>
@@ -378,7 +394,12 @@ function Activities({ bountyId }) {
   return (
     <>
       <Divider sx={{ marginTop: 3, marginBottom: 3 }} />
-      <Typography variant='h6' fontWeight='500' sx={{ marginBottom: 3 }}>
+      <Typography
+        variant='h6'
+        fontWeight='500'
+        sx={{ marginBottom: 3 }}
+        color='main'
+      >
         Activity History
       </Typography>
       <Box>
