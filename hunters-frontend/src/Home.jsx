@@ -20,9 +20,9 @@ export default function Home() {
       <SideNav />
       <Container sx={{ marginLeft: '240px' }}>
         <Box>
-          <Typography variant='h5'>Bounties for Hunters</Typography>
+          <Typography variant='h4'>Hunters</Typography>
           <Typography marginTop={2} fontWeight='600' color='#757575'>
-            Get paid by building out solutions for innovative companies
+            Get paid experience by building out solutions for innovative companies
           </Typography>
           <Divider sx={{ marginTop: 5, marginBottom: 5 }} />
           {bounties.map((b) => (

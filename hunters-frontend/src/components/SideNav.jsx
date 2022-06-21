@@ -30,42 +30,14 @@ export default function SideNav() {
       }}
       open
     >
-      <Box marginLeft={2}>
-        <Typography variant='body1' sx={{ fontWeight: '600' }}>
+      <Box marginLeft={2} marginTop={10}>
+        <Typography variant='body1' sx={{ fontWeight: '600' }} marginBottom={2}>
           Time Commitment
         </Typography>
-        <Box display='flex' alignItems='center'>
-          <Checkbox
-            onClick={() => dispatch({ type: 'hours' })}
-            sx={{ padding: 0 }}
-            value='hours'
-          />{' '}
-          <Typography>Hours</Typography>
-        </Box>
-        <Box display='flex' alignItems='center'>
-          <Checkbox
-            onClick={() => dispatch({ type: 'days' })}
-            sx={{ padding: 0 }}
-            value='days'
-          />{' '}
-          <Typography>Days</Typography>
-        </Box>
-        <Box display='flex' alignItems='center'>
-          <Checkbox
-            onClick={() => dispatch({ type: 'weeks' })}
-            sx={{ padding: 0 }}
-            value='weeks'
-          />{' '}
-          <Typography>Weeks</Typography>
-        </Box>
-        <Box display='flex' alignItems='center'>
-          <Checkbox
-            onClick={() => dispatch({ type: 'months' })}
-            sx={{ padding: 0 }}
-            value='months'
-          />{' '}
-          <Typography>Months</Typography>
-        </Box>
+        <NavCell type='hours' text='Hours' />
+        <NavCell type='days' text='Days' />
+        <NavCell type='weeks' text='Weeks' />
+        <NavCell type='months' text='Months' />
         <Divider variant='middle' sx={{ marginTop: 3, marginLeft: 0 }} />
         <TextField
           value={searchValue}
@@ -78,71 +50,39 @@ export default function SideNav() {
           variant='middle'
           sx={{ marginBottom: 3, marginLeft: 0, marginTop: 3 }}
         />
-
-        <Typography sx={{ fontWeight: '600' }}>Experience Level</Typography>
-        <Box display='flex' alignItems='center'>
-          <Checkbox
-            onClick={() => dispatch({ type: 'beginner' })}
-            sx={{ padding: 0 }}
-            value='beginner'
-          />{' '}
-          <Typography>Beginner</Typography>
-        </Box>
-        <Box display='flex' alignItems='center'>
-          <Checkbox
-            onClick={() => dispatch({ type: 'intermediate' })}
-            sx={{ padding: 0 }}
-            value='intermediate'
-          />{' '}
-          <Typography>Intermediate</Typography>
-        </Box>
-        <Box display='flex' alignItems='center'>
-          <Checkbox
-            onClick={() => dispatch({ type: 'advanced' })}
-            sx={{ padding: 0 }}
-            value='advanced'
-          />{' '}
-          <Typography>Advanced</Typography>
-        </Box>
+        <Typography sx={{ fontWeight: '600' }} marginBottom={2}>
+          Experience Level
+        </Typography>
+        <NavCell type='beginner' text='Beginner' />
+        <NavCell type='intermediate' text='Intermediate' />
+        <NavCell type='advanced' text='Advanced' />
         <Divider
           variant='middle'
           sx={{ marginBottom: 3, marginLeft: 0, marginTop: 3 }}
         />
-
-        <Typography sx={{ fontWeight: '600' }}>Status</Typography>
-        <Box display='flex' alignItems='center'>
-          <Checkbox
-            onClick={() => dispatch({ type: 'open' })}
-            sx={{ padding: 0 }}
-            value='open'
-          />{' '}
-          <Typography>✅ Open</Typography>
-        </Box>
-        <Box display='flex' alignItems='center'>
-          <Checkbox
-            onClick={() => dispatch({ type: 'done' })}
-            sx={{ padding: 0 }}
-            value='done'
-          />{' '}
-          <Typography>⌛️ Done</Typography>
-        </Box>
-        <Box display='flex' alignItems='center'>
-          <Checkbox
-            onClick={() => dispatch({ type: 'expired' })}
-            sx={{ padding: 0 }}
-            value='expired'
-          />{' '}
-          <Typography>🔒 Expired</Typography>
-        </Box>
-        <Box display='flex' alignItems='center'>
-          <Checkbox
-            onClick={() => dispatch({ type: 'cancelled' })}
-            sx={{ padding: 0 }}
-            value='cancelled'
-          />{' '}
-          <Typography>❌ Cancelled</Typography>
-        </Box>
+        <Typography sx={{ fontWeight: '600' }} marginBottom={2}>
+          Status
+        </Typography>
+        <NavCell type='open' text='✅ Open' />
+        <NavCell type='done' text='⌛️ Done' />
+        <NavCell type='expired' text='🔒 Expired' />
+        <NavCell type='cancelled' text='❌ Cancelled' />
       </Box>
     </Drawer>
+  );
+}
+
+function NavCell({ type, text }) {
+  const [state, dispatch] = useReducer(sideNavReducer, initialFilterState);
+
+  return (
+    <Box display='flex' alignItems='center' marginBottom={1}>
+      <Checkbox
+        onClick={() => dispatch({ type: type })}
+        sx={{ padding: 0 }}
+        value={type}
+      />{' '}
+      <Typography>{text}</Typography>
+    </Box>
   );
 }
