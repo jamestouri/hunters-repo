@@ -10,18 +10,16 @@ function changeSelection(action, givenArray, currentState, changedKey) {
 
 export default function sideNavReducer(state, action) {
   switch (action.type) {
-    case 'hours':
-    case 'days':
-    case 'weeks':
-    case 'months':
+    case 'Hours':
+    case 'Days':
+    case 'Weeks':
+    case 'Months':
       return changeSelection(action.type, state.timeCommitment, state, 'timeCommitment');
-    case 'beginner':
-    case 'intermediate':
-    case 'advanced':
+    case 'Beginner':
+    case 'Intermediate':
+    case 'Advanced':
       return changeSelection(action.type, state.experienceLevel, state, 'experienceLevel');
     case 'open':
-    case 'bountyAssigned':
-    case 'workSubmitted':
     case 'done':
     case 'expired':
     case 'cancelled':

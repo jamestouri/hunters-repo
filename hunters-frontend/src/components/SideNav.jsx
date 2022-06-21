@@ -6,20 +6,11 @@ import {
   Checkbox,
   TextField,
 } from '@mui/material';
-import { useReducer, useState } from 'react';
-import sideNavReducer from '../reducers/sideNavReducer';
+import { useState } from 'react';
 
-const initialFilterState = {
-  timeCommitment: [],
-  experienceLevel: [],
-  statusBar: [],
-  daos: [],
-};
-
-export default function SideNav() {
+export default function SideNav({ dispatch }) {
   const [searchValue, setSearchValue] = useState('');
-  const [state, dispatch] = useReducer(sideNavReducer, initialFilterState);
-  console.log(searchValue);
+
   return (
     <Drawer
       variant='permanent'
@@ -34,10 +25,10 @@ export default function SideNav() {
         <Typography variant='body1' sx={{ fontWeight: '600' }} marginBottom={2}>
           Time Commitment
         </Typography>
-        <NavCell type='hours' text='Hours' />
-        <NavCell type='days' text='Days' />
-        <NavCell type='weeks' text='Weeks' />
-        <NavCell type='months' text='Months' />
+        <NavCell type='Hours' text='Hours' dispatch={dispatch} />
+        <NavCell type='Days' text='Days' dispatch={dispatch} />
+        <NavCell type='Weeks' text='Weeks' dispatch={dispatch} />
+        <NavCell type='Months' text='Months' dispatch={dispatch} />
         <Divider variant='middle' sx={{ marginTop: 3, marginLeft: 0 }} />
         <TextField
           value={searchValue}
@@ -53,9 +44,9 @@ export default function SideNav() {
         <Typography sx={{ fontWeight: '600' }} marginBottom={2}>
           Experience Level
         </Typography>
-        <NavCell type='beginner' text='Beginner' />
-        <NavCell type='intermediate' text='Intermediate' />
-        <NavCell type='advanced' text='Advanced' />
+        <NavCell type='Beginner' text='Beginner' dispatch={dispatch} />
+        <NavCell type='Intermediate' text='Intermediate' dispatch={dispatch} />
+        <NavCell type='Advanced' text='Advanced' dispatch={dispatch} />
         <Divider
           variant='middle'
           sx={{ marginBottom: 3, marginLeft: 0, marginTop: 3 }}
@@ -63,18 +54,16 @@ export default function SideNav() {
         <Typography sx={{ fontWeight: '600' }} marginBottom={2}>
           Status
         </Typography>
-        <NavCell type='open' text='✅ Open' />
-        <NavCell type='done' text='⌛️ Done' />
-        <NavCell type='expired' text='🔒 Expired' />
-        <NavCell type='cancelled' text='❌ Cancelled' />
+        <NavCell type='open' text='✅ Open' dispatch={dispatch} />
+        <NavCell type='done' text='⌛️ Done' dispatch={dispatch} />
+        <NavCell type='expired' text='🔒 Expired' dispatch={dispatch} />
+        <NavCell type='cancelled' text='❌ Cancelled' dispatch={dispatch} />
       </Box>
     </Drawer>
   );
 }
 
-function NavCell({ type, text }) {
-  const [state, dispatch] = useReducer(sideNavReducer, initialFilterState);
-
+function NavCell({ type, text, dispatch }) {
   return (
     <Box display='flex' alignItems='center' marginBottom={1}>
       <Checkbox

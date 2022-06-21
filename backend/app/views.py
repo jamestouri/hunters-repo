@@ -1,4 +1,5 @@
 from os import stat
+from time import time
 from types import NoneType
 from urllib import response
 from django.shortcuts import render
@@ -16,7 +17,6 @@ def profiles(request):
     print(request)
     if request.method == 'GET':
         profiles = Profile.objects.all()
-
         profile_serializer = ProfileSerializer(profiles, many=True)
         return JsonResponse(profile_serializer.data, safe=False)
     elif request.method == 'POST':
@@ -59,13 +59,17 @@ def bounties(request):
             bounty_serializer = BountySerializer(bounties, many=True)
             return JsonResponse(bounty_serializer.data, safe=False)
         if bounty_owner is not None:
-            # bounty_owner_wallet is an array so needing to see if it contains 
+            # bounty_owner_wallet is an array so needing to see if it contains
             # owner
             bounties = Bounty.objects.filter(
-                            bounty_owner_wallet__contains=[bounty_owner])
+                bounty_owner_wallet__contains=[bounty_owner])
             bounty_serializer = BountySerializer(bounties, many=True)
             return JsonResponse(bounty_serializer.data, safe=False)
-        bounties = Bounty.objects.all()
+
+        # Home page for bounties
+
+        bounties = Bounty.objects.filter()
+        # bounties = Bounty.objects.all()
         bounty_serializer = BountySerializer(bounties, many=True)
         return JsonResponse(bounty_serializer.data, safe=False)
     elif request.method == 'POST':

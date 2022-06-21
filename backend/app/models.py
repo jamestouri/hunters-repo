@@ -130,7 +130,7 @@ class Bounty(models.Model):
                               default='open', db_index=True)
     # Added in Views.py
     experience_level = models.CharField(
-        max_length=50, choices=EXPERIENCE_LEVELS, blank=True, db_index=True, default='beginner')
+        max_length=50, choices=EXPERIENCE_LEVELS, blank=True, db_index=True, default='Beginner')
     accepted = models.BooleanField(
         default=False, help_text='Whether the bounty has been done')
     canceled_on = models.DateTimeField(null=True, blank=True)
