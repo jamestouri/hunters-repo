@@ -8,6 +8,7 @@ import BountyDetails from './components/BountyDetails';
 import ProjectSubmission from './components/ProjectSubmission';
 import Submissions from './components/Submissions';
 import Profile from './components/Profile';
+import BountyForm from './components/bounty-components/BountyForm';
 
 const theme = createTheme({
   palette: {
@@ -50,6 +51,16 @@ function App() {
             exact
             path='/bounty/:bountyId/submissions/'
             element={<Submissions />}
+          ></Route>
+                              <Route
+            exact
+            path='/bounty/test/'
+            element={<BountyForm />}
+          ></Route>
+                    <Route
+            exact
+            path='/bounty/test/:bountyId/'
+            element={<BountyForm />}
           ></Route>
         </Routes>
       </Router>

@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import axios from 'axios';
 import { Button, CardMedia, Divider, Typography } from '@mui/material';
+import EditIcon from '@mui/icons-material/Edit';
 import {
   capitalizeFirstLetter,
   timeFromUpdateUtil,
@@ -46,9 +47,15 @@ export default function BountyDetails() {
             backgroundColor='#1DB3F9'
           />
           <Box marginLeft={2}>
-            <Typography variant='h6' marginBottom={2} color='main'>
-              {bounty.title}
-            </Typography>
+            <Box display='flex' textAlign='center'>
+              <Typography variant='h6' marginBottom={2} color='main'>
+                {bounty.title}
+              </Typography>
+              <EditIcon
+                onClick={() => console.log('hi')}
+                sx={{ color: 'rgb(251,28,72, 0.6)', marginLeft: 4, cursor: 'pointer' }}
+              />
+            </Box>
             <BountyCategories categories={bounty.bounty_category} />
           </Box>
         </Box>
@@ -261,31 +268,31 @@ function ButtonActionsLogic({ bounty, setBounty }) {
       .catch((err) => console.log(err));
   };
 
-    if (bounty_creator === walletAddress) {
-      return (
-        <Link
-          to={`/bounty/${bounty.id}/submissions/`}
-          style={{ textDecoration: 'none' }}
+  if (bounty_creator === walletAddress) {
+    return (
+      <Link
+        to={`/bounty/${bounty.id}/submissions/`}
+        style={{ textDecoration: 'none' }}
+      >
+        <Button
+          variant='contained'
+          sx={{
+            marginTop: 4,
+            marginRight: 2,
+            borderRadius: 0,
+            boxShadow: 'none',
+            '&:hover': {
+              backgroundColor: 'rgb(29,179,249)',
+            },
+            backgroundColor: 'rgb(29,179,249, 0.7)',
+            color: 'main',
+          }}
         >
-          <Button
-            variant='contained'
-            sx={{
-              marginTop: 4,
-              marginRight: 2,
-              borderRadius: 0,
-              boxShadow: 'none',
-              '&:hover': {
-                  backgroundColor: 'rgb(29,179,249)'
-              },
-              backgroundColor: 'rgb(29,179,249, 0.7)',
-              color: 'main'
-            }}
-          >
-            Project Submissions
-          </Button>
-        </Link>
-      );
-    }
+          Project Submissions
+        </Button>
+      </Link>
+    );
+  }
 
   if (bounty_owner_wallet.includes(walletAddress)) {
     return (

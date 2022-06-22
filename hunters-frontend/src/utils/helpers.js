@@ -56,7 +56,6 @@ export function timeFromUpdateUtil(created) {
 }
 
 export function capitalizeFirstLetter(string) {
-  console.log(string);
   if (string == null || string === '') {
     return null;
   }

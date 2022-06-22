@@ -5,3 +5,5 @@ export const IPFS_INITIALIZE = 'https://ipfs.infura.io:5001/api/v0';
 export const IPFS_ROOT_STORAGE = 'https://ipfs.infura.io/ipfs/';
 
 export const BACKGROUND_COLOR = '#0f041c';
+
+export const RE_FOR_URL = /^((ftp|http|https):\/\/)?(www.)?(?!.*(ftp|http|https|www.))[a-zA-Z0-9_-]+(\.[a-zA-Z]+)+((\/)[\w#]+)*(\/\w+\?[a-zA-Z0-9_]+=\w+(&[a-zA-Z0-9_]+=\w+)*)?$/gm
