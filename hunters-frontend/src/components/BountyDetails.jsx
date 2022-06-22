@@ -214,6 +214,8 @@ function WhenCreated({ timeLapse }) {
   );
 }
 
+// const
+
 function ButtonActionsLogic({ bounty, setBounty }) {
   const { walletAddress } = useProfile();
   const { bounty_creator, bounty_owner_wallet } = bounty;
@@ -259,27 +261,31 @@ function ButtonActionsLogic({ bounty, setBounty }) {
       .catch((err) => console.log(err));
   };
 
-  if (bounty_creator === walletAddress) {
-    return (
-      <Link
-        to={`/bounty/${bounty.id}/submissions/`}
-        style={{ textDecoration: 'none' }}
-      >
-        <Button
-          variant='contained'
-          sx={{
-            marginTop: 4,
-            marginRight: 2,
-            borderRadius: 0,
-            boxShadow: 'none',
-            backgroundColor: '#1db3f9',
-          }}
+    if (bounty_creator === walletAddress) {
+      return (
+        <Link
+          to={`/bounty/${bounty.id}/submissions/`}
+          style={{ textDecoration: 'none' }}
         >
-          Project Submissions
-        </Button>
-      </Link>
-    );
-  }
+          <Button
+            variant='contained'
+            sx={{
+              marginTop: 4,
+              marginRight: 2,
+              borderRadius: 0,
+              boxShadow: 'none',
+              '&:hover': {
+                  backgroundColor: 'rgb(29,179,249)'
+              },
+              backgroundColor: 'rgb(29,179,249, 0.7)',
+              color: 'main'
+            }}
+          >
+            Project Submissions
+          </Button>
+        </Link>
+      );
+    }
 
   if (bounty_owner_wallet.includes(walletAddress)) {
     return (
@@ -325,7 +331,11 @@ function ButtonActionsLogic({ bounty, setBounty }) {
           marginTop: 4,
           borderRadius: 0,
           boxShadow: 'none',
-          backgroundColor: '#1db3f9',
+          '&:hover': {
+            backgroundColor: 'rgb(29,179,249)',
+          },
+          backgroundColor: 'rgb(29,179,249, 0.7)',
+          color: 'main',
         }}
       >
         Start Project

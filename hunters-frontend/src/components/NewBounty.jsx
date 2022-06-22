@@ -49,7 +49,7 @@ function showFilePaths(files) {
   return (
     <>
       {fileArr.map((f) => (
-        <Typography>{f.name}</Typography>
+        <Typography color='main'>{f.name}</Typography>
       ))}
     </>
   );
@@ -111,10 +111,10 @@ export default function NewBounty() {
         </Typography>
         <TextField
           {...register('title')}
-          variant='standard'
+          variant='outlined'
           required
           inputProps={{ maxLength: 80 }}
-          sx={{ backgroundColor: 'white' }}
+          sx={{ backgroundColor: 'main', padding: 0.1 }}
         />
 
         <Typography color='primary' marginTop={5}>
@@ -122,9 +122,10 @@ export default function NewBounty() {
         </Typography>
         <TextField
           {...register('funding_organization')}
-          variant='standard'
+          variant='outlined'
           required
           inputProps={{ maxLength: 40 }}
+          sx={{ backgroundColor: 'main', padding: 0.1 }}
         />
 
         <Typography color='primary' marginTop={5}>
@@ -134,6 +135,7 @@ export default function NewBounty() {
           {...register('orginization_url')}
           variant='outlined'
           required
+          sx={{ backgroundColor: 'main', padding: 0.1 }}
         />
 
         <Typography color='primary' marginTop={5}>
@@ -142,7 +144,8 @@ export default function NewBounty() {
         <TextField
           type='email'
           {...register('ways_to_contact')}
-          variant='standard'
+          variant='outlined'
+          sx={{ backgroundColor: 'main', padding: 0.1 }}
         />
 
         <Typography color='primary' marginTop={5} marginBottom={2}>
@@ -172,6 +175,7 @@ export default function NewBounty() {
         </Button>
         {files ? showFilePaths(files) : null}
         <FormControlLabel
+          sx={{ color: 'white', marginTop: 2 }}
           control={
             <Checkbox
               {...register('is_featured')}
@@ -197,6 +201,7 @@ export default function NewBounty() {
           })}
           error={errors.currency}
           helperText={errors.currency?.message}
+          sx={{ backgroundColor: 'main', padding: 0.1 }}
         >
           {bountyTypes.map((option) => (
             <MenuItem key={option} value={option}>
@@ -217,6 +222,7 @@ export default function NewBounty() {
           })}
           error={errors.currency}
           helperText={errors.currency?.message}
+          sx={{ backgroundColor: 'main', padding: 0.1 }}
         >
           {projectLength.map((option) => (
             <MenuItem key={option} value={option}>
@@ -229,10 +235,9 @@ export default function NewBounty() {
         </Typography>
         <Select
           {...register('bounty_category')}
-          labelId='age'
-          label='age'
           multiple
           defaultValue={[]}
+          sx={{ backgroundColor: 'main', padding: 0.1, borderRadius: 0 }}
         >
           {bountyCategories.map((option) => (
             <MenuItem value={option} key={option}>
@@ -251,8 +256,10 @@ export default function NewBounty() {
           {...register('bounty_value_in_usd', {
             valueAsNumber: true,
           })}
-          variant='standard'
+          variant='outlined'
+          default={100}
           required
+          sx={{ backgroundColor: 'main', padding: 0.1, borderRadius: 0 }}
         />
 
         <Typography color='main' marginTop={5}>
@@ -261,7 +268,8 @@ export default function NewBounty() {
         <TextField
           {...register('attached_job_url')}
           placeholder='URL'
-          variant='standard'
+          variant='outlined'
+          sx={{ backgroundColor: 'main', padding: 0.1, borderRadius: 0 }}
         />
       </FormControl>
 
@@ -289,6 +297,9 @@ export default function NewBounty() {
           fontSize: 18,
           backgroundColor: '#1db3f9',
           color: 'main',
+          '&:hover': {
+            backgroundColor: 'rgb(29,179,249, 0.7)'
+        },
         }}
         onClick={
           loading ? null : handleSubmit((formData) => saveBounty(formData))
@@ -308,7 +319,9 @@ function WalletNotConnectedText() {
       justifyContent='center'
       marginTop='33%'
     >
-      <Typography variant='h3'>Wallet Not Connected!</Typography>
+      <Typography variant='h3' color='main'>
+        Wallet Not Connected!
+      </Typography>
     </Box>
   );
 }

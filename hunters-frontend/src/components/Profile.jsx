@@ -51,17 +51,17 @@ export default function Profile() {
     <Container>
       <Box display='flex' flexDirection='column' justifyContent='center'>
         <ProfilePic profile={profile} />
-        <Typography marginTop={3} fontWeight='600' marginLeft={1}>
+        <Typography marginTop={3} fontWeight='600' marginLeft={1} color='main'>
           {walletAddressShortener(profile.wallet_address)}
         </Typography>
       </Box>
-      <Typography marginTop={10} variant='h5'>
+      <Typography marginTop={10} variant='h5' color='main' fontWeight='600'>
         Bounties Created
       </Typography>
       {createdBounties.map((created) => (
         <BountyCell key={created.id} bounty={created} />
       ))}
-      <Typography marginTop={10} variant='h5'>
+      <Typography marginTop={10} variant='h5' color='main' fontWeight='600'>
         Bounties Currently Working On
       </Typography>
       {ownedBounties.map((owned) => (
@@ -89,10 +89,11 @@ function ProfilePic({ profile }) {
   };
 
   const buttonStyle = {
-    backgroundColor: '#e41f66',
+    backgroundColor: 'rgb(228,31,102)',
     borderRadius: 0,
     boxShadow: 'none',
     height: 40,
+    color: 'main',
     fontSize: 14,
     alignSelf: 'center',
     marginLeft: 2,
