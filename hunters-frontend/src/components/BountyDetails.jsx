@@ -26,6 +26,7 @@ export default function BountyDetails() {
   const params = useParams();
   const [bounty, setBounty] = useState(null);
   const bountyId = params.bountyId;
+  const { walletAddress } = useProfile();
 
   useEffect(() => {
     axios
@@ -51,10 +52,18 @@ export default function BountyDetails() {
               <Typography variant='h6' marginBottom={2} color='main'>
                 {bounty.title}
               </Typography>
-              <EditIcon
-                onClick={() => console.log('hi')}
-                sx={{ color: 'rgb(251,28,72, 0.6)', marginLeft: 4, cursor: 'pointer' }}
-              />
+              {walletAddress === bounty.bounty_creator ? (
+                <Link to={`/bounty/${bountyId}/edit/`}>
+                  <EditIcon
+                    sx={{
+                      color: 'rgb(251,28,72, 0.6)',
+                      marginLeft: 4,
+                      cursor: 'pointer',
+                      marginTop: 0.5,
+                    }}
+                  />
+                </Link>
+              ) : null}
             </Box>
             <BountyCategories categories={bounty.bounty_category} />
           </Box>

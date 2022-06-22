@@ -148,7 +148,8 @@ class Activity(models.Model):
         ('Work Submitted', 'Work Submitted'),
         ('Work Approved', 'Work Approved'),
         ('Funds Paid Out', 'Funds Paid Out'),
-        ('Left Project', 'Left Project')
+        ('Left Project', 'Left Project'),
+        ('Edited Bounty', 'Edited Bounty'),
     )
 
     bounty = models.ForeignKey(Bounty, on_delete=models.CASCADE)

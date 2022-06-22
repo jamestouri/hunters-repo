@@ -3,7 +3,6 @@ import Home from './Home';
 import Navbar from './components/Navbar';
 import { ThemeProvider } from '@emotion/react';
 import { createTheme } from '@mui/material';
-import NewBounty from './components/NewBounty';
 import BountyDetails from './components/BountyDetails';
 import ProjectSubmission from './components/ProjectSubmission';
 import Submissions from './components/Submissions';
@@ -36,11 +35,16 @@ function App() {
             path='/profile/:walletAddress'
             element={<Profile />}
           ></Route>
-          <Route exact path='/bounty/new/' element={<NewBounty />}></Route>
+          <Route exact path='/bounty/new/' element={<BountyForm />}></Route>
           <Route
             exact
             path='/bounty/:bountyId/'
             element={<BountyDetails />}
+          ></Route>
+          <Route
+            exact
+            path='/bounty/:bountyId/edit/'
+            element={<BountyForm />}
           ></Route>
           <Route
             exact
@@ -51,16 +55,6 @@ function App() {
             exact
             path='/bounty/:bountyId/submissions/'
             element={<Submissions />}
-          ></Route>
-                              <Route
-            exact
-            path='/bounty/test/'
-            element={<BountyForm />}
-          ></Route>
-                    <Route
-            exact
-            path='/bounty/test/:bountyId/'
-            element={<BountyForm />}
           ></Route>
         </Routes>
       </Router>

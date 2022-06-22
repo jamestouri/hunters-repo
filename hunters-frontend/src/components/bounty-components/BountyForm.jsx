@@ -53,6 +53,7 @@ const bountyCategories = [
   'javascript',
 ];
 
+// For Creating and Editing Bounties
 export default function BountyForm() {
   const params = useParams();
   const [files, setFiles] = useState([]);
@@ -74,7 +75,6 @@ export default function BountyForm() {
         .catch((err) => console.log(err));
     }
   }, []);
-
   const validationSchema = Yup.object().shape({
     title: Yup.string()
       .required('Title is required')
@@ -140,11 +140,25 @@ export default function BountyForm() {
       .catch((err) => console.log(err));
   };
 
-  const saveBountyEdits = async (formData) => {};
-
-  if (bountyId && bounty == null) {
-    return null;
-  }
+  const saveBountyEdits = async (formData) => {
+      let data = {...formData, description: description};
+      // Create Activity that made edits to existing Bouny 
+      const activity = {
+          bounty: bounty.id, 
+          wallet_address: walletAddress,
+          activity_type: 'Edited Bounty',
+      }
+      await axios 
+        .patch(`${process.env.REACT_APP_DEV_SERVER}/api/bounty/${bountyId}/`, {
+            bounty: data,
+            activities: activity,
+        })
+        .then(res => {
+            console.log('✅ bounty edited', res);
+            navigate(`/bounty/${res.data.id}/`);
+        })
+        .catch(err => console.log(err));
+  };
 
   function showFilePaths(files) {
     const fileArr = Array.from(files);
@@ -159,7 +173,16 @@ export default function BountyForm() {
     );
   }
 
+  // Checks to make sure the right user is on the page
+  if (bountyId && bounty == null) {
+    return null;
+  }
+
   if (!walletAddress) return <WalletNotConnectedText />;
+
+  if (bountyId && bounty.bounty_creator !== walletAddress) {
+      return null;
+  }
 
   return (
     <Container>
@@ -448,7 +471,6 @@ export default function BountyForm() {
         variant='h6'
         color='primary'
         fontWeight={600}
-        fontSize={18}
       >
         Description
       </Typography>
