@@ -3,6 +3,7 @@ import {
   timeCreatedForActivity,
 } from '../utils/helpers';
 import ProfileNameFromId from './ProfileNameFromId';
+import ProfilePicture from './ProfilePicture';
 
 export function ActivityCell({ activity }) {
   return (
@@ -13,13 +14,7 @@ export function ActivityCell({ activity }) {
       marginTop={3}
     >
       <Box display='flex'>
-        <Box
-          height={60}
-          width={60}
-          borderRadius={30}
-          marginRight={2}
-          backgroundColor='#1db3f9'
-        />
+        <ProfilePicture profileAddress={activity.profile} dimension={60} />
         <ProfileNameFromId profileId={activity.profile} />
       </Box>
       <Typography color='main'>{activity.activity_type}</Typography>

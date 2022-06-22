@@ -32,7 +32,7 @@ export default function ProfilePicture({ profileAddress, dimension = 80 }) {
         width: dimension,
         height: dimension,
         borderRadius: dimension / 2,
-        marginRight: 5,
+        marginRight: 3,
         cursor: 'pointer',
       }}
       image={profile.profile_picture}

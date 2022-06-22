@@ -15,6 +15,7 @@ import { ActivityCell } from './ActivityCell';
 import WalletModal from './modals/WalletModal';
 import MDEditor from '@uiw/react-md-editor';
 import { BACKGROUND_COLOR } from '../utils/constants';
+import ProfilePicture from './ProfilePicture';
 
 const experienceLevelEmoji = {
   Beginner: '🟢',
@@ -34,6 +35,7 @@ export default function BountyDetails() {
       .then((res) => setBounty(res.data))
       .catch((err) => console.log('😢 ' + err));
   }, []);
+
   if (bounty == null) {
     return null;
   }
@@ -41,12 +43,7 @@ export default function BountyDetails() {
     <Container>
       <Box display='flex' alignItems='center' justifyContent='space-between'>
         <Box display='flex'>
-          <Box
-            height={80}
-            width={80}
-            borderRadius={50}
-            backgroundColor='#1DB3F9'
-          />
+          <ProfilePicture profileAddress={bounty.bounty_creator} />
           <Box marginLeft={2}>
             <Box display='flex' textAlign='center'>
               <Typography variant='h6' marginBottom={2} color='main'>
