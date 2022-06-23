@@ -114,7 +114,8 @@ export default function BountyForm() {
   const formik = useFormik({
     initialValues: bounty ? bounty : initialValues,
     validationSchema: validationSchema,
-    onSubmit: async (values) => bountyId ? await saveBountyEdits(values) : await createBounty(values),
+    onSubmit: async (values) =>
+      bountyId ? await saveBountyEdits(values) : await createBounty(values),
     enableReinitialize: true,
   });
 
@@ -141,23 +142,23 @@ export default function BountyForm() {
   };
 
   const saveBountyEdits = async (formData) => {
-      let data = {...formData, description: description};
-      // Create Activity that made edits to existing Bouny 
-      const activity = {
-          bounty: bounty.id, 
-          wallet_address: walletAddress,
-          activity_type: 'Edited Bounty',
-      }
-      await axios 
-        .patch(`${process.env.REACT_APP_DEV_SERVER}/api/bounty/${bountyId}/`, {
-            bounty: data,
-            activities: activity,
-        })
-        .then(res => {
-            console.log('✅ bounty edited', res);
-            navigate(`/bounty/${res.data.id}/`);
-        })
-        .catch(err => console.log(err));
+    let data = { ...formData, description: description };
+    // Create Activity that made edits to existing Bouny
+    const activity = {
+      bounty: bounty.id,
+      wallet_address: walletAddress,
+      activity_type: 'Edited Bounty',
+    };
+    await axios
+      .patch(`${process.env.REACT_APP_DEV_SERVER}/api/bounty/${bountyId}/`, {
+        bounty: data,
+        activities: activity,
+      })
+      .then((res) => {
+        console.log('✅ bounty edited', res);
+        navigate(`/bounty/${res.data.id}/`);
+      })
+      .catch((err) => console.log(err));
   };
 
   function showFilePaths(files) {
@@ -181,7 +182,7 @@ export default function BountyForm() {
   if (!walletAddress) return <WalletNotConnectedText />;
 
   if (bountyId && bounty.bounty_creator !== walletAddress) {
-      return null;
+    return null;
   }
 
   return (
@@ -327,22 +328,24 @@ export default function BountyForm() {
           </>
         )}
         {files ? showFilePaths(files) : null}
-        <FormControlLabel
-          sx={{ color: 'white', marginTop: 2 }}
-          name='is_featured'
-          id='is_featured'
-          onChange={formik.handleChange}
-          control={
-            <Checkbox
-              sx={{
-                backgroundColor: 'white',
-                '&:hover': { backgroundColor: 'black' },
-              }}
-              checked={formik.values.is_featured}
-            />
-          }
-          label='Would you like to Feature your Bounty?'
-        />
+        {!bountyId || bounty.is_featured === false ? (
+          <FormControlLabel
+            sx={{ color: 'white', marginTop: 2 }}
+            name='is_featured'
+            id='is_featured'
+            control={
+              <Checkbox
+                sx={{
+                  backgroundColor: 'black',
+                  color: 'white',
+                }}
+                checked={formik.values.is_featured}
+                onChange={formik.handleChange}
+              />
+            }
+            label='Would you like to Feature your Bounty?'
+          />
+        ) : null}
         <Typography color='subColor' fontWeight='600' marginLeft={4}>
           Note: Extra costs apply
         </Typography>
@@ -466,12 +469,7 @@ export default function BountyForm() {
         />
       </FormControl>
 
-      <Typography
-        marginTop={5}
-        variant='h6'
-        color='primary'
-        fontWeight={600}
-      >
+      <Typography marginTop={5} variant='h6' color='primary' fontWeight={600}>
         Description
       </Typography>
       <Typography
@@ -489,6 +487,11 @@ export default function BountyForm() {
         value={description}
         onChange={setDescription}
       />
+      {Object.keys(formik.errors).length ? (
+        <Typography sx={{ marginTop: 5, color: '#fb1c48', fontWeight: '600' }}>
+          Please scroll up to fix errors
+        </Typography>
+      ) : null}
       <Button
         onClick={formik.handleSubmit}
         variant='contained'
@@ -496,7 +499,7 @@ export default function BountyForm() {
           borderRadius: 0,
           boxShadow: 'none',
           marginTop: 5,
-          marginBottom: 20,
+          marginBottom: 15,
           fontSize: 18,
           backgroundColor: '#1db3f9',
           color: 'main',
@@ -505,7 +508,7 @@ export default function BountyForm() {
           },
         }}
       >
-        Create Bounty
+        {bountyId ? 'Save Changes' : 'Create Bounty'}
       </Button>
     </Container>
   );
