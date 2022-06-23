@@ -5,6 +5,7 @@ import { useProfile } from '../contexts/ProfileContext';
 import { walletAddressShortener } from '../utils/helpers';
 import { Link } from 'react-router-dom';
 import { useDisconnect } from '@thirdweb-dev/react';
+import { Logo } from '../utils/images';
 
 export default function Navbar() {
   const [open, setOpen] = useState(false);
@@ -17,11 +18,11 @@ export default function Navbar() {
       <WalletModal open={open} handleClose={handleClose} />
       <AppBar
         position='static'
-        sx={{ backgroundColor: 'transparent', boxShadow: 'none' }}
+        sx={{ backgroundColor: 'transparent', boxShadow: 'none', marginTop: 2 }}
       >
         <Toolbar sx={{ display: 'flex', justifyContent: 'space-between' }}>
           <Link to={'/'} style={{ textDecoration: 'none' }}>
-            <Typography color='main'>Hunters</Typography>
+            <Logo />
           </Link>
           <Box display='flex' alignItems='center'>
             {walletAddress ? (
