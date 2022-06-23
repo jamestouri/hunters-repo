@@ -1,12 +1,9 @@
 import React from 'react';
 import { META_MASK, WALLET_CONNECT, COINBASE } from '../../utils/constants';
-import { Button, Card, Modal } from '@mui/material';
+import { Box, Button, Card, Modal } from '@mui/material';
 import { useProfile } from '../../contexts/ProfileContext';
+import { Coinbase, MetaMask, WalletConnect } from '../../utils/images';
 
-
-const buttonStyle = {
-  color: '#000000'
-}
 
 export default function WalletModal({ open, handleClose }) {
   const { connectWallet } = useProfile();
@@ -31,16 +28,41 @@ export default function WalletModal({ open, handleClose }) {
           justifyContent: 'center',
         }}
       >
-        <Button sx={buttonStyle} onClick={() => connectWallet(META_MASK, handleClose)}>
+        <MetaMask />
+        <Button sx={{color: 'black'}} onClick={() => connectWallet(META_MASK, handleClose)}>
           Connect with Metamask
         </Button>
-        <Button sx={buttonStyle} onClick={() => connectWallet(WALLET_CONNECT, handleClose)}>
-          Connect with Wallet Connect
-        </Button>
-        <Button sx={buttonStyle} onClick={() => connectWallet(COINBASE, handleClose)}>
-          Connect with Coinbase
-        </Button>
+        <WalletConnectLogin handleClose={handleClose} />
+        <CoinbaseLogin handleClose={handleClose} />
       </Card>
     </Modal>
   );
 }
+
+
+function WalletConnectLogin({handleClose}) {
+  const {connectWallet} = useProfile();
+
+  return (
+    <Box display='flex' flexDirection='column' justifyContent='center'>
+    <WalletConnect />
+    <Button sx={{color: 'black'}} onClick={() => connectWallet(WALLET_CONNECT, handleClose)}>
+        Connect with Wallet Connect
+      </Button>
+  </Box>
+  )
+}
+
+function CoinbaseLogin({handleClose}) {
+  const { connectWallet } = useProfile();
+
+  return (
+    <Box display='flex' flexDirection='column' justifyContent='center'>
+      <Coinbase />
+      <Button sx={{color: 'black'}} onClick={() => connectWallet(COINBASE, handleClose)}>
+          Connect with Coinbase
+        </Button>
+    </Box>
+  )
+}
+

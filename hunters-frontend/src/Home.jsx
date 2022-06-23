@@ -36,7 +36,7 @@ export default function Home() {
             sx={{
               backgroundClip: 'text',
               backgroundImage:
-                '-webkit-linear-gradient(92deg,  #e41f66 20%, #1db3f9 80%)',
+                '-webkit-linear-gradient(92deg,  #e41f66 10%, #1db3f9 90%)',
               WebkitTextFillColor: 'transparent',
             }}
             variant='h2'
@@ -47,7 +47,7 @@ export default function Home() {
             Get paid experience by building out solutions for innovative
             companies
           </Typography>
-          <Divider sx={{ marginTop: 5, marginBottom: 5 }} />
+          <Divider sx={{ marginTop: 5, marginBottom: 5, backgroundColor: 'subColor' }} />
           {bounties.map((b) => (
             <BountyCell key={b.id} bounty={b} />
           ))}
