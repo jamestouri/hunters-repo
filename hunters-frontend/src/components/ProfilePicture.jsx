@@ -40,6 +40,7 @@ export default function ProfilePicture({ profileAddress, dimension = 80 }) {
   ) : (
     <Box
       sx={{
+        marginRight: 3,
         height: dimension,
         width: dimension,
         borderRadius: dimension / 2,

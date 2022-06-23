@@ -69,17 +69,17 @@ export default function BountyDetails() {
         <Box>
           <Box display='flex'>
             <Typography
-              color='#9f29bc'
+              color='#D940FF'
               height={25}
               paddingLeft={2}
               paddingRight={2}
-              backgroundColor='rgb(144,44,204, 0.3)'
+              backgroundColor='rgb(144,44,204, 0.4)'
             >
               {bounty.bounty_value_in_usd} USD
             </Typography>
             <Typography
               marginLeft={1}
-              color='#e41f66'
+              color='#FF367F'
               height={25}
               paddingLeft={2}
               paddingRight={2}
@@ -148,10 +148,12 @@ function Funder({ bountyAddress }) {
       <Typography color='#757575' fontWeight='600'>
         Funder
       </Typography>
-      <Button sx={{ padding: 0, fontSize: 16 }}>
-        {' '}
-        {walletAddressShortener(bountyAddress)}
-      </Button>
+      <Link to={`/profile/${bountyAddress}`} style={{ textDecoration: 'none' }}>
+        <Button sx={{ padding: 0, fontSize: 16, color: '#649ddf' }}>
+          {' '}
+          {walletAddressShortener(bountyAddress)}
+        </Button>
+      </Link>
     </Box>
   );
 }
@@ -175,14 +177,24 @@ function WorkingOnBounty({ bountyOwnersWallets }) {
   }
   return (
     <Box marginRight={2}>
-      <Typography color='#757575' fontWeight='600'>
-        Working on Bounty
-      </Typography>
+      <Link
+        to={`/profile/${bountyOwnersWallets}`}
+        style={{ textDecoration: 'none' }}
+      >
+        <Typography color='#757575' fontWeight='600'>
+          Working on Bounty
+        </Typography>
+      </Link>
       <Box>
         {bountyOwnersWallets.map((w) => (
-          <Button key={w.id} sx={{ padding: 0, fontSize: 16 }}>
-            {walletAddressShortener(w)}
-          </Button>
+          <Link
+            to={`/profile/${bountyOwnersWallets}`}
+            style={{ textDecoration: 'none' }}
+          >
+            <Button key={w.id} sx={{ padding: 0, fontSize: 16, color: '#649ddf' }}>
+              {walletAddressShortener(w)}
+            </Button>
+          </Link>
         ))}
       </Box>
     </Box>
@@ -318,19 +330,24 @@ function ButtonActionsLogic({ bounty, setBounty }) {
   if (bounty_owner_wallet.includes(walletAddress)) {
     return (
       <>
-        <Button
-          variant='outlined'
-          sx={{
-            marginTop: 4,
-            marginRight: 2,
-            borderRadius: 0,
-            boxShadow: 'none',
-            color: '#1db3f9',
-            borderColor: '#1db3f9',
-          }}
+        <Link
+          to={`/bounty/${bounty.id}/submit/`}
+          style={{ textDecoration: 'none' }}
         >
-          Submit Project
-        </Button>
+          <Button
+            variant='outlined'
+            sx={{
+              marginTop: 4,
+              marginRight: 2,
+              borderRadius: 0,
+              boxShadow: 'none',
+              color: '#1db3f9',
+              borderColor: '#1db3f9',
+            }}
+          >
+            Submit Project
+          </Button>
+        </Link>
         <Button
           onClick={handleleavingBounty}
           variant='outlined'

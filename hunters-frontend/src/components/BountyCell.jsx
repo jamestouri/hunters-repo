@@ -123,7 +123,7 @@ export default function BountyCell({ bounty }) {
           </Box>
           <Box display='flex'>
             <Typography
-              color='#9f29bc'
+              color='#D940FF'
               height={25}
               paddingLeft={2}
               paddingRight={2}
@@ -133,7 +133,7 @@ export default function BountyCell({ bounty }) {
             </Typography>
             <Typography
               marginLeft={3}
-              color='#e41f66'
+              color='#FF367F'
               height={25}
               paddingLeft={2}
               paddingRight={2}
