@@ -4,7 +4,6 @@ import WalletModal from './modals/WalletModal';
 import { useProfile } from '../contexts/ProfileContext';
 import { walletAddressShortener } from '../utils/helpers';
 import { Link } from 'react-router-dom';
-import { useDisconnect } from '@thirdweb-dev/react';
 import { Logo } from '../utils/images';
 
 export default function Navbar() {

@@ -4,21 +4,9 @@ import useWindowSize from '../contexts/WindowSize';
 import { BACKGROUND_COLOR } from '../utils/constants';
 
 import { timeFromUpdateUtil } from '../utils/helpers';
+import { stateEmojis, stateValue } from '../utils/objects';
 import ProfilePicture from './ProfilePicture';
 
-const stateEmojis = {
-  cancelled: '❌',
-  open: '✅',
-  done: '⌛️',
-  expired: '🔒',
-};
-
-const stateValue = {
-  open: 'Open Bounty',
-  done: 'Done',
-  cancelled: 'Cancelled',
-  expired: 'Expired',
-};
 
 export default function BountyCell({ bounty }) {
   const size = useWindowSize();

@@ -16,6 +16,7 @@ import WalletModal from './modals/WalletModal';
 import MDEditor from '@uiw/react-md-editor';
 import { BACKGROUND_COLOR } from '../utils/constants';
 import ProfilePicture from './ProfilePicture';
+import { stateEmojis, stateValue } from '../utils/objects';
 
 const experienceLevelEmoji = {
   Beginner: '🟢',
@@ -96,6 +97,7 @@ export default function BountyDetails() {
         </Box>
         <Box display='flex'>
           <WorkingOnBounty bountyOwnersWallets={bounty.bounty_owner_wallet} />
+          <BountyStatus bountyStatus={bounty.state} />
           <ExperienceLevel experienceLevel={bounty.experience_level} />
           <TimeCommitment timeCommitment={bounty.project_length} />
           <WhenCreated timeLapse={bounty.updated_at} />
@@ -183,6 +185,19 @@ function WorkingOnBounty({ bountyOwnersWallets }) {
           </Button>
         ))}
       </Box>
+    </Box>
+  );
+}
+
+function BountyStatus({ bountyStatus }) {
+  return (
+    <Box marginRight={2}>
+      <Typography color='#757575' fontWeight='600'>
+        Status
+      </Typography>
+      <Typography color='main' fontWeight='600'>
+        {stateEmojis[bountyStatus] + ' ' + stateValue[bountyStatus]}
+      </Typography>
     </Box>
   );
 }

@@ -1,17 +1,21 @@
 import { Container, Box } from '@mui/system';
 import { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { useProfile } from '../contexts/ProfileContext';
 import { walletAddressShortener, storeFilesInIPFS } from '../utils/helpers';
 import axios from 'axios';
 import { Button, CardMedia, Typography } from '@mui/material';
 import BountyCell from './BountyCell';
+import { useDisconnect } from '@thirdweb-dev/react';
 
 export default function Profile() {
   const params = useParams();
   const [profile, setProfile] = useState(null);
   const [createdBounties, setCreatedBounties] = useState([]);
   const [ownedBounties, setOwnedBounties] = useState([]);
+  const disconnect = useDisconnect();
+  const navigate = useNavigate();
+  const { walletAddress } = useProfile();
 
   const walletFromParam = params.walletAddress;
   // Checking if this is the user's profile or not
@@ -47,6 +51,10 @@ export default function Profile() {
     return null;
   }
 
+  const handleDisconnect = () => {
+    disconnect().then(() => navigate(`/`));
+  };
+
   return (
     <Container>
       <Box display='flex' flexDirection='column' justifyContent='center'>
@@ -67,6 +75,15 @@ export default function Profile() {
       {ownedBounties.map((owned) => (
         <BountyCell key={owned.id} bounty={owned} />
       ))}
+      {walletAddress === profile.wallet_address ? (
+        <Button
+          sx={{ marginTop: 4, marginBottom: 20 }}
+          onClick={handleDisconnect}
+          variant='outlined'
+        >
+          Disconnect Wallet
+        </Button>
+      ) : null}
     </Container>
   );
 }
@@ -125,17 +142,19 @@ function ProfilePic({ profile }) {
           backgroundColor={profile.profile_picture_initial}
         />
       )}
-      <Button component='label' variant='contained' sx={buttonStyle}>
-        Change Image
-        <input
-          alt='image in here'
-          type='file'
-          name='image'
-          accept='.jpg, .jpeg, .png'
-          hidden
-          onChange={(e) => handleImageChange(e.target.files)}
-        />
-      </Button>
+      {walletAddress === profile.wallet_address ? (
+        <Button component='label' variant='contained' sx={buttonStyle}>
+          Change Image
+          <input
+            alt='image in here'
+            type='file'
+            name='image'
+            accept='.jpg, .jpeg, .png'
+            hidden
+            onChange={(e) => handleImageChange(e.target.files)}
+          />
+        </Button>
+      ) : null}
     </Box>
   );
 }
