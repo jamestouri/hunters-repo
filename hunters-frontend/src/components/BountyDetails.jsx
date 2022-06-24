@@ -100,7 +100,7 @@ export default function BountyDetails() {
           <BountyStatus bountyStatus={bounty.state} />
           <ExperienceLevel experienceLevel={bounty.experience_level} />
           <TimeCommitment timeCommitment={bounty.project_length} />
-          <WhenCreated timeLapse={bounty.updated_at} />
+          {/* <WhenCreated timeLapse={bounty.updated_at} /> */}
         </Box>
       </Box>
       <ButtonActionsLogic bounty={bounty} setBounty={setBounty} />
