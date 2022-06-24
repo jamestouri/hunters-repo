@@ -191,7 +191,10 @@ function WorkingOnBounty({ bountyOwnersWallets }) {
             to={`/profile/${bountyOwnersWallets}`}
             style={{ textDecoration: 'none' }}
           >
-            <Button key={w.id} sx={{ padding: 0, fontSize: 16, color: '#649ddf' }}>
+            <Button
+              key={w.id}
+              sx={{ padding: 0, fontSize: 16, color: '#649ddf' }}
+            >
               {walletAddressShortener(w)}
             </Button>
           </Link>
@@ -395,11 +398,10 @@ function FilesAndImages({ imageAttachments }) {
   const handleClose = () => setOpen(false);
   return (
     <>
-      <Divider sx={{ marginTop: 3, marginBottom: 3 }} />
       <Typography
         variant='h6'
         fontWeight='500'
-        sx={{ marginBottom: 3 }}
+        sx={{ marginTop: 8, marginBottom: 3 }}
         color='main'
       >
         File Attachments
@@ -448,11 +450,13 @@ function Activities({ bountyId }) {
   }
   return (
     <>
-      <Divider sx={{ marginTop: 3, marginBottom: 3 }} />
+      <Divider
+        sx={{ marginTop: 3, marginBottom: 3, backgroundColor: 'main' }}
+      />
       <Typography
         variant='h6'
         fontWeight='500'
-        sx={{ marginBottom: 3 }}
+        sx={{ marginBottom: 5 }}
         color='main'
       >
         Activity History

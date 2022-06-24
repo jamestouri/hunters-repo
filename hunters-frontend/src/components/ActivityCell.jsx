@@ -11,7 +11,7 @@ export function ActivityCell({ activity }) {
       display='flex'
       justifyContent='space-between'
       alignItems='center'
-      marginTop={3}
+      marginBottom={3}
     >
       <Box display='flex' alignItems='center'>
         <ProfilePicture profileAddress={activity.profile} dimension={60} />
