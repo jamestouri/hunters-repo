@@ -8,6 +8,7 @@ import { timeCreatedForActivity } from '../utils/helpers';
 import ProfilePicture from './ProfilePicture';
 import MDEditor from '@uiw/react-md-editor';
 import { BACKGROUND_COLOR } from '../utils/constants';
+import SubmissionPayoutModal from './modals/SubmissionPayoutModal';
 
 // TODO Find a way to make this authenticated so only the person with the wallet
 // address can go on this page
@@ -193,6 +194,10 @@ function SubmissionCell({ submission }) {
 
 function SubmissionActionButtons({ submission }) {
   const [open, setOpen] = useState(submission.open);
+  const [openModal, setOpenModal] = useState(false);
+  const handleOpen = () => setOpenModal(true);
+  const handleClose = () => setOpenModal(false);
+
   const handleArchiving = async () => {
     axios
       .patch(
@@ -216,17 +221,28 @@ function SubmissionActionButtons({ submission }) {
   };
 
   return (
-    <Box marginTop={3}>
-      {open ? (
-        <Box display='flex' justifyContent='space-evenly'>
-          <Button variant='contained' sx={{ borderRadius: 0 }}>
-            Accept and Pay Out
-          </Button>
-          <Button onClick={handleArchiving}>Archive</Button>
-        </Box>
-      ) : (
-        <Button onClick={handleReopening}>Reopen</Button>
-      )}
-    </Box>
+    <>
+      <SubmissionPayoutModal
+        submission={submission}
+        open={openModal}
+        handleClose={handleClose}
+      />
+      <Box marginTop={3}>
+        {open ? (
+          <Box display='flex' justifyContent='space-evenly'>
+            <Button
+              variant='contained'
+              sx={{ borderRadius: 0 }}
+              onClick={handleOpen}
+            >
+              Accept and Pay Out
+            </Button>
+            <Button onClick={handleArchiving}>Archive</Button>
+          </Box>
+        ) : (
+          <Button onClick={handleReopening}>Reopen</Button>
+        )}
+      </Box>
+    </>
   );
 }

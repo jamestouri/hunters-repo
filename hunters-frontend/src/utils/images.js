@@ -37,7 +37,7 @@ export const Logo = () => (
       cy='75'
       r='57.5'
       stroke='url(#paint0_linear_1210_876)'
-      stroke-width='35'
+      strokeWidth='35'
     />
     <defs>
       <linearGradient
@@ -48,8 +48,8 @@ export const Logo = () => (
         y2='150'
         gradientUnits='userSpaceOnUse'
       >
-        <stop stop-color='#E41F66' />
-        <stop offset='1' stop-color='#1DB3F9' stop-opacity='0.63' />
+        <stop stopColor='#E41F66' />
+        <stop offset='1' stopColor='#1DB3F9' stopOpacity='0.63' />
       </linearGradient>
     </defs>
   </svg>
