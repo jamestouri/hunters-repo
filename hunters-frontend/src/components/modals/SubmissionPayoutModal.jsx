@@ -12,6 +12,7 @@ import { stateEmojis, stateValue } from '../../utils/objects';
 import { useEthPrice } from '../../contexts/EthPrice';
 import { sendTransaction } from '../../utils/helpers';
 import { useProfile } from '../../contexts/ProfileContext';
+import { useNavigate } from 'react-router-dom';
 
 export default function SubmissionPayoutModal({
   submission,
@@ -19,11 +20,9 @@ export default function SubmissionPayoutModal({
   handleClose,
 }) {
   const { walletAddress } = useProfile();
-  const [bountyStatus, setBountyStatus] = useState(null);
-  const [bountyPayout, setBountyPayout] = useState(null);
-  const [bountyCreatorWallet, setBountyCreatorWallet] = useState(null);
+  const [bounty, setBounty] = useState(null);
   const [submissionOwner, setSubmissionOwner] = useState(null);
-
+  const navigate = useNavigate();
   const ethPrice = useEthPrice();
 
   const state = ['open', 'done', 'cancelled', 'expired'];
@@ -34,29 +33,56 @@ export default function SubmissionPayoutModal({
         `${process.env.REACT_APP_DEV_SERVER}/api/bounty/${submission.bounty}/`
       )
       .then((res) => {
-        setBountyStatus(res.data.state);
-        setBountyPayout(res.data.bounty_value_in_usd);
-        setBountyCreatorWallet(res.data.bounty_creator);
+        setBounty(res.data);
       })
       .catch((err) => console.log('😢 ' + err));
   }, [submission.bounty]);
 
   useEffect(() => {
-    axios 
-    .get(
-      `${process.env.REACT_APP_DEV_SERVER}/api/profile/${submission.profile}/`
-    )
-    .then((res) => setSubmissionOwner(res.data))
-    .catch(err => console.log(err));
-  }, [submission.profile])
+    axios
+      .get(
+        `${process.env.REACT_APP_DEV_SERVER}/api/profile/${submission.profile}/`
+      )
+      .then((res) => setSubmissionOwner(res.data))
+      .catch((err) => console.log(err));
+  }, [submission.profile]);
 
-  if (bountyStatus == null) {
+  if (bounty == null) {
     return null;
   }
 
-  if (walletAddress !== bountyCreatorWallet) {
+  if (walletAddress !== bounty.bounty_creator) {
     return null;
   }
+
+  const handleStateChange = (e) => {
+    setBounty({ ...bounty, state: e.target.value });
+  };
+
+  const handleAcceptance = () => {
+    sendTransaction(bounty.bounty_creator, submissionOwner.wallet_address);
+    const activity = {
+      bounty: bounty.id,
+      wallet_address: walletAddress,
+      activity_type: 'Work Approved',
+    };
+    axios
+      .patch(`${process.env.REACT_APP_DEV_SERVER}/api/bounty/${bounty.id}/`, {
+        bounty: bounty,
+        activities: activity,
+      })
+      .then((res) => console.log('res', res))
+      .catch((err) => console.log(err));
+
+    axios
+      .patch(
+        `${process.env.REACT_APP_DEV_SERVER}/api/work_submission/${submission.id}/`,
+        {
+          work_submission: { accepted: true },
+        }
+      )
+      .then(() => navigate(`/profile/${walletAddress}/`));
+  };
 
   return (
     <Modal
@@ -85,8 +111,8 @@ export default function SubmissionPayoutModal({
         <Typography>Bounty Status after Acceptance</Typography>
         <Select
           fullWidth
-          value={bountyStatus}
-          onChange={(e) => setBountyStatus(e.target.value)}
+          value={bounty.state}
+          onChange={handleStateChange}
           sx={{ padding: 0.1, borderRadius: 0 }}
         >
           {state.map((option) => (
@@ -96,10 +122,12 @@ export default function SubmissionPayoutModal({
           ))}
         </Select>
         <Typography>Total payment for Completion</Typography>
-        <Typography>{bountyPayout}</Typography>
-        <Typography>Paid out in {ethPrice / bountyPayout} eth</Typography>
+        <Typography>{bounty.bounty_value_in_usd}</Typography>
+        <Typography>
+          Paid out in {ethPrice / bounty.bounty_value_in_usd} eth
+        </Typography>
         <Button
-          onClick={() => sendTransaction(bountyCreatorWallet, submissionOwner.wallet_address)}
+          onClick={handleAcceptance}
           variant='contained'
           sx={{ color: 'black', boxShadow: 'none', borderRadius: 0 }}
         >
