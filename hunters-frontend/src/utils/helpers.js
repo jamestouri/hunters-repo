@@ -1,5 +1,6 @@
 import { create } from 'ipfs-http-client';
-import { IPFS_INITIALIZE, IPFS_ROOT_STORAGE } from './constants';
+import { IPFS_INITIALIZE, IPFS_ROOT_STORAGE, WEI_TO_ETH } from './constants';
+import { createAlchemyWeb3 } from '@alch/alchemy-web3';
 
 export function walletAddressShortener(walletAddress) {
   const firstSection = walletAddress.slice(0, 6);
@@ -99,4 +100,26 @@ export function timeCreatedForActivity(created) {
 export function timeDateForProfile(created) {
   const time = new Date(created);
   return time.toLocaleDateString('EN-US');
+}
+
+// https://docs.alchemy.com/alchemy/documentation/alchemy-web3
+// Send transaction API also has the value to be in a wei as a String.
+// 1,000,000,000,000,000,000 wei === 1 eth
+export function sendTransaction(
+  sendingWalletAddress,
+  receivingWalletAddress,
+  amount = '0.0001'
+) {
+  const amountInWei = amount * WEI_TO_ETH;
+  const web3 = createAlchemyWeb3(
+    `https://eth-rinkeby.alchemyapi.io/v2/${process.env.REACT_APP_RINKEBY_NETWORK}`
+  );
+  web3.eth
+    .sendTransaction({
+      from: sendingWalletAddress,
+      to: receivingWalletAddress,
+      value: amountInWei.toString(),
+    })
+    .then((res) => console.log('success', res))
+    .catch((err) => console.log(err));
 }
