@@ -104,7 +104,7 @@ def bounty(request, bounty_id):
             bounty, data=request.data['bounty'], partial=True)
         if bounty_serializer.is_valid():
             bounty_serializer.save()
-            if request.data['activities'] is not None:
+            if 'activities' in request.data:
                 activity = request.data['activities']
                 profile = Profile.objects.filter(
                     wallet_address=activity['wallet_address']).first()

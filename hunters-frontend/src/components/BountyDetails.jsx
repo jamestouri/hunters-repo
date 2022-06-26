@@ -2,7 +2,14 @@ import { Box, Container } from '@mui/system';
 import React, { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import axios from 'axios';
-import { Button, CardMedia, Divider, Typography } from '@mui/material';
+import {
+  Button,
+  CardMedia,
+  Divider,
+  Typography,
+  Select,
+  MenuItem,
+} from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import {
   capitalizeFirstLetter,
@@ -23,6 +30,7 @@ const experienceLevelEmoji = {
   Intermediate: '🟦',
   Advanced: '♦',
 };
+const state = ['open', 'done', 'cancelled', 'expired'];
 
 export default function BountyDetails() {
   const params = useParams();
@@ -40,6 +48,17 @@ export default function BountyDetails() {
   if (bounty == null) {
     return null;
   }
+
+  const handleStateChange = async (e) => {
+    setBounty({ ...bounty, state: e.target.value });
+    // Don't need to add activity for this change
+    await axios
+      .patch(`${process.env.REACT_APP_DEV_SERVER}/api/bounty/${bountyId}/`, {
+        bounty: {state: e.target.value},
+      })
+      .then((res) => console.log('✅ status changed', res))
+      .catch((err) => console.log(err));
+  };
   return (
     <Container>
       <Box display='flex' alignItems='center' justifyContent='space-between'>
@@ -97,7 +116,7 @@ export default function BountyDetails() {
         </Box>
         <Box display='flex'>
           <WorkingOnBounty bountyOwnersWallets={bounty.bounty_owner_wallet} />
-          <BountyStatus bountyStatus={bounty.state} />
+          <BountyStatus bounty={bounty} handleStateChange={handleStateChange} />
           <ExperienceLevel experienceLevel={bounty.experience_level} />
           <TimeCommitment timeCommitment={bounty.project_length} />
           {/* <WhenCreated timeLapse={bounty.updated_at} /> */}
@@ -177,40 +196,52 @@ function WorkingOnBounty({ bountyOwnersWallets }) {
   }
   return (
     <Box marginRight={2}>
-      <Link
-        to={`/profile/${bountyOwnersWallets}`}
-        style={{ textDecoration: 'none' }}
-      >
-        <Typography color='#757575' fontWeight='600'>
-          Working on Bounty
-        </Typography>
-      </Link>
+      <Typography color='#757575' fontWeight='600'>
+        Working on Bounty
+      </Typography>
       <Box>
         {bountyOwnersWallets.map((w) => (
-          <Link
-            key={w.id}
-            to={`/profile/${bountyOwnersWallets}`}
-            style={{ textDecoration: 'none' }}
-          >
-            <Button sx={{ padding: 0, fontSize: 16, color: '#649ddf' }}>
-              {walletAddressShortener(w)}
-            </Button>
-          </Link>
+          <React.Fragment key={w.id}>
+            <Link
+              to={`/profile/${bountyOwnersWallets}`}
+              style={{ textDecoration: 'none' }}
+            >
+              <Button sx={{ padding: 0, fontSize: 16, color: '#649ddf' }}>
+                {walletAddressShortener(w)}
+              </Button>
+            </Link>
+          </React.Fragment>
         ))}
       </Box>
     </Box>
   );
 }
 
-function BountyStatus({ bountyStatus }) {
+function BountyStatus({ bounty, handleStateChange }) {
+  // Going to allow bounty owner to change the status of the bounty
+  const { walletAddress } = useProfile();
   return (
     <Box marginRight={2}>
       <Typography color='#757575' fontWeight='600'>
         Status
       </Typography>
-      <Typography color='main' fontWeight='600'>
-        {stateEmojis[bountyStatus] + ' ' + stateValue[bountyStatus]}
-      </Typography>
+      {walletAddress === bounty.bounty_creator ? (
+        <Select
+          value={bounty.state}
+          onChange={handleStateChange}
+          sx={{ backgroundColor: 'main', borderRadius: 0 }}
+        >
+          {state.map((option) => (
+            <MenuItem value={option} key={option}>
+              {stateEmojis[option] + ' ' + stateValue[option]}
+            </MenuItem>
+          ))}
+        </Select>
+      ) : (
+        <Typography color='main' fontWeight='600'>
+          {stateEmojis[bounty.state] + ' ' + stateValue[bounty.state]}
+        </Typography>
+      )}
     </Box>
   );
 }

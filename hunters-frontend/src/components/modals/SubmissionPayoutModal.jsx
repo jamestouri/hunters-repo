@@ -59,6 +59,7 @@ export default function SubmissionPayoutModal({
     setBounty({ ...bounty, state: e.target.value });
   };
 
+  // TODO We need to show a loading bar
   const handleDBChanges = async () => {
     const activity = {
       bounty: bounty.id,
@@ -81,13 +82,15 @@ export default function SubmissionPayoutModal({
         }
       )
       .then(() => navigate(`/profile/${walletAddress}/`));
-  }
+  };
 
   const handleAcceptance = async () => {
-    sendTransaction(bounty.bounty_creator, submissionOwner.wallet_address).then((txn) => {
-      console.log('success', txn)
-      handleDBChanges();
-    })
+    sendTransaction(bounty.bounty_creator, submissionOwner.wallet_address).then(
+      (txn) => {
+        console.log('success', txn);
+        handleDBChanges();
+      }
+    );
   };
 
   return (
@@ -104,17 +107,19 @@ export default function SubmissionPayoutModal({
         sx={{
           display: 'flex',
           flexDirection: 'column',
-          alignItems: 'center',
-          height: 750,
+          alignItems: 'left',
+          height: 500,
           width: 550,
-          justifyContent: 'center',
+          justifyContent: 'flex-start',
+          padding: 5,
+          borderRadius: 0,
         }}
       >
-        <Typography>
-          Are you sure you want to accept submission from{' '}
-          {submission.submission_header}?
+        <Typography variant='h5' marginBottom={3}>
+          Accepting submission from
+          <Typography variant='h5' fontWeight='600' >{submission.submission_header}</Typography>
         </Typography>
-        <Typography>Bounty Status after Acceptance</Typography>
+        <Typography fontWeight='600'>Bounty Status after Acceptance</Typography>
         <Select
           fullWidth
           value={bounty.state}
@@ -127,15 +132,32 @@ export default function SubmissionPayoutModal({
             </MenuItem>
           ))}
         </Select>
-        <Typography>Total payment for Completion</Typography>
-        <Typography>{bounty.bounty_value_in_usd}</Typography>
-        <Typography>
-          Paid out in {ethPrice / bounty.bounty_value_in_usd} eth
+        <Typography marginTop={4} fontWeight='600'>
+          Total payment for Completion
+        </Typography>
+        <Typography marginTop={2} fontWeight='600'>
+          ${bounty.bounty_value_in_usd} usd
+        </Typography>
+        <Typography marginTop={1} variant='body2' sx={{ color: '#757575' }}>
+          *Paid out in (estimated) {ethPrice / bounty.bounty_value_in_usd} eth
         </Typography>
         <Button
           onClick={handleAcceptance}
           variant='contained'
-          sx={{ color: 'black', boxShadow: 'none', borderRadius: 0 }}
+          sx={{
+            backgroundColor: '#4870f6',
+            fontSize: 18,
+            fontWeight: 600,
+            padding: 2,
+            marginTop: 4,
+            color: 'white',
+            boxShadow: 'none',
+            borderRadius: 0,
+            '&:hover': {
+              boxShadow: 'none',
+              backgroundColor: '#809DFF',
+            }
+          }}
         >
           Pay now with connected wallet
         </Button>
