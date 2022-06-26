@@ -92,7 +92,7 @@ function SubmissionCell({ submission }) {
       )
       .then((res) => setBounty(res.data))
       .catch((err) => console.log(err));
-  }, []);
+  }, [submission.bounty]);
 
   if (bounty == null) {
     return null;

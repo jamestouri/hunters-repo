@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { AppBar, Box, Button, Toolbar, Typography } from '@mui/material';
+import { AppBar, Box, Button, Toolbar } from '@mui/material';
 import WalletModal from './modals/WalletModal';
 import { useProfile } from '../contexts/ProfileContext';
 import { walletAddressShortener } from '../utils/helpers';

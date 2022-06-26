@@ -10,7 +10,7 @@ export default function ProfilePicture({ profileAddress, dimension = 80 }) {
       .get(`${process.env.REACT_APP_DEV_SERVER}/api/profile/${profileAddress}/`)
       .then((res) => setProfile(res.data))
       .catch((err) => console.log(err));
-  }, []);
+  }, [profileAddress]);
 
   if (profile == null) {
     return (

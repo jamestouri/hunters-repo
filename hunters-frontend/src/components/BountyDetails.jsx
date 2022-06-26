@@ -35,7 +35,7 @@ export default function BountyDetails() {
       .get(`${process.env.REACT_APP_DEV_SERVER}/api/bounty/${bountyId}/`)
       .then((res) => setBounty(res.data))
       .catch((err) => console.log('😢 ' + err));
-  }, []);
+  }, [bountyId]);
 
   if (bounty == null) {
     return null;
@@ -188,13 +188,11 @@ function WorkingOnBounty({ bountyOwnersWallets }) {
       <Box>
         {bountyOwnersWallets.map((w) => (
           <Link
+            key={w.id}
             to={`/profile/${bountyOwnersWallets}`}
             style={{ textDecoration: 'none' }}
           >
-            <Button
-              key={w.id}
-              sx={{ padding: 0, fontSize: 16, color: '#649ddf' }}
-            >
+            <Button sx={{ padding: 0, fontSize: 16, color: '#649ddf' }}>
               {walletAddressShortener(w)}
             </Button>
           </Link>
@@ -444,7 +442,7 @@ function Activities({ bountyId }) {
       )
       .then((res) => setActivities(res.data))
       .catch((err) => console.log(err));
-  }, []);
+  }, [bountyId]);
   if (activities == null) {
     return null;
   }

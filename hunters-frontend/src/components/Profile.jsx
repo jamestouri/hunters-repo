@@ -36,7 +36,7 @@ export default function Profile() {
       )
       .then((res) => setCreatedBounties(res.data))
       .catch((err) => console.log(err));
-  }, []);
+  }, [walletFromParam]);
 
   useEffect(() => {
     axios
@@ -45,7 +45,7 @@ export default function Profile() {
       )
       .then((res) => setOwnedBounties(res.data))
       .catch((err) => console.log(err));
-  }, []);
+  }, [walletFromParam]);
 
   if (profile == null) {
     return null;

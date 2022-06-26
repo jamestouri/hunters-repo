@@ -44,7 +44,7 @@ export default function SubmissionPayoutModal({
         left: '33%',
       }}
       open={open}
-      handleClose={handleClose}
+      onClose={handleClose}
     >
       <Card
         sx={{

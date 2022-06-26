@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useProfile } from '../contexts/ProfileContext';
-import { Box, Button, FormControl, TextField, Typography } from '@mui/material';
+import { Button, FormControl, TextField, Typography } from '@mui/material';
 import { useForm } from 'react-hook-form';
 import { Container } from '@mui/system';
 import axios from 'axios';
