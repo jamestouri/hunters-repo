@@ -59,8 +59,7 @@ export default function SubmissionPayoutModal({
     setBounty({ ...bounty, state: e.target.value });
   };
 
-  const handleAcceptance = () => {
-    sendTransaction(bounty.bounty_creator, submissionOwner.wallet_address);
+  const handleDBChanges = async () => {
     const activity = {
       bounty: bounty.id,
       wallet_address: walletAddress,
@@ -82,6 +81,13 @@ export default function SubmissionPayoutModal({
         }
       )
       .then(() => navigate(`/profile/${walletAddress}/`));
+  }
+
+  const handleAcceptance = async () => {
+    sendTransaction(bounty.bounty_creator, submissionOwner.wallet_address).then((txn) => {
+      console.log('success', txn)
+      handleDBChanges();
+    })
   };
 
   return (

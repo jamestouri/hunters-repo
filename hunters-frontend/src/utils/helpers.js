@@ -103,9 +103,9 @@ export function timeDateForProfile(created) {
 }
 
 // https://docs.alchemy.com/alchemy/documentation/alchemy-web3
-// Send transaction API also has the value to be in a wei as a String.
+// Send transaction API also has the "value" parameter to be in a wei as a String.
 // 1,000,000,000,000,000,000 wei === 1 eth
-export function sendTransaction(
+export async function sendTransaction(
   sendingWalletAddress,
   receivingWalletAddress,
   amount = '0.0001'
@@ -114,12 +114,16 @@ export function sendTransaction(
   const web3 = createAlchemyWeb3(
     `https://eth-rinkeby.alchemyapi.io/v2/${process.env.REACT_APP_RINKEBY_NETWORK}`
   );
-  web3.eth
+  const estimatedGasPrice = await web3.eth.getGasPrice();
+  const nonce = await web3.eth.getTransactionCount(sendingWalletAddress);
+  const txn = await web3.eth
     .sendTransaction({
       from: sendingWalletAddress,
       to: receivingWalletAddress,
       value: amountInWei.toString(),
+      gasPrice: estimatedGasPrice,
+      nonce: nonce,
     })
-    .then((res) => console.log('success', res))
-    .catch((err) => console.log(err));
+
+  return txn;
 }
