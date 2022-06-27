@@ -20,7 +20,8 @@ import {
   Select,
 } from '@mui/material';
 import { useFormik } from 'formik';
-import { storeFilesInIPFS } from '../../utils/helpers';
+import { completePayment, storeFilesInIPFS } from '../../utils/helpers';
+import { useEthPrice } from '../../contexts/EthPrice';
 
 const textFieldStyle = {
   backgroundColor: 'main',
@@ -59,9 +60,13 @@ export default function BountyForm() {
   const [files, setFiles] = useState([]);
   const [bounty, setBounty] = useState(null);
   const [description, setDescription] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [totalCost, setTotalCost] = useState(0);
   const bountyId = params.bountyId;
   const { walletAddress } = useProfile();
   const navigate = useNavigate();
+
+  const ethPrice = useEthPrice();
 
   useEffect(() => {
     if (bountyId) {
@@ -115,13 +120,21 @@ export default function BountyForm() {
     initialValues: bounty ? bounty : initialValues,
     validationSchema: validationSchema,
     onSubmit: async (values) =>
-      bountyId ? await saveBountyEdits(values) : await createBounty(values),
+      bountyId
+        ? await saveBountyEdits(values)
+        : await bountyCreationFlow(values),
     enableReinitialize: true,
   });
 
-  const createBounty = async (formData) => {
+  const bountyCreationFlow = async (formData) => {
+    setLoading(true);
+    completePayment(walletAddress, totalCost).then((res) =>
+      createBounty(formData, res.transactionHash)
+    );
+  };
+
+  const createBounty = async (formData, txnHash) => {
     let data = { ...formData, bounty_creator: walletAddress };
-    data = { ...data, bounty_value_in_eth: 1200 / data.bounty_value_in_usd };
     // Image files
     const attachedFiles = await storeFilesInIPFS(files);
     data = {
@@ -130,18 +143,32 @@ export default function BountyForm() {
       description: description,
     };
 
-    await axios
-      .post(`${process.env.REACT_APP_DEV_SERVER}/api/bounties/`, {
+    const bounty = await axios.post(
+      `${process.env.REACT_APP_DEV_SERVER}/api/bounties/`,
+      {
         bounty: data,
-      })
-      .then((res) => {
-        console.log('✅ bounty created', res);
-        navigate(`/bounty/${res.data.id}/`);
-      })
-      .catch((err) => console.log(err));
+      }
+    );
+
+    const txnObject = {
+      txn_hash: txnHash,
+      sender_wallet_address: walletAddress,
+      receiver_wallet_address: process.env.REACT_APP_WALLET_FOR_PAYMENTS,
+      amount_usd: formData.bounty_value_in_usd,
+      amount_eth: formData.bounty_value_in_usd / ethPrice,
+      txn_type: 'Bounty Creation',
+      bounty: bounty.id,
+    };
+    await axios.post(`${process.env.REACT_APP_DEV_SERVER}/api/`, {
+      transaction: txnObject,
+    });
+
+    setLoading(false);
+    navigate(`/bounty/${bounty.id}/`);
   };
 
   const saveBountyEdits = async (formData) => {
+    setLoading(true);
     let data = { ...formData, description: description };
     // Create Activity that made edits to existing Bouny
     const activity = {
@@ -159,6 +186,7 @@ export default function BountyForm() {
         navigate(`/bounty/${res.data.id}/`);
       })
       .catch((err) => console.log(err));
+    setLoading(false);
   };
 
   function showFilePaths(files) {
@@ -492,25 +520,56 @@ export default function BountyForm() {
           Please scroll up to fix errors
         </Typography>
       ) : null}
-      <Button
-        onClick={formik.handleSubmit}
-        variant='contained'
-        sx={{
-          borderRadius: 0,
-          boxShadow: 'none',
-          marginTop: 5,
-          marginBottom: 15,
-          fontSize: 18,
-          backgroundColor: '#1db3f9',
-          color: 'main',
-          '&:hover': {
-            backgroundColor: 'rgb(29,179,249, 0.7)',
-          },
-        }}
-      >
-        {bountyId ? 'Save Changes' : 'Create Bounty'}
-      </Button>
+      <ButtonAction bountyId={bountyId} totalCost={totalCost} formik={formik} />
     </Container>
+  );
+}
+
+function ButtonAction({ bountyId, totalCost, formik }) {
+  if (bountyId) {
+    return (
+      <>
+        <Button
+          onClick={formik.handleSubmit}
+          variant='contained'
+          sx={{
+            borderRadius: 0,
+            boxShadow: 'none',
+            marginTop: 5,
+            fontSize: 18,
+            backgroundColor: '#1db3f9',
+            color: 'main',
+            '&:hover': {
+              backgroundColor: 'rgb(29,179,249, 0.7)',
+            },
+          }}
+        >
+          Create Bounty
+        </Button>
+        <Typography marginBottom={15}>${totalCost}USD</Typography>
+      </>
+    );
+  }
+
+  return (
+    <Button
+      onClick={formik.handleSubmit}
+      variant='contained'
+      sx={{
+        borderRadius: 0,
+        boxShadow: 'none',
+        marginTop: 5,
+        marginBottom: 15,
+        fontSize: 18,
+        backgroundColor: '#1db3f9',
+        color: 'main',
+        '&:hover': {
+          backgroundColor: 'rgb(29,179,249, 0.7)',
+        },
+      }}
+    >
+      Save Changes
+    </Button>
   );
 }
 

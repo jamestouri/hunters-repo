@@ -54,7 +54,7 @@ export default function BountyDetails() {
     // Don't need to add activity for this change
     await axios
       .patch(`${process.env.REACT_APP_DEV_SERVER}/api/bounty/${bountyId}/`, {
-        bounty: {state: e.target.value},
+        bounty: { state: e.target.value },
       })
       .then((res) => console.log('✅ status changed', res))
       .catch((err) => console.log(err));
@@ -397,28 +397,29 @@ function ButtonActionsLogic({ bounty, setBounty }) {
       </>
     );
   }
-
-  return (
-    <>
-      <WalletModal open={open} handleClose={handleClose} />
-      <Button
-        onClick={handleAcceptWork}
-        variant='contained'
-        sx={{
-          marginTop: 4,
-          borderRadius: 0,
-          boxShadow: 'none',
-          '&:hover': {
-            backgroundColor: 'rgb(29,179,249)',
-          },
-          backgroundColor: 'rgb(29,179,249, 0.7)',
-          color: 'main',
-        }}
-      >
-        Start Project
-      </Button>
-    </>
-  );
+  if (bounty.state === 'open') {
+    return (
+      <>
+        <WalletModal open={open} handleClose={handleClose} />
+        <Button
+          onClick={handleAcceptWork}
+          variant='contained'
+          sx={{
+            marginTop: 4,
+            borderRadius: 0,
+            boxShadow: 'none',
+            '&:hover': {
+              backgroundColor: 'rgb(29,179,249)',
+            },
+            backgroundColor: 'rgb(29,179,249, 0.7)',
+            color: 'main',
+          }}
+        >
+          Start Project
+        </Button>
+      </>
+    );
+  }
 }
 
 function FilesAndImages({ imageAttachments }) {

@@ -1,5 +1,6 @@
+from atexit import register
 from django.contrib import admin
-from .models import Activity, Profile, Bounty, WorkSubmission, FunderRating, Coupon
+from .models import Activity, Profile, Bounty, WorkSubmission, FunderRating, Coupon, Transaction
 
 # Register your models here.
 
@@ -80,3 +81,18 @@ class CouponAdmin(admin.ModelAdmin):
     )
 
 admin.site.register(Coupon, CouponAdmin)
+
+
+class TransactionAdmin(admin.ModelAdmin):
+    transaction_admin = (
+        'id',
+        'txn_hash',
+        'sender_wallet_address',
+        'receiver_wallet_address',
+        'amount_usd',
+        'amount_eth',
+        'txn_type',
+        'bounty',
+    )
+
+admin.site.register(Transaction, TransactionAdmin)

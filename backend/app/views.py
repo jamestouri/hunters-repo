@@ -4,9 +4,9 @@ from types import NoneType
 from urllib import response
 from django.shortcuts import render
 from rest_framework.parsers import JSONParser
-from .serializers import ActivitySerializer, CouponSerializer, ProfileSerializer, BountySerializer, WorkSubmissionSerializer
+from .serializers import ActivitySerializer, CouponSerializer, ProfileSerializer, BountySerializer, WorkSubmissionSerializer, TransactionSerializer
 from django.http.response import JsonResponse
-from .models import Activity, Coupon, Profile, Bounty, WorkSubmission
+from .models import Activity, Coupon, Profile, Bounty, WorkSubmission, Transaction
 from rest_framework import status
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
@@ -14,7 +14,6 @@ from rest_framework.response import Response
 
 @api_view(['GET', 'POST'])
 def profiles(request):
-    print(request)
     if request.method == 'GET':
         profiles = Profile.objects.all()
         profile_serializer = ProfileSerializer(profiles, many=True)
@@ -197,6 +196,23 @@ def coupon(request, coupon_code):
             return JsonResponse(coupon_serializer.data)
         return JsonResponse(None)
     # if request.method == 'PATCH':
+
+
+@ api_view(['GET', 'POST'])
+def transactions(request):
+    if request.method == 'GET':
+        transactions = Transaction.objects.all()
+        transactions_serializer = TransactionSerializer(data = transactions, many=True)
+        if transactions_serializer.is_valid():
+            return JsonResponse(transactions_serializer.data, safe=False)
+    elif request.method == 'POST':
+        data = JSONParser().parse(request)
+        transaction = data['transaction']
+        transaction_serializer = TransactionSerializer(data=transaction)
+        if transaction_serializer.is_valid():
+            transaction_serializer.save()
+            return JsonResponse(transaction_serializer.data, status=status.HTTP_201_CREATED)
+        return JsonResponse(transaction_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 # Helpers
