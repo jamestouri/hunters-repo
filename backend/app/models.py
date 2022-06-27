@@ -196,7 +196,7 @@ class Transaction(models.Model):
         ('Bounty Creation', 'Bounty Creation'),
         ('Bounty Payout', 'Bounty Payout')
     )
-    txn_hash = models.CharField(max_length=255, unique=True)
+    txn_hash = models.CharField(max_length=255, unique=True, null=True, default=None)
     sender_wallet_address = models.CharField(max_length=255)
     receiver_wallet_address = models.CharField(max_length=255)
     amount_usd = models.DecimalField(max_digits=100, decimal_places=2)

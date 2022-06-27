@@ -128,9 +128,14 @@ export default function BountyForm() {
 
   const bountyCreationFlow = async (formData) => {
     setLoading(true);
-    completePayment(walletAddress, totalCost).then((res) =>
-      createBounty(formData, res.transactionHash)
-    );
+    // If 100% coupon is used then no need to send payment
+    if (totalCost === 0) {
+      await createBounty(formData, null);
+    } else {
+      completePayment(walletAddress, totalCost).then((res) =>
+        createBounty(formData, res.transactionHash)
+      );
+    }
   };
 
   const createBounty = async (formData, txnHash) => {
