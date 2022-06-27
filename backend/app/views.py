@@ -4,9 +4,9 @@ from types import NoneType
 from urllib import response
 from django.shortcuts import render
 from rest_framework.parsers import JSONParser
-from .serializers import ActivitySerializer, ProfileSerializer, BountySerializer, WorkSubmissionSerializer
+from .serializers import ActivitySerializer, CouponSerializer, ProfileSerializer, BountySerializer, WorkSubmissionSerializer
 from django.http.response import JsonResponse
-from .models import Activity, Profile, Bounty, WorkSubmission
+from .models import Activity, Coupon, Profile, Bounty, WorkSubmission
 from rest_framework import status
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
@@ -188,6 +188,18 @@ def work_submission(request, work_submission_id):
             return JsonResponse(work_submission_serializer.data, status=status.HTTP_200_OK)
 
 
+@api_view(['GET', 'PATCH'])
+def coupon(request, coupon_code):
+    coupon = Coupon.objects.filter(code=coupon_code).first()
+    if request.method == 'GET':
+        coupon_serializer = CouponSerializer(data=coupon)
+        if coupon_serializer.is_valid():
+            return JsonResponse(coupon_serializer.data)
+        return JsonResponse(None)
+    # if request.method == 'PATCH':
+
+
+# Helpers
 def _create_activity_object(activity, profile_id):
     activity.update({'profile': profile_id})
     activity_serializer = ActivitySerializer(data=activity)

@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Activity, Profile, Bounty, WorkSubmission, FunderRating
+from .models import Activity, Profile, Bounty, WorkSubmission, FunderRating, Coupon
 
 # Register your models here.
 
@@ -68,3 +68,15 @@ class FunderRatingAdmin(admin.ModelAdmin):
 
 
 admin.site.register(FunderRating, FunderRatingAdmin)
+
+
+class CouponAdmin(admin.ModelAdmin):
+    coupon_admin = (
+        'id',
+        'code',
+        'discount_amount',
+        'active',
+        'created_at',
+    )
+
+admin.site.register(Coupon, CouponAdmin)

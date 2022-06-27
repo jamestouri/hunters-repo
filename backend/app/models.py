@@ -180,3 +180,13 @@ class FunderRating(models.Model):
     rating_receiver = models.ForeignKey(Profile, on_delete=models.CASCADE, related_name='receiver_id',
                                         null=True, default=None, help_text="Profile receiving the rating")
     created_at = models.DateTimeField(auto_now_add=True)
+
+
+class Coupon(models.Model):
+    code = models.CharField(max_length=50, unique=True, db_index=True)
+    discount_amount = models.IntegerField(validators=[MinValueValidator(0), MaxValueValidator(100)])
+    active = models.BooleanField(default=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.code

@@ -116,14 +116,22 @@ export async function sendTransaction(
   );
   const estimatedGasPrice = await web3.eth.getGasPrice();
   const nonce = await web3.eth.getTransactionCount(sendingWalletAddress);
-  const txn = await web3.eth
-    .sendTransaction({
-      from: sendingWalletAddress,
-      to: receivingWalletAddress,
-      value: amountInWei.toString(),
-      gasPrice: estimatedGasPrice,
-      nonce: nonce,
-    })
+  const txn = await web3.eth.sendTransaction({
+    from: sendingWalletAddress,
+    to: receivingWalletAddress,
+    value: amountInWei.toString(),
+    gasPrice: estimatedGasPrice,
+    nonce: nonce,
+  });
 
   return txn;
+}
+
+// method for sending transactions to company's wallet
+export async function completePayment(sendingWalletAddress, amount = '0.0001') {
+  return sendTransaction(
+    sendingWalletAddress,
+    process.env.REACT_APP_WALLET_FOR_PAYMENTS,
+    amount
+  );
 }
