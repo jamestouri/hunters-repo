@@ -64,12 +64,14 @@ export default function BountyForm() {
   const { walletAddress } = useProfile();
   const navigate = useNavigate();
   const ethPrice = useEthPrice();
-
+  
+  const [coupon, setCoupon] = useState(null);
   const [files, setFiles] = useState([]);
   const [bounty, setBounty] = useState(null);
   const [description, setDescription] = useState('');
   const [loading, setLoading] = useState(false);
   const [totalCost, setTotalCost] = useState(0);
+  const [error, setError] = useState(false);
   const bountyId = params.bountyId;
 
   useEffect(() => {

@@ -187,6 +187,24 @@ def work_submission(request, work_submission_id):
             return JsonResponse(work_submission_serializer.data, status=status.HTTP_200_OK)
 
 
+@api_view(['GET', 'POST'])
+def coupons(request):
+    if request.method == 'GET':
+        coupons = Coupon.objects.all()
+        coupons_serializer = CouponSerializer(data=coupons, many=True)
+        if coupons_serializer.is_valid():
+            return JsonResponse(coupons_serializer.data)
+        return JsonResponse([])
+    if request.method == 'POST':
+        data = JSONParser().parse(request) 
+        coupon = data['coupon']
+        coupon_serializer = CouponSerializer(data=coupon)
+        if coupon_serializer.is_valid():
+            return JsonResponse(coupon_serializer.data, status=status.HTTP_200_OK)
+        return JsonResponse(coupon_serializer.data, status=status.HTTP_400_BAD_REQUEST)
+    
+
+
 @api_view(['GET', 'PATCH'])
 def coupon(request, coupon_code):
     coupon = Coupon.objects.filter(code=coupon_code).first()
