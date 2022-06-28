@@ -1,6 +1,7 @@
 import {
   Button,
   Card,
+  CircularProgress,
   Modal,
   Select,
   MenuItem,
@@ -20,10 +21,12 @@ export default function SubmissionPayoutModal({
   handleClose,
 }) {
   const { walletAddress } = useProfile();
-  const [bounty, setBounty] = useState(null);
-  const [submissionOwner, setSubmissionOwner] = useState(null);
   const navigate = useNavigate();
   const ethPrice = useEthPrice();
+
+  const [bounty, setBounty] = useState(null);
+  const [submissionOwner, setSubmissionOwner] = useState(null);
+  const [loading, setLoading] = useState(null);
 
   const state = ['open', 'done', 'cancelled', 'expired'];
 
@@ -82,15 +85,17 @@ export default function SubmissionPayoutModal({
         }
       )
       .then(() => navigate(`/profile/${walletAddress}/`));
+    setLoading(false);
   };
 
   const handleAcceptance = async () => {
-    sendTransaction(bounty.bounty_creator, submissionOwner.wallet_address).then(
-      (txn) => {
+    setLoading(true);
+    sendTransaction(bounty.bounty_creator, submissionOwner.wallet_address)
+      .then((txn) => {
         console.log('success', txn);
         handleDBChanges();
-      }
-    );
+      })
+      .catch(() => setLoading(false));
   };
 
   return (
@@ -117,7 +122,9 @@ export default function SubmissionPayoutModal({
       >
         <Typography variant='h5' marginBottom={3}>
           Accepting submission from
-          <Typography variant='h5' fontWeight='600' >{submission.submission_header}</Typography>
+          <Typography variant='h5' fontWeight='600'>
+            {submission.submission_header}
+          </Typography>
         </Typography>
         <Typography fontWeight='600'>Bounty Status after Acceptance</Typography>
         <Select
@@ -144,6 +151,7 @@ export default function SubmissionPayoutModal({
         <Button
           onClick={handleAcceptance}
           variant='contained'
+          disabled={loading}
           sx={{
             backgroundColor: '#4870f6',
             fontSize: 18,
@@ -156,9 +164,24 @@ export default function SubmissionPayoutModal({
             '&:hover': {
               boxShadow: 'none',
               backgroundColor: '#809DFF',
-            }
+            },
+            '&:disabled': {
+              backgroundColor: '#809DFF',
+            },
           }}
         >
+          {loading ? (
+            <CircularProgress
+              size={24}
+              sx={{
+                position: 'absolute',
+                top: '50%',
+                left: '50%',
+                marginTop: '-12px',
+                marginLeft: '-12px',
+              }}
+            />
+          ) : null}
           Pay now with connected wallet
         </Button>
       </Card>
