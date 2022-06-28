@@ -87,7 +87,7 @@ class Bounty(models.Model):
         max_length=255, default='', blank=True)
     organization_url = models.CharField(
         max_length=255, default='', blank=True)
-    attached_job_url = models.URLField(blank=True, null=True, db_index=True)
+    attached_job_url = models.CharField(max_length=255, blank=True, null=True, db_index=True)
     ways_to_contact = models.CharField(max_length=255, default='', blank=True)
     image_attachments = ArrayField(models.CharField(
         max_length=255), blank=True, default=list)

@@ -9,6 +9,7 @@ import MDEditor from '@uiw/react-md-editor';
 import { useProfile } from '../../contexts/ProfileContext';
 import {
   Box,
+  CircularProgress,
   Button,
   Container,
   FormControl,
@@ -20,7 +21,10 @@ import {
   Select,
 } from '@mui/material';
 import { useFormik } from 'formik';
-import { completePayment, storeFilesInIPFS } from '../../utils/helpers';
+import {
+  completePaymentUponBountyCreation,
+  storeFilesInIPFS,
+} from '../../utils/helpers';
 import { useEthPrice } from '../../contexts/EthPrice';
 
 const textFieldStyle = {
@@ -57,16 +61,16 @@ const bountyCategories = [
 // For Creating and Editing Bounties
 export default function BountyForm() {
   const params = useParams();
+  const { walletAddress } = useProfile();
+  const navigate = useNavigate();
+  const ethPrice = useEthPrice();
+
   const [files, setFiles] = useState([]);
   const [bounty, setBounty] = useState(null);
   const [description, setDescription] = useState('');
   const [loading, setLoading] = useState(false);
   const [totalCost, setTotalCost] = useState(0);
   const bountyId = params.bountyId;
-  const { walletAddress } = useProfile();
-  const navigate = useNavigate();
-
-  const ethPrice = useEthPrice();
 
   useEffect(() => {
     if (bountyId) {
@@ -80,6 +84,7 @@ export default function BountyForm() {
         .catch((err) => console.log(err));
     }
   }, []);
+
   const validationSchema = Yup.object().shape({
     title: Yup.string()
       .required('Title is required')
@@ -126,15 +131,20 @@ export default function BountyForm() {
     enableReinitialize: true,
   });
 
+  useEffect(() => {
+    const bountyCost = formik.values.bounty_value_in_usd;
+    setTotalCost(bountyCost * 0.05);
+  }, [formik.values.bounty_value_in_usd]);
+
   const bountyCreationFlow = async (formData) => {
     setLoading(true);
     // If 100% coupon is used then no need to send payment
     if (totalCost === 0) {
       await createBounty(formData, null);
-    } else {
-      completePayment(walletAddress, totalCost).then((res) =>
+    } else { 
+      completePaymentUponBountyCreation(walletAddress, totalCost / ethPrice).then((res) =>
         createBounty(formData, res.transactionHash)
-      );
+      ).catch(() => setLoading(false));
     }
   };
 
@@ -148,28 +158,38 @@ export default function BountyForm() {
       description: description,
     };
 
-    const bounty = await axios.post(
-      `${process.env.REACT_APP_DEV_SERVER}/api/bounties/`,
-      {
+    const bounty = await axios
+      .post(`${process.env.REACT_APP_DEV_SERVER}/api/bounties/`, {
         bounty: data,
-      }
-    );
+      })
+      .catch((err) => {
+        setLoading(false);
+        console.log(err);
+      });
 
+    // toFixed() is inconsistent
+    const amount_eth =
+      Math.round((totalCost / ethPrice) * Math.pow(10, 9)) / Math.pow(10, 9);
     const txnObject = {
       txn_hash: txnHash,
       sender_wallet_address: walletAddress,
       receiver_wallet_address: process.env.REACT_APP_WALLET_FOR_PAYMENTS,
-      amount_usd: formData.bounty_value_in_usd,
-      amount_eth: formData.bounty_value_in_usd / ethPrice,
+      amount_usd: totalCost,
+      amount_eth: amount_eth,
       txn_type: 'Bounty Creation',
-      bounty: bounty.id,
+      bounty: bounty.data.id,
     };
-    await axios.post(`${process.env.REACT_APP_DEV_SERVER}/api/`, {
-      transaction: txnObject,
-    });
+    await axios
+      .post(`${process.env.REACT_APP_DEV_SERVER}/api/transactions/`, {
+        transaction: txnObject,
+      })
+      .catch((err) => {
+        setLoading(false);
+        console.log(err);
+      });
 
     setLoading(false);
-    navigate(`/bounty/${bounty.id}/`);
+    navigate(`/bounty/${bounty.data.id}/`);
   };
 
   const saveBountyEdits = async (formData) => {
@@ -361,7 +381,8 @@ export default function BountyForm() {
           </>
         )}
         {files ? showFilePaths(files) : null}
-        {!bountyId || bounty.is_featured === false ? (
+        {/* Hold off on the isFeatured for now  */}
+        {/* {!bountyId || bounty.is_featured === false ? (
           <FormControlLabel
             sx={{ color: 'white', marginTop: 2 }}
             name='is_featured'
@@ -381,7 +402,7 @@ export default function BountyForm() {
         ) : null}
         <Typography color='subColor' fontWeight='600' marginLeft={4}>
           Note: Extra costs apply
-        </Typography>
+        </Typography> */}
 
         <Typography color='main' marginTop={5} fontWeight='600' fontSize={18}>
           Bounty Type (Select One)
@@ -525,34 +546,62 @@ export default function BountyForm() {
           Please scroll up to fix errors
         </Typography>
       ) : null}
-      <ButtonAction bountyId={bountyId} totalCost={totalCost} formik={formik} />
+      <ButtonAction
+        bountyId={bountyId}
+        totalCost={totalCost}
+        formik={formik}
+        loading={loading}
+      />
     </Container>
   );
 }
 
-function ButtonAction({ bountyId, totalCost, formik }) {
-  if (bountyId) {
+const buttonStyling = {
+  borderRadius: 0,
+  boxShadow: 'none',
+  marginTop: 5,
+  fontSize: 18,
+  backgroundColor: '#1db3f9',
+  color: 'main',
+  '&:hover': {
+    backgroundColor: 'rgb(29,179,249, 0.7)',
+  },
+  '&:disabled': {
+    backgroundColor: 'rgb(29,179,249, 0.7)',
+  },
+};
+
+function ButtonAction({ bountyId, totalCost, formik, loading }) {
+  if (!bountyId) {
     return (
-      <>
+      <Box position='relative'>
         <Button
           onClick={formik.handleSubmit}
           variant='contained'
-          sx={{
-            borderRadius: 0,
-            boxShadow: 'none',
-            marginTop: 5,
-            fontSize: 18,
-            backgroundColor: '#1db3f9',
-            color: 'main',
-            '&:hover': {
-              backgroundColor: 'rgb(29,179,249, 0.7)',
-            },
-          }}
+          disabled={loading}
+          sx={buttonStyling}
         >
+          {loading ? (
+            <CircularProgress
+              size={18}
+              sx={{
+                position: 'absolute',
+                top: '50%',
+                left: '50%',
+                marginTop: '-12px',
+                marginLeft: '-12px',
+              }}
+            />
+          ) : null}
           Create Bounty
         </Button>
-        <Typography marginBottom={15}>${totalCost}USD</Typography>
-      </>
+        <Typography color='main' marginTop={2}>
+          Total Cost: ${totalCost}USD (5% of bounty reward)
+        </Typography>
+        <Typography color='subColor' marginBottom={15} fontWeight='600'>
+          *Paid out in Eth
+        </Typography>
+      </Box>
     );
   }
 
@@ -560,19 +609,21 @@ function ButtonAction({ bountyId, totalCost, formik }) {
     <Button
       onClick={formik.handleSubmit}
       variant='contained'
-      sx={{
-        borderRadius: 0,
-        boxShadow: 'none',
-        marginTop: 5,
-        marginBottom: 15,
-        fontSize: 18,
-        backgroundColor: '#1db3f9',
-        color: 'main',
-        '&:hover': {
-          backgroundColor: 'rgb(29,179,249, 0.7)',
-        },
-      }}
+      disabled={loading}
+      sx={buttonStyling}
     >
+      {loading ? (
+        <CircularProgress
+          size={18}
+          sx={{
+            position: 'absolute',
+            top: '50%',
+            left: '50%',
+            marginTop: '-12px',
+            marginLeft: '-12px',
+          }}
+        />
+      ) : null}
       Save Changes
     </Button>
   );

@@ -212,6 +212,7 @@ def transactions(request):
         if transaction_serializer.is_valid():
             transaction_serializer.save()
             return JsonResponse(transaction_serializer.data, status=status.HTTP_201_CREATED)
+        print(transaction_serializer.errors)
         return JsonResponse(transaction_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
