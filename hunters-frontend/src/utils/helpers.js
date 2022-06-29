@@ -114,7 +114,7 @@ export async function sendTransaction(
   // Safety check to make sure we're not accidentally charging the amount in USD
   // We'll change once someone asks that large of a transaction
   if (amount > 40) throw 'Check to make sure amount is in eth not USD';
-  const amountInWei = amount * WEI_TO_ETH;
+  const amountInWei = Math.round(amount * WEI_TO_ETH);
   const web3 = createAlchemyWeb3(
     `https://eth-rinkeby.alchemyapi.io/v2/${process.env.REACT_APP_RINKEBY_NETWORK}`
   );
@@ -140,5 +140,5 @@ export async function completePaymentUponBountyCreation(
     sendingWalletAddress,
     process.env.REACT_APP_WALLET_FOR_PAYMENTS,
     amount
-  );
+  )
 }

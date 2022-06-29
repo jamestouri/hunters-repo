@@ -114,7 +114,7 @@ export default function BountyForm() {
   const validationSchema = Yup.object().shape({
     title: Yup.string()
       .required('Title is required')
-      .min(10, 'Too Short')
+      .min(8, 'At least 8 characters')
       .max(80, 'No more than 80 characters'),
     funding_organization: Yup.string().required('Org Name is required'),
     organization_url: Yup.string().matches(RE_FOR_URL, 'URL not valid'),
@@ -198,6 +198,13 @@ export default function BountyForm() {
         setLoading(false);
         console.log(err);
       });
+
+    await axios
+      .patch(`${process.env.REACT_APP_DEV_SERVER}/api/coupon/${couponCode}/`, {
+        coupon: { active: false },
+      })
+      .then((res) => console.log('👍 success', res))
+      .catch((err) => console.log(err));
 
     // toFixed() is inconsistent
     const amount_eth =
@@ -619,7 +626,7 @@ function ButtonAction({ bountyId, totalCost, formik, loading }) {
           Create Bounty
         </Button>
         <Typography color='main' marginTop={2}>
-          Total Cost: ${totalCost}USD (5% of bounty reward)
+          Total Cost: ${totalCost} USD (5% of bounty reward)
         </Typography>
         <Typography color='subColor' marginBottom={15} fontWeight='600'>
           *Paid out in Eth

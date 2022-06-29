@@ -204,15 +204,21 @@ def coupons(request):
 
 
 @api_view(['GET', 'PATCH'])
-def coupon(request, coupon_code):
+def coupon(request, code):
+    coupon = Coupon.objects.filter(code=code).first()
     if request.method == 'GET':
-        coupon = Coupon.objects.filter(code=coupon_code).first()
-        if coupon: 
+        if coupon:
             coupon_serializer = CouponSerializer(coupon)
             if coupon_serializer.data['active'] == True:
                 return JsonResponse(coupon_serializer.data, safe=False)
         return JsonResponse(None, safe=False)
-    # if request.method == 'PATCH':
+    if request.method == 'PATCH':
+        coupon_serializer = CouponSerializer(
+            coupon, request.data['coupon'], partial=True)
+        if coupon_serializer.is_valid():
+            coupon_serializer.save()
+            return JsonResponse(coupon_serializer.data, status=status.HTTP_200_OK)
+        return JsonResponse(coupon_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 @ api_view(['GET', 'POST'])
@@ -230,7 +236,6 @@ def transactions(request):
         if transaction_serializer.is_valid():
             transaction_serializer.save()
             return JsonResponse(transaction_serializer.data, status=status.HTTP_201_CREATED)
-        print(transaction_serializer.errors)
         return JsonResponse(transaction_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
