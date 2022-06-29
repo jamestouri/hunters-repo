@@ -90,12 +90,13 @@ export default function SubmissionPayoutModal({
 
   const handleAcceptance = async () => {
     setLoading(true);
-    sendTransaction(bounty.bounty_creator, submissionOwner.wallet_address)
-      .then((txn) => {
+    sendTransaction(bounty.bounty_creator, submissionOwner.wallet_address).then(
+      (txn) => {
         console.log('success', txn);
         handleDBChanges();
-      })
-      .catch(() => setLoading(false));
+      }
+    )
+    .catch(() => setLoading(false));
   };
 
   return (

@@ -64,8 +64,7 @@ export default function BountyForm() {
   const { walletAddress } = useProfile();
   const navigate = useNavigate();
   const ethPrice = useEthPrice();
-  
-  const [coupon, setCoupon] = useState(null);
+
   const [files, setFiles] = useState([]);
   const [bounty, setBounty] = useState(null);
   const [description, setDescription] = useState('');
@@ -73,6 +72,10 @@ export default function BountyForm() {
   const [totalCost, setTotalCost] = useState(0);
   const [error, setError] = useState(false);
   const bountyId = params.bountyId;
+
+  //  I would put this in a different component but TotalCost needs this value
+  const [couponCode, setCouponCode] = useState('');
+  const [coupon, setCoupon] = useState(null);
 
   useEffect(() => {
     if (bountyId) {
@@ -85,7 +88,28 @@ export default function BountyForm() {
         })
         .catch((err) => console.log(err));
     }
-  }, []);
+  }, [bountyId]);
+
+  useEffect(() => {
+    // Quick way to reduce the number of hits to the server
+    if (couponCode.length > 4) {
+      setLoading(true);
+      axios
+        .get(`${process.env.REACT_APP_DEV_SERVER}/api/coupon/${couponCode}/`)
+        .then((res) => {
+          console.log(res);
+          if (res.data) {
+            setCoupon(res.data);
+          } else {
+            setCoupon(null);
+          }
+        })
+        .catch(() => setCoupon(null));
+      setLoading(false);
+    } else {
+      setCoupon(null);
+    }
+  }, [couponCode]);
 
   const validationSchema = Yup.object().shape({
     title: Yup.string()
@@ -133,20 +157,26 @@ export default function BountyForm() {
     enableReinitialize: true,
   });
 
+  // The ever changing value of totalCost
   useEffect(() => {
     const bountyCost = formik.values.bounty_value_in_usd;
-    setTotalCost(bountyCost * 0.05);
-  }, [formik.values.bounty_value_in_usd]);
+    if (coupon != null) {
+      const couponDiscount = (100 - coupon.discount_amount) / 100;
+      setTotalCost(bountyCost * 0.05 * couponDiscount);
+    } else {
+      setTotalCost(bountyCost * 0.05);
+    }
+  }, [formik.values.bounty_value_in_usd, coupon]);
 
   const bountyCreationFlow = async (formData) => {
     setLoading(true);
-    // If 100% coupon is used then no need to send payment
+    // If 100% promo coupon is used then no need to send payment
     if (totalCost === 0) {
       await createBounty(formData, null);
-    } else { 
-      completePaymentUponBountyCreation(walletAddress, totalCost / ethPrice).then((res) =>
-        createBounty(formData, res.transactionHash)
-      ).catch(() => setLoading(false));
+    } else {
+      completePaymentUponBountyCreation(walletAddress, totalCost / ethPrice)
+        .then((res) => createBounty(formData, res.transactionHash))
+        .catch(() => setLoading(false));
     }
   };
 
@@ -245,16 +275,8 @@ export default function BountyForm() {
       <Typography color='primary' variant='h4'>
         {bountyId ? 'Edit Bounty' : 'Create Bounty'}
       </Typography>
-
       <FormControl style={{ width: '50%' }}>
-        <Typography
-          color='primary'
-          marginTop={5}
-          fontWeight={600}
-          fontSize={18}
-        >
-          Bounty Title
-        </Typography>
+        <Title text={'Bounty Title'} />
         <TextField
           fullWidth
           id='title'
@@ -269,14 +291,7 @@ export default function BountyForm() {
           sx={textFieldStyle}
         />
 
-        <Typography
-          color='primary'
-          marginTop={5}
-          fontWeight={600}
-          fontSize={18}
-        >
-          Org Name
-        </Typography>
+        <Title text={'Org Name'} />
         <TextField
           fullWidth
           id='funding_organization'
@@ -296,14 +311,7 @@ export default function BountyForm() {
           sx={textFieldStyle}
         />
 
-        <Typography
-          color='primary'
-          marginTop={5}
-          fontWeight={600}
-          fontSize={18}
-        >
-          Org URL
-        </Typography>
+        <Title text={'Org URL'} />
         <TextField
           fullWidth
           id='organization_url'
@@ -322,14 +330,7 @@ export default function BountyForm() {
           sx={textFieldStyle}
         />
 
-        <Typography
-          color='primary'
-          marginTop={5}
-          fontWeight={600}
-          fontSize={18}
-        >
-          Point of Contact Email
-        </Typography>
+        <Title text={'Point of Contact Email'} />
         <TextField
           fullWidth
           id='ways_to_contact'
@@ -406,9 +407,8 @@ export default function BountyForm() {
           Note: Extra costs apply
         </Typography> */}
 
-        <Typography color='main' marginTop={5} fontWeight='600' fontSize={18}>
-          Bounty Type (Select One)
-        </Typography>
+        <Title text={'Bounty Type: Select One'} />
+
         <TextField
           fullWidth
           select
@@ -430,11 +430,7 @@ export default function BountyForm() {
             </MenuItem>
           ))}
         </TextField>
-
-        <Typography color='main' marginTop={5} fontWeight='600' fontSize={18}>
-          Length of Project
-        </Typography>
-
+        <Title text={'Length of Project'} />
         <TextField
           fullWidth
           select
@@ -460,9 +456,8 @@ export default function BountyForm() {
           ))}
         </TextField>
 
-        <Typography color='main' marginTop={5} fontWeight='600' fontSize={18}>
-          Category
-        </Typography>
+        <Title text={'Category'} />
+
         <Select
           fullWidth
           id='bounty_category'
@@ -478,10 +473,7 @@ export default function BountyForm() {
             </MenuItem>
           ))}
         </Select>
-
-        <Typography color='main' marginTop={5} fontWeight='600' fontSize={18}>
-          Bounty reward in usd
-        </Typography>
+        <Title text={'Bounty reward in usd'} />
         <Typography variant='body2' fontWeight='600' color='#757575'>
           *will be paid out in eth
         </Typography>
@@ -504,9 +496,7 @@ export default function BountyForm() {
           sx={textFieldStyle}
         />
 
-        <Typography color='main' marginTop={5} fontWeight='600' fontSize={18}>
-          Optional: url of Job Description
-        </Typography>
+        <Title text={'Optional: url of Job Description'} />
         <TextField
           fullWidth
           id='attached_job_url'
@@ -524,7 +514,6 @@ export default function BountyForm() {
           sx={textFieldStyle}
         />
       </FormControl>
-
       <Typography marginTop={5} variant='h6' color='primary' fontWeight={600}>
         Description
       </Typography>
@@ -543,6 +532,15 @@ export default function BountyForm() {
         value={description}
         onChange={setDescription}
       />
+      <Title text={'**Got Promo Code?**'} color='#e41f66' />
+      {!bountyId ? (
+        <TextField
+          sx={{ ...textFieldStyle, width: '33%', marginBottom: 1 }}
+          value={couponCode}
+          onChange={(e) => setCouponCode(e.target.value)}
+        />
+      ) : null}
+      <CouponAdjustment coupon={coupon} couponCode={couponCode} />
       {Object.keys(formik.errors).length ? (
         <Typography sx={{ marginTop: 5, color: '#fb1c48', fontWeight: '600' }}>
           Please scroll up to fix errors
@@ -556,6 +554,29 @@ export default function BountyForm() {
       />
     </Container>
   );
+}
+
+function Title({ text, fontSize = 18, color = 'main' }) {
+  return (
+    <Typography
+      color={color}
+      marginTop={5}
+      fontWeight='600'
+      fontSize={fontSize}
+    >
+      {text}
+    </Typography>
+  );
+}
+
+function CouponAdjustment({ coupon, couponCode }) {
+  if (coupon && coupon.active === true) {
+    return <Typography color='main'>✅ Coupon Confirmed 🙂</Typography>;
+  } else if (coupon == null && couponCode.length > 0) {
+    return <Typography color='#fb1c48'>😢 Invalid Coupon</Typography>;
+  } else {
+    return null;
+  }
 }
 
 const buttonStyling = {

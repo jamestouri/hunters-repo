@@ -7,7 +7,6 @@ import { timeFromUpdateUtil } from '../utils/helpers';
 import { stateEmojis, stateValue } from '../utils/objects';
 import ProfilePicture from './ProfilePicture';
 
-
 export default function BountyCell({ bounty }) {
   const size = useWindowSize();
   const {
@@ -16,14 +15,22 @@ export default function BountyCell({ bounty }) {
     funding_organization,
     state,
     bounty_value_in_usd,
-    bounty_value_in_eth,
     bounty_creator,
     updated_at,
     project_length,
   } = bounty;
 
   return (
-    <Card variant='outlined' sx={{ borderRadius: 0, marginTop: 5, borderWidth: 1, borderColor: '#e41f66', backgroundColor: BACKGROUND_COLOR }}>
+    <Card
+      variant='outlined'
+      sx={{
+        borderRadius: 0,
+        marginTop: 5,
+        borderWidth: 1,
+        borderColor: '#e41f66',
+        backgroundColor: BACKGROUND_COLOR,
+      }}
+    >
       <Link to={`/bounty/${id}/`} style={{ textDecoration: 'none' }}>
         <CardContent sx={{ display: 'flex', justifyContent: 'space-between' }}>
           <Box display='flex'>
@@ -131,16 +138,18 @@ export default function BountyCell({ bounty }) {
             >
               {bounty_value_in_usd} USD
             </Typography>
-            <Typography
-              marginLeft={3}
-              color='#FF367F'
-              height={25}
-              paddingLeft={2}
-              paddingRight={2}
-              backgroundColor={'rgb(228,31,102, 0.3)'}
-            >
-              {parseFloat(bounty_value_in_eth).toFixed(2)} ETH
-            </Typography>
+            {size.width > 500 ? (
+              <Typography
+                marginLeft={3}
+                color='#FF367F'
+                height={25}
+                paddingLeft={2}
+                paddingRight={2}
+                backgroundColor={'rgb(228,31,102, 0.3)'}
+              >
+                Paid in ETH
+              </Typography>
+            ) : null}
           </Box>
         </CardContent>
       </Link>

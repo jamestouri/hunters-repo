@@ -9,7 +9,6 @@ from django.http.response import JsonResponse
 from .models import Activity, Coupon, Profile, Bounty, WorkSubmission, Transaction
 from rest_framework import status
 from rest_framework.decorators import api_view
-from rest_framework.response import Response
 
 
 @api_view(['GET', 'POST'])
@@ -196,23 +195,23 @@ def coupons(request):
             return JsonResponse(coupons_serializer.data)
         return JsonResponse([])
     if request.method == 'POST':
-        data = JSONParser().parse(request) 
+        data = JSONParser().parse(request)
         coupon = data['coupon']
         coupon_serializer = CouponSerializer(data=coupon)
         if coupon_serializer.is_valid():
             return JsonResponse(coupon_serializer.data, status=status.HTTP_200_OK)
         return JsonResponse(coupon_serializer.data, status=status.HTTP_400_BAD_REQUEST)
-    
 
 
 @api_view(['GET', 'PATCH'])
 def coupon(request, coupon_code):
-    coupon = Coupon.objects.filter(code=coupon_code).first()
     if request.method == 'GET':
-        coupon_serializer = CouponSerializer(data=coupon)
-        if coupon_serializer.is_valid():
-            return JsonResponse(coupon_serializer.data)
-        return JsonResponse(None)
+        coupon = Coupon.objects.filter(code=coupon_code).first()
+        if coupon: 
+            coupon_serializer = CouponSerializer(coupon)
+            if coupon_serializer.data['active'] == True:
+                return JsonResponse(coupon_serializer.data, safe=False)
+        return JsonResponse(None, safe=False)
     # if request.method == 'PATCH':
 
 
@@ -220,7 +219,8 @@ def coupon(request, coupon_code):
 def transactions(request):
     if request.method == 'GET':
         transactions = Transaction.objects.all()
-        transactions_serializer = TransactionSerializer(data = transactions, many=True)
+        transactions_serializer = TransactionSerializer(
+            data=transactions, many=True)
         if transactions_serializer.is_valid():
             return JsonResponse(transactions_serializer.data, safe=False)
     elif request.method == 'POST':

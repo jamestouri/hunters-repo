@@ -32,5 +32,5 @@ urlpatterns = [
     path('api/work_submission/<work_submission_id>/', views.work_submission),
     path('api/transactions/', views.transactions),
     path('api/coupons/', views.coupons),
-    path('api/coupon/', views.coupon)
+    path('api/coupon/<coupon_code>/', views.coupon)
 ]
