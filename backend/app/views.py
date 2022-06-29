@@ -52,7 +52,7 @@ def bounties(request):
         bounty_creator = request.GET.get('bounty_creator')
         bounty_owner = request.GET.get('bounty_owner')
         if bounty_creator is not None:
-            bounties = Bounty.objects.filter(bounty_creator=bounty_creator)
+            bounties = Bounty.objects.filter(bounty_creator=bounty_creator).order_by('-id')
 
             bounty_serializer = BountySerializer(bounties, many=True)
             return JsonResponse(bounty_serializer.data, safe=False)
@@ -60,12 +60,12 @@ def bounties(request):
             # bounty_owner_wallet is an array so needing to see if it contains
             # owner
             bounties = Bounty.objects.filter(
-                bounty_owner_wallet__contains=[bounty_owner])
+                bounty_owner_wallet__contains=[bounty_owner]).order_by('-id')
             bounty_serializer = BountySerializer(bounties, many=True)
             return JsonResponse(bounty_serializer.data, safe=False)
 
         # Home page for bounties
-        bounties = Bounty.objects.filter()
+        bounties = Bounty.objects.filter().order_by('-id')
         # bounties = Bounty.objects.all()
         bounty_serializer = BountySerializer(bounties, many=True)
         return JsonResponse(bounty_serializer.data, safe=False)
