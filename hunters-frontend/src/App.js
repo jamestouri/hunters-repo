@@ -8,6 +8,7 @@ import ProjectSubmission from './components/ProjectSubmission';
 import Submissions from './components/Submissions';
 import Profile from './components/Profile';
 import BountyForm from './components/bounty-components/BountyForm';
+import Footer from './components/Footer';
 
 const theme = createTheme({
   palette: {
@@ -58,6 +59,7 @@ function App() {
           ></Route>
         </Routes>
       </Router>
+      <Footer />
     </ThemeProvider>
   );
 }
