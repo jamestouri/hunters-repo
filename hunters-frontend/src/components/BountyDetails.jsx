@@ -332,6 +332,17 @@ function ButtonActionsLogic({ bounty, setBounty }) {
       .then((res) => setBounty(res.data))
       .catch((err) => console.log(err));
   };
+  if (bounty.state === 'done') {
+    return (
+      <Box>
+        <Typography color='main'>Completed by</Typography>
+      </Box>
+    );
+  }
+
+  if (bounty.state !== 'open') {
+    return null;
+  }
 
   if (bounty_creator === walletAddress) {
     return (

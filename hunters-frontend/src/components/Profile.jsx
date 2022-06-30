@@ -62,28 +62,42 @@ export default function Profile() {
         <Typography marginTop={3} fontWeight='600' marginLeft={1} color='main'>
           {walletAddressShortener(profile.wallet_address)}
         </Typography>
+        {walletAddress === profile.wallet_address ? (
+          <Button
+            sx={{ marginTop: 4, width: '15%' }}
+            onClick={handleDisconnect}
+            variant='outlined'
+          >
+            Disconnect Wallet
+          </Button>
+        ) : null}
       </Box>
       <Typography marginTop={10} variant='h5' color='main' fontWeight='600'>
         Bounties Created
       </Typography>
-      {createdBounties.map((created) => (
-        <BountyCell key={created.id} bounty={created} />
-      ))}
+      {createdBounties.length > 0 ? (
+        createdBounties.map((created) => (
+          <BountyCell key={created.id} bounty={created} />
+        ))
+      ) : (
+        <Typography marginTop={3} color='main'>
+          No Bounties Created Yet!
+        </Typography>
+      )}
       <Typography marginTop={10} variant='h5' color='main' fontWeight='600'>
         Bounties Currently Working On
       </Typography>
-      {ownedBounties.map((owned) => (
-        <BountyCell key={owned.id} bounty={owned} />
-      ))}
-      {walletAddress === profile.wallet_address ? (
-        <Button
-          sx={{ marginTop: 4, marginBottom: 20 }}
-          onClick={handleDisconnect}
-          variant='outlined'
-        >
-          Disconnect Wallet
-        </Button>
-      ) : null}
+      <Box marginBottom={15}>
+        {ownedBounties.length > 0 ? (
+          ownedBounties.map((owned) => (
+            <BountyCell key={owned.id} bounty={owned} />
+          ))
+        ) : (
+          <Typography marginTop={3} color='main'>
+            Not Currently working on Any
+          </Typography>
+        )}
+      </Box>
     </Container>
   );
 }

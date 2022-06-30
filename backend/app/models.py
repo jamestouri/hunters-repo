@@ -87,7 +87,8 @@ class Bounty(models.Model):
         max_length=255, default='', blank=True)
     organization_url = models.CharField(
         max_length=255, default='', blank=True)
-    attached_job_url = models.CharField(max_length=255, blank=True, null=True, db_index=True)
+    attached_job_url = models.CharField(
+        max_length=255, blank=True, null=True, db_index=True)
     ways_to_contact = models.CharField(max_length=255, default='', blank=True)
     image_attachments = ArrayField(models.CharField(
         max_length=255), blank=True, default=list)
@@ -196,7 +197,8 @@ class Transaction(models.Model):
         ('Bounty Creation', 'Bounty Creation'),
         ('Bounty Payout', 'Bounty Payout')
     )
-    txn_hash = models.CharField(max_length=255, unique=True, null=True, default=None)
+    txn_hash = models.CharField(
+        max_length=255, unique=True, null=True, default=None)
     sender_wallet_address = models.CharField(max_length=255)
     receiver_wallet_address = models.CharField(max_length=255)
     amount_usd = models.DecimalField(max_digits=100, decimal_places=2)
@@ -204,3 +206,9 @@ class Transaction(models.Model):
     txn_type = models.CharField(max_length=100, choices=TXN_TYPE)
     bounty = models.ForeignKey(Bounty, on_delete=models.CASCADE)
 
+
+class CompletedBounty(models.Model):
+    bounty = models.ForeignKey(
+        Bounty, on_delete=models.SET_NULL, db_index=True, null=True)
+    profile_wallet = models.CharField(max_length=255)
+    created_at = models.DateTimeField(auto_now_add=True)
