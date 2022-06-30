@@ -115,14 +115,20 @@ export default function BountyDetails() {
           <CreatorContactInfo contactInfo={bounty.ways_to_contact} />
         </Box>
         <Box display='flex'>
-          <WorkingOnBounty bountyOwnersWallets={bounty.bounty_owner_wallet} />
+          {bounty.state === 'open' ? (
+            <WorkingOnBounty bountyOwnersWallets={bounty.bounty_owner_wallet} />
+          ) : null}
           <BountyStatus bounty={bounty} handleStateChange={handleStateChange} />
           <ExperienceLevel experienceLevel={bounty.experience_level} />
           <TimeCommitment timeCommitment={bounty.project_length} />
           {/* <WhenCreated timeLapse={bounty.updated_at} /> */}
         </Box>
       </Box>
-      <ButtonActionsLogic bounty={bounty} setBounty={setBounty} />
+      {bounty.state === 'open' ? (
+        <ButtonActionsLogic bounty={bounty} setBounty={setBounty} />
+      ) : (
+        <ShowCompleted bounty={bounty} />
+      )}
       <Divider sx={{ marginTop: 3, marginBottom: 3 }} />
       <Typography variant='h6' fontWeight='500' color='main'>
         Description
@@ -332,17 +338,6 @@ function ButtonActionsLogic({ bounty, setBounty }) {
       .then((res) => setBounty(res.data))
       .catch((err) => console.log(err));
   };
-  if (bounty.state === 'done') {
-    return (
-      <Box>
-        <Typography color='main'>Completed by</Typography>
-      </Box>
-    );
-  }
-
-  if (bounty.state !== 'open') {
-    return null;
-  }
 
   if (bounty_creator === walletAddress) {
     return (
@@ -408,29 +403,55 @@ function ButtonActionsLogic({ bounty, setBounty }) {
       </>
     );
   }
-  if (bounty.state === 'open') {
-    return (
-      <>
-        <WalletModal open={open} handleClose={handleClose} />
-        <Button
-          onClick={handleAcceptWork}
-          variant='contained'
-          sx={{
-            marginTop: 4,
-            borderRadius: 0,
-            boxShadow: 'none',
-            '&:hover': {
-              backgroundColor: 'rgb(29,179,249)',
-            },
-            backgroundColor: 'rgb(29,179,249, 0.7)',
-            color: 'main',
-          }}
-        >
-          Start Project
-        </Button>
-      </>
-    );
+  return (
+    <>
+      <WalletModal open={open} handleClose={handleClose} />
+      <Button
+        onClick={handleAcceptWork}
+        variant='contained'
+        sx={{
+          marginTop: 4,
+          borderRadius: 0,
+          boxShadow: 'none',
+          '&:hover': {
+            backgroundColor: 'rgb(29,179,249)',
+          },
+          backgroundColor: 'rgb(29,179,249, 0.7)',
+          color: 'main',
+        }}
+      >
+        Start Project
+      </Button>
+    </>
+  );
+}
+
+function ShowCompleted({ bounty }) {
+  const [completedBounties, setCompletedBounties] = useState([]);
+  useEffect(() => {
+    axios
+      .get(
+        `${process.env.REACT_APP_DEV_SERVER}/api/completed_bounties?bounty_id=${bounty.id}`
+      )
+      .then((res) => setCompletedBounties(res.data))
+      .catch((err) => console.log(err));
+  }, [bounty.id]);
+  console.log(completedBounties);
+  if (bounty.state !== 'done') {
+    return null;
   }
+  return (
+    <Box marginTop={2}>
+      <Typography fontSize={18} fontWeight={600} color='main'>
+        Completed by
+      </Typography>
+      {completedBounties.map((c) => (
+        <Button key={c.id} sx={{ padding: 0, marginTop: 1, color: '#649ddf' }}>
+          {walletAddressShortener(c.profile_wallet)}
+        </Button>
+      ))}
+    </Box>
+  );
 }
 
 function FilesAndImages({ imageAttachments }) {

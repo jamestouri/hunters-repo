@@ -47,7 +47,7 @@ export default function SubmissionPayoutModal({
         `${process.env.REACT_APP_DEV_SERVER}/api/profile/${submission.profile}/`
       )
       .then((res) => setSubmissionOwner(res.data))
-      .catch((err) => console.log(err));
+      .catch((err) => setLoading(false));
   }, [submission.profile]);
 
   if (bounty == null) {
@@ -75,7 +75,18 @@ export default function SubmissionPayoutModal({
         activities: activity,
       })
       .then((res) => console.log('res', res))
-      .catch((err) => console.log(err));
+      .catch(() => setLoading(false));
+
+    const completed_bounty = {
+      bounty: bounty.id,
+      profile_wallet: submissionOwner.wallet_address,
+    };
+    axios
+      .post(`${process.env.REACT_APP_DEV_SERVER}/api/completed_bounties/`, {
+        completed_bounty: completed_bounty,
+      })
+      .then((res) => console.log(res))
+      .catch(() => setLoading(false));
 
     axios
       .patch(
@@ -90,13 +101,16 @@ export default function SubmissionPayoutModal({
 
   const handleAcceptance = async () => {
     setLoading(true);
-    sendTransaction(bounty.bounty_creator, submissionOwner.wallet_address).then(
-      (txn) => {
+    sendTransaction(
+      bounty.bounty_creator,
+      submissionOwner.wallet_address,
+      ethPrice / bounty.bounty_value_in_usd
+    )
+      .then((txn) => {
         console.log('success', txn);
         handleDBChanges();
-      }
-    )
-    .catch(() => setLoading(false));
+      })
+      .catch(() => setLoading(false));
   };
 
   return (

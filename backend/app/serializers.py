@@ -1,6 +1,6 @@
 from statistics import mode
 from rest_framework import serializers
-from .models import Profile, Bounty, Activity, WorkSubmission, FunderRating, Coupon, Transaction
+from .models import Profile, Bounty, Activity, WorkSubmission, FunderRating, Coupon, Transaction, CompletedBounty
 
 
 class ProfileSerializer(serializers.ModelSerializer):
@@ -38,4 +38,9 @@ class CouponSerializer(serializers.ModelSerializer):
 class TransactionSerializer(serializers.ModelSerializer):
     class Meta:
         model = Transaction 
+        fields = '__all__'
+
+class CompletedBountySerializer(serializers.ModelSerializer):
+    class Meta: 
+        model = CompletedBounty
         fields = '__all__'

@@ -4,9 +4,9 @@ from types import NoneType
 from urllib import response
 from django.shortcuts import render
 from rest_framework.parsers import JSONParser
-from .serializers import ActivitySerializer, CouponSerializer, ProfileSerializer, BountySerializer, WorkSubmissionSerializer, TransactionSerializer
+from .serializers import ActivitySerializer, CompletedBountySerializer, CouponSerializer, ProfileSerializer, BountySerializer, WorkSubmissionSerializer, TransactionSerializer
 from django.http.response import JsonResponse
-from .models import Activity, Coupon, Profile, Bounty, WorkSubmission, Transaction
+from .models import Activity, Coupon, Profile, Bounty, WorkSubmission, Transaction, CompletedBounty
 from rest_framework import status
 from rest_framework.decorators import api_view
 
@@ -118,7 +118,7 @@ def activities(request):
         bounty_id = request.GET.get('bounty_id')
         # For activities in Bounties
         if bounty_id is not None:
-            activities = Activity.objects.filter(bounty=bounty_id)
+            activities = Activity.objects.filter(bounty=bounty_id).order_by('-created_at')
             activity_serializer = ActivitySerializer(activities, many=True)
             return JsonResponse(activity_serializer.data, safe=False)
         activities = Activity.objects.all()
@@ -237,6 +237,27 @@ def transactions(request):
             transaction_serializer.save()
             return JsonResponse(transaction_serializer.data, status=status.HTTP_201_CREATED)
         return JsonResponse(transaction_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+@ api_view(['GET', 'POST'])
+def completed_bounties(request):
+    if request.method == 'GET':
+        bounty_id = request.GET.get('bounty_id')
+        if bounty_id is not None: 
+            completed_bounties = CompletedBounty.objects.filter(bounty=bounty_id)
+            completed_bounties_serializer = CompletedBountySerializer(completed_bounties, many=True)
+        else:
+            completed_bounties = CompletedBounty.objects.all() 
+            completed_bounties_serializer = CompletedBountySerializer(completed_bounties, many=True)
+        return JsonResponse(completed_bounties_serializer.data, safe=False)
+    if request.method == 'POST':
+        data = JSONParser().parse(request)
+        completed_bounty = data['completed_bounty']
+        completed_bounty_serializer = CompletedBountySerializer(data=completed_bounty)
+        if completed_bounty_serializer.is_valid():
+            completed_bounty_serializer.save() 
+            return JsonResponse(completed_bounty_serializer.data, status=status.HTTP_201_CREATED)
+        return JsonResponse(completed_bounty_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 # Helpers

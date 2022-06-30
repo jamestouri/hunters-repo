@@ -1,6 +1,6 @@
 from atexit import register
 from django.contrib import admin
-from .models import Activity, Profile, Bounty, WorkSubmission, FunderRating, Coupon, Transaction
+from .models import Activity, Profile, Bounty, WorkSubmission, FunderRating, Coupon, Transaction, CompletedBounty
 
 # Register your models here.
 
@@ -96,3 +96,14 @@ class TransactionAdmin(admin.ModelAdmin):
     )
 
 admin.site.register(Transaction, TransactionAdmin)
+
+
+class CompletedBountyAdmin(admin.ModelAdmin):
+    completed_bounty_admin = (
+        'id',
+        'bounty',
+        'profile_wallet',
+        'created_at'
+    )
+    
+admin.site.register(CompletedBounty, CompletedBountyAdmin)

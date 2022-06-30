@@ -98,7 +98,19 @@ export default function ProjectSubmission() {
         onChange={setAdditionalText}
       />
 
-      <Button onClick={handleSubmit((formData) => submitProject(formData))}>
+      <Button
+        sx={{
+          width: '25%',
+          marginTop: 4,
+          marginBottom: 10,
+          borderWidth: 1,
+          borderColor: '#1db3f9',
+          borderRadius: 0,
+          color: '#1db3f9'
+        }}
+        variant='outlined'
+        onClick={handleSubmit((formData) => submitProject(formData))}
+      >
         Submit
       </Button>
     </Container>

@@ -108,7 +108,7 @@ export function timeDateForProfile(created) {
 export async function sendTransaction(
   sendingWalletAddress,
   receivingWalletAddress,
-  amount = '0.0001'
+  amount = '0.00001'
 ) {
 
   // Safety check to make sure we're not accidentally charging the amount in USD
@@ -120,6 +120,7 @@ export async function sendTransaction(
   );
   const estimatedGasPrice = await web3.eth.getGasPrice();
   const nonce = await web3.eth.getTransactionCount(sendingWalletAddress);
+
   const txn = await web3.eth.sendTransaction({
     from: sendingWalletAddress,
     to: receivingWalletAddress,
@@ -136,7 +137,7 @@ export async function completePaymentUponBountyCreation(
   sendingWalletAddress,
   amount = '0.0001'
 ) {
-  return sendTransaction(
+  return await sendTransaction(
     sendingWalletAddress,
     process.env.REACT_APP_WALLET_FOR_PAYMENTS,
     amount
