@@ -9,3 +9,4 @@ asgi.py
 
 pyvenv.cfg
 
+.env
