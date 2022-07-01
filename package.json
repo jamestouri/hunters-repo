@@ -1,0 +1,6 @@
+{
+    "scripts": {
+      "heroku-prebuild": "cd hunters-frontend && yarn install && react-app-rewired build && cd .. && cd backend && pip -r requirements.txt",
+      "start": "cd hunters-frontend && react-app-rewired start"
+    }
+  }
