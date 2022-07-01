@@ -250,6 +250,7 @@ def completed_bounties(request):
             completed_bounties = CompletedBounty.objects.all() 
             completed_bounties_serializer = CompletedBountySerializer(completed_bounties, many=True)
         return JsonResponse(completed_bounties_serializer.data, safe=False)
+        
     if request.method == 'POST':
         data = JSONParser().parse(request)
         completed_bounty = data['completed_bounty']
