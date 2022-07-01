@@ -41,11 +41,10 @@ export default function Home() {
             }}
             variant='h2'
           >
-            Hunters
+            Unwall
           </Typography>
           <Typography marginTop={2} fontWeight='500' variant='h6' color='white'>
-            Get paid experience by building out solutions for innovative
-            companies
+            Be part of the future and work on Web3 bounties
           </Typography>
           <Divider sx={{ marginTop: 5, marginBottom: 5, backgroundColor: 'subColor' }} />
           {bounties.map((b) => (

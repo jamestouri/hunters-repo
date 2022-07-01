@@ -168,6 +168,11 @@ export default function BountyForm() {
     }
   }, [formik.values.bounty_value_in_usd, coupon]);
 
+  const catchSets = () => {
+    setLoading(false);
+    setError(true);
+  };
+
   const bountyCreationFlow = async (formData) => {
     setLoading(true);
     // If 100% promo coupon is used then no need to send payment
@@ -176,7 +181,7 @@ export default function BountyForm() {
     } else {
       completePaymentUponBountyCreation(walletAddress, totalCost / ethPrice)
         .then((res) => createBounty(formData, res.transactionHash))
-        .catch(() => setLoading(false));
+        .catch(() => catchSets());
     }
   };
 
@@ -195,7 +200,7 @@ export default function BountyForm() {
         bounty: data,
       })
       .catch((err) => {
-        setLoading(false);
+        catchSets();
         console.log(err);
       });
 
@@ -223,7 +228,7 @@ export default function BountyForm() {
         transaction: txnObject,
       })
       .catch((err) => {
-        setLoading(false);
+        catchSets();
         console.log(err);
       });
 
@@ -249,7 +254,7 @@ export default function BountyForm() {
         console.log('✅ bounty edited', res);
         navigate(`/bounty/${res.data.id}/`);
       })
-      .catch((err) => console.log(err));
+      .catch(() => catchSets());
     setLoading(false);
   };
 
@@ -558,6 +563,7 @@ export default function BountyForm() {
         totalCost={totalCost}
         formik={formik}
         loading={loading}
+        error={error}
       />
     </Container>
   );
@@ -601,7 +607,7 @@ const buttonStyling = {
   },
 };
 
-function ButtonAction({ bountyId, totalCost, formik, loading }) {
+function ButtonAction({ bountyId, totalCost, formik, loading, error }) {
   if (!bountyId) {
     return (
       <Box position='relative'>
@@ -625,6 +631,11 @@ function ButtonAction({ bountyId, totalCost, formik, loading }) {
           ) : null}
           Create Bounty
         </Button>
+        {error ? (
+          <Typography color='#fb1c48'>
+            Something went wrong, please try again later
+          </Typography>
+        ) : null}
         <Typography color='main' marginTop={2}>
           Total Cost: ${totalCost} USD (5% of bounty reward)
         </Typography>

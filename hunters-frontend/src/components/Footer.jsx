@@ -16,7 +16,7 @@ export default function Footer() {
         alignItems='center'
       >
         <Logo />
-        <Typography color={'main'}>Copyright © Hunters xyz inc.</Typography>
+        <Typography color={'main'}>Copyright © Unwall xyz inc.</Typography>
       </Box>
     </Container>
   );
