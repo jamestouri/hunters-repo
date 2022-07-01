@@ -1,6 +1,14 @@
 {
+    "name": "unwall",
+    "version": "1.0.0",
     "scripts": {
       "heroku-prebuild": "cd hunters-frontend && yarn install && react-app-rewired build && cd .. && cd backend && pip -r requirements.txt",
       "start": "cd hunters-frontend && react-app-rewired start"
-    }
+    },
+    "dependencies": {},
+    "devDependencies": {},
+    "cacheDirectories": [
+      "node_modules",
+      "react/node_modules"
+    ]
   }
