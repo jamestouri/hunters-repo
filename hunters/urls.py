@@ -19,6 +19,7 @@ from django.urls import re_path as url
 from app import views
 from django.views.generic import TemplateView
 
+
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/profiles/', views.profiles),
@@ -36,7 +37,6 @@ urlpatterns = [
     path('api/coupon/<code>/', views.coupon),
     path('api/completed_bounties/', views.completed_bounties),
     url(r'^api/completed_bounties/?', views.completed_bounties),
-    path(r'unwall/', views.ReactView.as_view(), name='react_app'),  
-
+    path('', TemplateView.as_view(template_name = 'index.html')),
 
 ]
