@@ -17,9 +17,6 @@ def index(request):
 
 class ReactView(TemplateView):
     template_name = 'index.html'
-
-    def get_context_data(self, **kwargs: Any) -> Dict[str, Any]:
-        return super().get_context_data(**kwargs)
     
     def my_view(request, path=''):
         return render('index.html', context={'context_variable': 'value'})
