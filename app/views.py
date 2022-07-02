@@ -10,6 +10,8 @@ from .models import Activity, Coupon, Profile, Bounty, WorkSubmission, Transacti
 from rest_framework import status
 from rest_framework.decorators import api_view
 
+def index(request):
+    return render(request, 'index.html')
 
 @api_view(['GET', 'POST'])
 def profiles(request):
