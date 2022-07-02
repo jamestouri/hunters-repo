@@ -36,7 +36,7 @@ urlpatterns = [
     path('api/coupon/<code>/', views.coupon),
     path('api/completed_bounties/', views.completed_bounties),
     url(r'^api/completed_bounties/?', views.completed_bounties),
-    path(r'unwall/', views.MyReactView.as_view(), name='react_app'),  
+    path(r'unwall/', views.ReactView.as_view(), name='react_app'),  
 
 
 ]
