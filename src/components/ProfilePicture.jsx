@@ -7,7 +7,7 @@ export default function ProfilePicture({ profileAddress, dimension = 80 }) {
 
   useEffect(() => {
     axios
-      .get(`${process.env.REACT_APP_DEV_SERVER}/api/profile/${profileAddress}/`)
+      .get(`${process.env.REACT_APP_API_SERVER}/api/profile/${profileAddress}/`)
       .then((res) => setProfile(res.data))
       .catch((err) => console.log(err));
   }, [profileAddress]);

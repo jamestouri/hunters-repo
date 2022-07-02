@@ -9,7 +9,7 @@ export default function ProfileNameFromId({ profileId }) {
 
   useEffect(() => {
     axios
-      .get(`${process.env.REACT_APP_DEV_SERVER}/api/profile/${profileId}/`)
+      .get(`${process.env.REACT_APP_API_SERVER}/api/profile/${profileId}/`)
       .then((res) => setProfile(res.data))
       .catch((err) => console.log(err));
   }, []);

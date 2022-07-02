@@ -22,7 +22,7 @@ export default function Profile() {
   useEffect(() => {
     axios
       .get(
-        `${process.env.REACT_APP_DEV_SERVER}/api/profile/${walletFromParam}/`
+        `${process.env.REACT_APP_API_SERVER}/api/profile/${walletFromParam}/`
       )
       .then((res) => setProfile(res.data))
       .catch((err) => console.log(err));
@@ -32,7 +32,7 @@ export default function Profile() {
   useEffect(() => {
     axios
       .get(
-        `${process.env.REACT_APP_DEV_SERVER}/api/bounties?bounty_creator=${walletFromParam}`
+        `${process.env.REACT_APP_API_SERVER}/api/bounties?bounty_creator=${walletFromParam}`
       )
       .then((res) => setCreatedBounties(res.data))
       .catch((err) => console.log(err));
@@ -41,7 +41,7 @@ export default function Profile() {
   useEffect(() => {
     axios
       .get(
-        `${process.env.REACT_APP_DEV_SERVER}/api/bounties?bounty_owner=${walletFromParam}`
+        `${process.env.REACT_APP_API_SERVER}/api/bounties?bounty_owner=${walletFromParam}`
       )
       .then((res) => setOwnedBounties(res.data))
       .catch((err) => console.log(err));
@@ -110,7 +110,7 @@ function ProfilePic({ profile }) {
     // image link in profile object
     axios
       .patch(
-        `${process.env.REACT_APP_DEV_SERVER}/api/profile/${walletAddress}/`,
+        `${process.env.REACT_APP_API_SERVER}/api/profile/${walletAddress}/`,
         {
           profile: { profile_picture: stored[0] },
         }

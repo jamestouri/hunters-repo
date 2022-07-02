@@ -33,7 +33,7 @@ export default function SubmissionPayoutModal({
   useEffect(() => {
     axios
       .get(
-        `${process.env.REACT_APP_DEV_SERVER}/api/bounty/${submission.bounty}/`
+        `${process.env.REACT_APP_API_SERVER}/api/bounty/${submission.bounty}/`
       )
       .then((res) => {
         setBounty(res.data);
@@ -44,7 +44,7 @@ export default function SubmissionPayoutModal({
   useEffect(() => {
     axios
       .get(
-        `${process.env.REACT_APP_DEV_SERVER}/api/profile/${submission.profile}/`
+        `${process.env.REACT_APP_API_SERVER}/api/profile/${submission.profile}/`
       )
       .then((res) => setSubmissionOwner(res.data))
       .catch((err) => setLoading(false));
@@ -70,7 +70,7 @@ export default function SubmissionPayoutModal({
       activity_type: 'Work Approved',
     };
     axios
-      .patch(`${process.env.REACT_APP_DEV_SERVER}/api/bounty/${bounty.id}/`, {
+      .patch(`${process.env.REACT_APP_API_SERVER}/api/bounty/${bounty.id}/`, {
         bounty: bounty,
         activities: activity,
       })
@@ -82,7 +82,7 @@ export default function SubmissionPayoutModal({
       profile_wallet: submissionOwner.wallet_address,
     };
     axios
-      .post(`${process.env.REACT_APP_DEV_SERVER}/api/completed_bounties/`, {
+      .post(`${process.env.REACT_APP_API_SERVER}/api/completed_bounties/`, {
         completed_bounty: completed_bounty,
       })
       .then((res) => console.log(res))
@@ -90,7 +90,7 @@ export default function SubmissionPayoutModal({
 
     axios
       .patch(
-        `${process.env.REACT_APP_DEV_SERVER}/api/work_submission/${submission.id}/`,
+        `${process.env.REACT_APP_API_SERVER}/api/work_submission/${submission.id}/`,
         {
           work_submission: { accepted: true },
         }

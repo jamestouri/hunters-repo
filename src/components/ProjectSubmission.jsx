@@ -32,7 +32,7 @@ export default function ProjectSubmission() {
     };
     const activity = { bounty: bountyId, activity_type: 'Work Submitted' };
     await axios
-      .post(`${process.env.REACT_APP_DEV_SERVER}/api/work_submissions/`, {
+      .post(`${process.env.REACT_APP_API_SERVER}/api/work_submissions/`, {
         work_submission: data,
         activities: activity,
       })

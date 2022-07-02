@@ -22,7 +22,7 @@ export default function Submissions() {
   useEffect(() => {
     axios
       .get(
-        `${process.env.REACT_APP_DEV_SERVER}/api/work_submissions?bounty_id=${bountyId}&open=${openSubmissions}`
+        `${process.env.REACT_APP_API_SERVER}/api/work_submissions?bounty_id=${bountyId}&open=${openSubmissions}`
       )
       .then((res) => setSubmissions(res.data))
       .catch((err) => console.log(err));
@@ -88,7 +88,7 @@ function SubmissionCell({ submission }) {
   useEffect(() => {
     axios
       .get(
-        `${process.env.REACT_APP_DEV_SERVER}/api/bounty/${submission.bounty}/`
+        `${process.env.REACT_APP_API_SERVER}/api/bounty/${submission.bounty}/`
       )
       .then((res) => setBounty(res.data))
       .catch((err) => console.log(err));
@@ -202,7 +202,7 @@ function SubmissionActionButtons({ submission }) {
   const handleArchiving = async () => {
     axios
       .patch(
-        `${process.env.REACT_APP_DEV_SERVER}/api/work_submission/${submission.id}/`,
+        `${process.env.REACT_APP_API_SERVER}/api/work_submission/${submission.id}/`,
         {
           work_submission: { open: false },
         }
@@ -213,7 +213,7 @@ function SubmissionActionButtons({ submission }) {
   const handleReopening = async () => {
     axios
       .patch(
-        `${process.env.REACT_APP_DEV_SERVER}/api/work_submission/${submission.id}/`,
+        `${process.env.REACT_APP_API_SERVER}/api/work_submission/${submission.id}/`,
         {
           work_submission: { open: true },
         }

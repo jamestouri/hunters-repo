@@ -6,15 +6,18 @@ import reportWebVitals from './reportWebVitals';
 import axios from 'axios';
 
 // Import thirdweb provider and Rinkeby ChainId
-import { ChainId, ThirdwebProvider } from '@thirdweb-dev/react';
+import { ThirdwebProvider } from '@thirdweb-dev/react';
 import { ProfileProvider } from './contexts/ProfileContext';
 
 axios.defaults.xsrfCookieName = 'csrftoken';
 axios.defaults.xsrfHeaderName = 'X-CSRFToken';
 
-// This is the chainId your dApp will work on.
-// const activeChainId = ChainId.Mainnet; When deploying to production
-const activeChainId = ChainId.Rinkeby;
+// This is the chainId our dApp will work on.
+// ChainId is enum with Rinkeby as value 4 and Mainnet value 1
+// To look more into it search the ChainId enum in chains.d.ts
+
+const chainId = process.env.REACT_APP_CHAIN_ID;
+const activeChainId = Number(chainId);
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(

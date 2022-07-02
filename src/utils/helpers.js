@@ -113,10 +113,11 @@ export async function sendTransaction(
 
   // Safety check to make sure we're not accidentally charging the amount in USD
   // We'll change once someone asks that large of a transaction
+  // REACT APP NETWORK will be rinkeby locally, main network on deployed
   if (amount > 40) throw 'Check to make sure amount is in eth not USD';
   const amountInWei = Math.round(amount * WEI_TO_ETH);
   const web3 = createAlchemyWeb3(
-    `https://eth-rinkeby.alchemyapi.io/v2/${process.env.REACT_APP_RINKEBY_NETWORK}`
+    `https://eth-rinkeby.alchemyapi.io/v2/${process.env.REACT_APP_NETWORK}`
   );
   const estimatedGasPrice = await web3.eth.getGasPrice();
   const nonce = await web3.eth.getTransactionCount(sendingWalletAddress);

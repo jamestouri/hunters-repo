@@ -80,7 +80,7 @@ export default function BountyForm() {
   useEffect(() => {
     if (bountyId) {
       axios
-        .get(`${process.env.REACT_APP_DEV_SERVER}/api/bounty/${bountyId}/`)
+        .get(`${process.env.REACT_APP_API_SERVER}/api/bounty/${bountyId}/`)
         .then((res) => {
           setBounty(res.data);
           setDescription(res.data.description);
@@ -95,7 +95,7 @@ export default function BountyForm() {
     if (couponCode.length > 4) {
       setLoading(true);
       axios
-        .get(`${process.env.REACT_APP_DEV_SERVER}/api/coupon/${couponCode}/`)
+        .get(`${process.env.REACT_APP_API_SERVER}/api/coupon/${couponCode}/`)
         .then((res) => {
           console.log(res);
           if (res.data) {
@@ -196,7 +196,7 @@ export default function BountyForm() {
     };
 
     const bounty = await axios
-      .post(`${process.env.REACT_APP_DEV_SERVER}/api/bounties/`, {
+      .post(`${process.env.REACT_APP_API_SERVER}/api/bounties/`, {
         bounty: data,
       })
       .catch((err) => {
@@ -205,7 +205,7 @@ export default function BountyForm() {
       });
 
     await axios
-      .patch(`${process.env.REACT_APP_DEV_SERVER}/api/coupon/${couponCode}/`, {
+      .patch(`${process.env.REACT_APP_API_SERVER}/api/coupon/${couponCode}/`, {
         coupon: { active: false },
       })
       .then((res) => console.log('👍 success', res))
@@ -224,7 +224,7 @@ export default function BountyForm() {
       bounty: bounty.data.id,
     };
     await axios
-      .post(`${process.env.REACT_APP_DEV_SERVER}/api/transactions/`, {
+      .post(`${process.env.REACT_APP_API_SERVER}/api/transactions/`, {
         transaction: txnObject,
       })
       .catch((err) => {
@@ -246,7 +246,7 @@ export default function BountyForm() {
       activity_type: 'Edited Bounty',
     };
     await axios
-      .patch(`${process.env.REACT_APP_DEV_SERVER}/api/bounty/${bountyId}/`, {
+      .patch(`${process.env.REACT_APP_API_SERVER}/api/bounty/${bountyId}/`, {
         bounty: data,
         activities: activity,
       })

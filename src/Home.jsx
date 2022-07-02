@@ -20,7 +20,7 @@ export default function Home() {
   // const [state, dispatch] = useReducer(sideNavReducer, initialFilterState);
   useEffect(() => {
     axios
-      .get(`${process.env.REACT_APP_DEV_SERVER}/api/bounties/`)
+      .get(`${process.env.REACT_APP_API_SERVER}/api/bounties/`)
       .then((res) => setBounties(res.data))
       .catch((err) => console.log(err));
   }, []);

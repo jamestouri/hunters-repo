@@ -25,7 +25,7 @@ export function ProfileProvider({ children }) {
   const getProfileFromDB = () => {
     if (walletAddress) {
       axios
-        .get(`${process.env.REACT_APP_DEV_SERVER}/api/profile/${walletAddress}/`)
+        .get(`${process.env.REACT_APP_API_SERVER}/api/profile/${walletAddress}/`)
         .then((res) => {
           if (res.data) {
             console.log('👤 success', res);
@@ -43,7 +43,7 @@ export function ProfileProvider({ children }) {
 
     const initialProfileColor = initialColors[Math.floor(Math.random() * initialColors.length)]
     axios
-      .post(`${process.env.REACT_APP_DEV_SERVER}/api/profiles/`, {
+      .post(`${process.env.REACT_APP_API_SERVER}/api/profiles/`, {
         wallet_address: walletAddress,
         profile_picture_initial: initialProfileColor
       })

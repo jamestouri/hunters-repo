@@ -40,7 +40,7 @@ export default function BountyDetails() {
 
   useEffect(() => {
     axios
-      .get(`${process.env.REACT_APP_DEV_SERVER}/api/bounty/${bountyId}/`)
+      .get(`${process.env.REACT_APP_API_SERVER}/api/bounty/${bountyId}/`)
       .then((res) => setBounty(res.data))
       .catch((err) => console.log('😢 ' + err));
   }, [bountyId]);
@@ -53,7 +53,7 @@ export default function BountyDetails() {
     setBounty({ ...bounty, state: e.target.value });
     // Don't need to add activity for this change
     await axios
-      .patch(`${process.env.REACT_APP_DEV_SERVER}/api/bounty/${bountyId}/`, {
+      .patch(`${process.env.REACT_APP_API_SERVER}/api/bounty/${bountyId}/`, {
         bounty: { state: e.target.value },
       })
       .then((res) => console.log('✅ status changed', res))
@@ -312,7 +312,7 @@ function ButtonActionsLogic({ bounty, setBounty }) {
         activity_type: 'Started Work',
       };
       axios
-        .patch(`${process.env.REACT_APP_DEV_SERVER}/api/bounty/${bounty.id}/`, {
+        .patch(`${process.env.REACT_APP_API_SERVER}/api/bounty/${bounty.id}/`, {
           bounty: { bounty_owner_wallet: bountyOwners },
           activities: startedActivity,
         })
@@ -331,7 +331,7 @@ function ButtonActionsLogic({ bounty, setBounty }) {
       activity_type: 'Left Project',
     };
     axios
-      .patch(`${process.env.REACT_APP_DEV_SERVER}/api/bounty/${bounty.id}/`, {
+      .patch(`${process.env.REACT_APP_API_SERVER}/api/bounty/${bounty.id}/`, {
         bounty: { bounty_owner_wallet: removingBountyOwner },
         activities: leaveActivity,
       })
@@ -431,7 +431,7 @@ function ShowCompleted({ bounty }) {
   useEffect(() => {
     axios
       .get(
-        `${process.env.REACT_APP_DEV_SERVER}/api/completed_bounties?bounty_id=${bounty.id}`
+        `${process.env.REACT_APP_API_SERVER}/api/completed_bounties?bounty_id=${bounty.id}`
       )
       .then((res) => setCompletedBounties(res.data))
       .catch((err) => console.log(err));
@@ -502,7 +502,7 @@ function Activities({ bountyId }) {
   useEffect(() => {
     axios
       .get(
-        `${process.env.REACT_APP_DEV_SERVER}/api/activities?bounty_id=${bountyId}`
+        `${process.env.REACT_APP_API_SERVER}/api/activities?bounty_id=${bountyId}`
       )
       .then((res) => setActivities(res.data))
       .catch((err) => console.log(err));
