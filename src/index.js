@@ -3,10 +3,14 @@ import ReactDOM from 'react-dom/client';
 import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
+import axios from 'axios';
 
 // Import thirdweb provider and Rinkeby ChainId
 import { ChainId, ThirdwebProvider } from '@thirdweb-dev/react';
 import { ProfileProvider } from './contexts/ProfileContext';
+
+axios.defaults.xsrfCookieName = 'csrftoken';
+axios.defaults.xsrfHeaderName = 'X-CSRFToken';
 
 // This is the chainId your dApp will work on.
 // const activeChainId = ChainId.Mainnet; When deploying to production
