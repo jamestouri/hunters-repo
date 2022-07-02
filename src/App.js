@@ -27,7 +27,7 @@ const theme = createTheme({
 function App() {
   return (
     <ThemeProvider theme={theme}>
-      <Router>
+      <Router basename='/unwall/' >
         <Navbar />
         <Routes>
           <Route exact path='/' element={<Home />}></Route>

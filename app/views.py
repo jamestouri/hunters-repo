@@ -1,4 +1,5 @@
 from os import stat
+from this import d
 from time import time
 from types import NoneType
 from urllib import response
@@ -9,9 +10,19 @@ from django.http.response import JsonResponse
 from .models import Activity, Coupon, Profile, Bounty, WorkSubmission, Transaction, CompletedBounty
 from rest_framework import status
 from rest_framework.decorators import api_view
+from django.views.generic.base import TemplateView
 
 def index(request):
     return render(request, 'index.html')
+
+class ReactView(TemplateView):
+    template_name = 'index.html'
+
+    def get_context_data(self, **kwargs: Any) -> Dict[str, Any]:
+        return super().get_context_data(**kwargs)
+    
+    def my_view(request, path=''):
+        return render('index.html', context={'context_variable': 'value'})
 
 @api_view(['GET', 'POST'])
 def profiles(request):
