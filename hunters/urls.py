@@ -37,6 +37,6 @@ urlpatterns = [
     path('api/coupon/<code>/', views.coupon),
     path('api/completed_bounties/', views.completed_bounties),
     url(r'^api/completed_bounties/?', views.completed_bounties),
-    path('', TemplateView.as_view(template_name = 'index.html')),
+    url('', TemplateView.as_view(template_name = 'index.html')),
 
 ]
