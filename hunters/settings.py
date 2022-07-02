@@ -63,7 +63,7 @@ ROOT_URLCONF = 'hunters.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': ['/public/index.html'],
+        'DIRS': ['/public/'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
