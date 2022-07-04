@@ -33,7 +33,7 @@ SECRET_KEY = os.environ.get('SECRET_KEY')
 # Not sure why this keeps putting true on Production despite 
 # having a env var on Heroku labelling False 
 # if needs True then switch it back
-DEBUG = False 
+DEBUG = True 
 
 ALLOWED_HOSTS = ['localhost','127.0.0.1','unwall-www.vercel.app', 'unwall.xyz']
 
