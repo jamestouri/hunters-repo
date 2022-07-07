@@ -306,11 +306,19 @@ def organizations(request):
         return JsonResponse(organization_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         
 
-# @api_view(['GET', 'PATCH'])
-# def organization(request, org_id):
-#     organization = Organization.objects.filter(id=org_id).first()
-#     if request.method == 'GET':
-
+@api_view(['GET', 'PATCH'])
+def organization(request, org_id):
+    organization = Organization.objects.filter(id=org_id).first()
+    if request.method == 'GET':
+        organization_serializer = BountySerializer(organization_serializer)
+        return JsonResponse(organization_serializer.data, safe=False)
+    if request.method == 'PATCH':
+        organization_serializer = OrganizationSerializer(
+            organization, data=request.data['organization'], partial=True)
+        if organization_serializer.is_valid():
+            organization_serializer.save()
+            return JsonResponse(organization_serializer.data, status=status.HTTP_200_OK)
+        return JsonResponse(organization_serializer.errors, status=status.HTTP_400_BAD_REQUEST)      
 
 
 # Helpers

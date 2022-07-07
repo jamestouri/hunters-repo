@@ -1,6 +1,5 @@
 from pyexpat import model
 from statistics import mode
-from tkinter import CASCADE
 from django.db import models
 from django.contrib.postgres.fields import ArrayField, JSONField
 from django.core.validators import MaxValueValidator, MinValueValidator
