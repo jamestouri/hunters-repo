@@ -293,8 +293,25 @@ def completed_bounties(request):
 def organizations(request):
     if request.method == 'GET':
         organizations = Organization.objects.all()
-        orgaization_serializer = OrganizationSerializer(data=organizations, many=True)
+        organization_serializer = OrganizationSerializer(data=organizations, many=True)
+        if organization_serializer.is_valid():
+            return JsonResponse(organization_serializer.data, safe=False)
+    if request.method == 'POST':
+        data = JSONParser().parse(request)
+        organization = data['organization']
+        organization_serializer = OrganizationSerializer(data=organization)
+        if organization_serializer.is_valid():
+            organization_serializer.save() 
+            return JsonResponse(organization_serializer.data, status=status.HTTP_201_CREATED)
+        return JsonResponse(organization_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         
+
+# @api_view(['GET', 'PATCH'])
+# def organization(request, org_id):
+#     organization = Organization.objects.filter(id=org_id).first()
+#     if request.method == 'GET':
+
+
 
 # Helpers
 def _create_activity_object(activity, profile_id):
