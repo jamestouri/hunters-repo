@@ -1,5 +1,6 @@
 from pyexpat import model
 from statistics import mode
+from tkinter import CASCADE
 from django.db import models
 from django.contrib.postgres.fields import ArrayField, JSONField
 from django.core.validators import MaxValueValidator, MinValueValidator
@@ -18,6 +19,16 @@ class Profile(models.Model):
     # Eventually add scores and other ways of building out a profile
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+
+
+class Organization(models.Model):
+    name = models.CharField(max_length=255)
+    members = ArrayField(models.CharField(
+        max_length=255), blank=True, default=list)
+    organization_url = models.CharField(
+        max_length=255, default='', blank=True)
+    organization_id = models.CharField(
+        max_length=255, unique=True, db_index=True)
 
 
 class Bounty(models.Model):
@@ -83,10 +94,14 @@ class Bounty(models.Model):
                              default='open', db_index=True)
     title = models.CharField(max_length=1000)
     description = models.TextField(default='', blank=True)
+    # Deprecating and making it backwards compatible
     funding_organization = models.CharField(
         max_length=255, default='', blank=True)
     organization_url = models.CharField(
         max_length=255, default='', blank=True)
+    # Deprecating and making it backwards compatible
+    organization = models.ForeignKey(
+        Organization, on_delete=models.CASCADE, null=True, default=None)
     attached_job_url = models.CharField(
         max_length=255, blank=True, null=True, db_index=True)
     ways_to_contact = models.CharField(max_length=255, default='', blank=True)

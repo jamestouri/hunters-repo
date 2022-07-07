@@ -1,6 +1,16 @@
 from atexit import register
 from django.contrib import admin
-from .models import Activity, Profile, Bounty, WorkSubmission, FunderRating, Coupon, Transaction, CompletedBounty
+from .models import (
+    Activity, 
+    Profile,
+    Bounty,
+    WorkSubmission, 
+    FunderRating, 
+    Coupon, 
+    Transaction, 
+    CompletedBounty, 
+    Organization
+)
 
 # Register your models here.
 
@@ -17,6 +27,7 @@ class BountyAdmin(admin.ModelAdmin):
         'id',
         'title',
         'funding_orgnanization',
+        'organization',
         'ways_to_contact',
         'bounty_creator',
         'is_featured',
@@ -80,6 +91,7 @@ class CouponAdmin(admin.ModelAdmin):
         'created_at',
     )
 
+
 admin.site.register(Coupon, CouponAdmin)
 
 
@@ -95,6 +107,7 @@ class TransactionAdmin(admin.ModelAdmin):
         'bounty',
     )
 
+
 admin.site.register(Transaction, TransactionAdmin)
 
 
@@ -105,5 +118,17 @@ class CompletedBountyAdmin(admin.ModelAdmin):
         'profile_wallet',
         'created_at'
     )
-    
+
+
 admin.site.register(CompletedBounty, CompletedBountyAdmin)
+
+
+class OrganizationAdmin(admin.ModelAdmin):
+    org_admin = (
+        'id',
+        'bounty',
+        'profile_wallet',
+        'created_at'
+    )
+    
+admin.site.register(Organization, OrganizationAdmin)

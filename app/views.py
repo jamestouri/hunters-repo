@@ -5,14 +5,33 @@ from types import NoneType
 from urllib import response
 from django.shortcuts import render
 from rest_framework.parsers import JSONParser
-from .serializers import ActivitySerializer, CompletedBountySerializer, CouponSerializer, ProfileSerializer, BountySerializer, WorkSubmissionSerializer, TransactionSerializer
+from .serializers import(
+    ActivitySerializer,
+    CompletedBountySerializer,
+    CouponSerializer,
+    ProfileSerializer,
+    BountySerializer,
+    WorkSubmissionSerializer,
+    TransactionSerializer,
+    OrganizationSerializer,
+)
 from django.http.response import JsonResponse
-from .models import Activity, Coupon, Profile, Bounty, WorkSubmission, Transaction, CompletedBounty
+from .models import (
+    Activity,
+    Coupon,
+    Profile,
+    Bounty,
+    WorkSubmission,
+    Transaction,
+    CompletedBounty,
+    Organization,
+)
 from rest_framework import status
 from rest_framework.decorators import api_view
 from django.views import View
 from django.http import HttpResponse, HttpResponseNotFound
 import os
+
 
 @api_view(['GET', 'POST'])
 def profiles(request):
@@ -55,7 +74,8 @@ def bounties(request):
         bounty_creator = request.GET.get('bounty_creator')
         bounty_owner = request.GET.get('bounty_owner')
         if bounty_creator is not None:
-            bounties = Bounty.objects.filter(bounty_creator=bounty_creator).order_by('-id')
+            bounties = Bounty.objects.filter(
+                bounty_creator=bounty_creator).order_by('-id')
 
             bounty_serializer = BountySerializer(bounties, many=True)
             return JsonResponse(bounty_serializer.data, safe=False)
@@ -121,7 +141,8 @@ def activities(request):
         bounty_id = request.GET.get('bounty_id')
         # For activities in Bounties
         if bounty_id is not None:
-            activities = Activity.objects.filter(bounty=bounty_id).order_by('-created_at')
+            activities = Activity.objects.filter(
+                bounty=bounty_id).order_by('-created_at')
             activity_serializer = ActivitySerializer(activities, many=True)
             return JsonResponse(activity_serializer.data, safe=False)
         activities = Activity.objects.all()
@@ -246,23 +267,34 @@ def transactions(request):
 def completed_bounties(request):
     if request.method == 'GET':
         bounty_id = request.GET.get('bounty_id')
-        if bounty_id is not None: 
-            completed_bounties = CompletedBounty.objects.filter(bounty=bounty_id)
-            completed_bounties_serializer = CompletedBountySerializer(completed_bounties, many=True)
+        if bounty_id is not None:
+            completed_bounties = CompletedBounty.objects.filter(
+                bounty=bounty_id)
+            completed_bounties_serializer = CompletedBountySerializer(
+                completed_bounties, many=True)
         else:
-            completed_bounties = CompletedBounty.objects.all() 
-            completed_bounties_serializer = CompletedBountySerializer(completed_bounties, many=True)
+            completed_bounties = CompletedBounty.objects.all()
+            completed_bounties_serializer = CompletedBountySerializer(
+                completed_bounties, many=True)
         return JsonResponse(completed_bounties_serializer.data, safe=False)
-        
+
     if request.method == 'POST':
         data = JSONParser().parse(request)
         completed_bounty = data['completed_bounty']
-        completed_bounty_serializer = CompletedBountySerializer(data=completed_bounty)
+        completed_bounty_serializer = CompletedBountySerializer(
+            data=completed_bounty)
         if completed_bounty_serializer.is_valid():
-            completed_bounty_serializer.save() 
+            completed_bounty_serializer.save()
             return JsonResponse(completed_bounty_serializer.data, status=status.HTTP_201_CREATED)
         return JsonResponse(completed_bounty_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+
+@api_view(['GET', 'POST'])
+def organizations(request):
+    if request.method == 'GET':
+        organizations = Organization.objects.all()
+        orgaization_serializer = OrganizationSerializer(data=organizations, many=True)
+        
 
 # Helpers
 def _create_activity_object(activity, profile_id):
