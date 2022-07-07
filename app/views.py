@@ -302,13 +302,17 @@ def organizations(request):
     if request.method == 'POST':
         data = JSONParser().parse(request)
         organization = data['organization']
+        check = _check_if_organization_name_is_unique(organization['name'])
+        if check:
+            organization.update({'organization_id': organization['name']})
         organization_serializer = OrganizationSerializer(data=organization)
         if organization_serializer.is_valid():
             organization_serializer.save()
 
-            org_member = {'wallet_address': organization_serializer.data['wallet_address'], 'organization': organization_serializer.data['id']}
+            org_member = {
+                'wallet_address': data['wallet_address'], 'organization': organization_serializer.data['id']}
             _create_organization_member(org_member=org_member)
-            
+
             return JsonResponse(organization_serializer.data, status=status.HTTP_201_CREATED)
         return JsonResponse(organization_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
@@ -333,16 +337,18 @@ def organization_members(request):
     if request.method == 'GET':
         wallet_address = request.GET.get('wallet_address')
         if wallet_address is not None:
-            members = OrganizatinMembers.objects.filter(wallet_address=wallet_address)
+            members = OrganizatinMembers.objects.filter(
+                wallet_address=wallet_address)
             if members:
-                member_serializer = OrganizationMembersSerializer(members, many=True)
+                member_serializer = OrganizationMembersSerializer(
+                    members, many=True)
                 return JsonResponse(member_serializer.data, safe=False)
             return JsonResponse([], safe=False)
     if request.method == 'POST':
         data = JSONParser().parse(request)
         org_member = data['organization_member']
         return _create_organization_member(org_member=org_member)
-    
+
 
 # Helpers
 def _create_activity_object(activity, profile_id):
@@ -353,9 +359,17 @@ def _create_activity_object(activity, profile_id):
         return JsonResponse(activity_serializer.data, status=status.HTTP_201_CREATED)
     return JsonResponse(activity_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+
 def _create_organization_member(org_member):
     org_member_serialzer = OrganizationMembersSerializer(data=org_member)
     if org_member_serialzer.is_valid():
-        org_member_serialzer.save() 
+        org_member_serialzer.save()
         return JsonResponse(org_member_serialzer.data, status=status.HTTP_200_OK)
     return JsonResponse(org_member_serialzer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+def _check_if_organization_name_is_unique(name):
+    orgs = Organization.objects.filter(organization_id=name)
+    if len(orgs) > 0:
+        return False
+    return True

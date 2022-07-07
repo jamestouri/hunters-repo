@@ -1,15 +1,16 @@
 from atexit import register
 from django.contrib import admin
 from .models import (
-    Activity, 
+    Activity,
     Profile,
     Bounty,
-    WorkSubmission, 
-    FunderRating, 
-    Coupon, 
-    Transaction, 
-    CompletedBounty, 
-    Organization
+    WorkSubmission,
+    FunderRating,
+    Coupon,
+    Transaction,
+    CompletedBounty,
+    Organization,
+    OrganizatinMembers
 )
 
 # Register your models here.
@@ -127,8 +128,20 @@ class OrganizationAdmin(admin.ModelAdmin):
     org_admin = (
         'id',
         'bounty',
-        'profile_wallet',
         'created_at'
+        'profile_picture',
+        'organization_profile_picture_inital',
+        'organization_id',
+
     )
-    
+
+
 admin.site.register(Organization, OrganizationAdmin)
+
+
+class OrganizationMembersAdmin(admin.ModelAdmin):
+    member_admin = (
+        'wallet_address',
+        'organization',
+    )
+admin.site.register(OrganizatinMembers, OrganizationMembersAdmin)
