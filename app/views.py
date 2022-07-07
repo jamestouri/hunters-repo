@@ -9,6 +9,7 @@ from .serializers import(
     ActivitySerializer,
     CompletedBountySerializer,
     CouponSerializer,
+    OrganizationMembersSerializer,
     ProfileSerializer,
     BountySerializer,
     WorkSubmissionSerializer,
@@ -25,6 +26,7 @@ from .models import (
     Transaction,
     CompletedBounty,
     Organization,
+    OrganizatinMembers,
 )
 from rest_framework import status
 from rest_framework.decorators import api_view
@@ -293,7 +295,8 @@ def completed_bounties(request):
 def organizations(request):
     if request.method == 'GET':
         organizations = Organization.objects.all()
-        organization_serializer = OrganizationSerializer(data=organizations, many=True)
+        organization_serializer = OrganizationSerializer(
+            data=organizations, many=True)
         if organization_serializer.is_valid():
             return JsonResponse(organization_serializer.data, safe=False)
     if request.method == 'POST':
@@ -301,10 +304,14 @@ def organizations(request):
         organization = data['organization']
         organization_serializer = OrganizationSerializer(data=organization)
         if organization_serializer.is_valid():
-            organization_serializer.save() 
+            organization_serializer.save()
+
+            org_member = {'wallet_address': organization_serializer.data['wallet_address'], 'organization': organization_serializer.data['id']}
+            _create_organization_member(org_member=org_member)
+            
             return JsonResponse(organization_serializer.data, status=status.HTTP_201_CREATED)
         return JsonResponse(organization_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-        
+
 
 @api_view(['GET', 'PATCH'])
 def organization(request, org_id):
@@ -318,8 +325,24 @@ def organization(request, org_id):
         if organization_serializer.is_valid():
             organization_serializer.save()
             return JsonResponse(organization_serializer.data, status=status.HTTP_200_OK)
-        return JsonResponse(organization_serializer.errors, status=status.HTTP_400_BAD_REQUEST)      
+        return JsonResponse(organization_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+
+@api_view(['GET', 'POST'])
+def organization_members(request):
+    if request.method == 'GET':
+        wallet_address = request.GET.get('wallet_address')
+        if wallet_address is not None:
+            members = OrganizatinMembers.objects.filter(wallet_address=wallet_address)
+            if members:
+                member_serializer = OrganizationMembersSerializer(members, many=True)
+                return JsonResponse(member_serializer.data, safe=False)
+            return JsonResponse([], safe=False)
+    if request.method == 'POST':
+        data = JSONParser().parse(request)
+        org_member = data['organization_member']
+        return _create_organization_member(org_member=org_member)
+    
 
 # Helpers
 def _create_activity_object(activity, profile_id):
@@ -329,3 +352,10 @@ def _create_activity_object(activity, profile_id):
         activity_serializer.save()
         return JsonResponse(activity_serializer.data, status=status.HTTP_201_CREATED)
     return JsonResponse(activity_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+def _create_organization_member(org_member):
+    org_member_serialzer = OrganizationMembersSerializer(data=org_member)
+    if org_member_serialzer.is_valid():
+        org_member_serialzer.save() 
+        return JsonResponse(org_member_serialzer.data, status=status.HTTP_200_OK)
+    return JsonResponse(org_member_serialzer.errors, status=status.HTTP_400_BAD_REQUEST)

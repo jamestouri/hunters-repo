@@ -4,7 +4,6 @@ from django.db import models
 from django.contrib.postgres.fields import ArrayField, JSONField
 from django.core.validators import MaxValueValidator, MinValueValidator
 
-
 # Create your models here.
 
 
@@ -22,12 +21,23 @@ class Profile(models.Model):
 
 class Organization(models.Model):
     name = models.CharField(max_length=255)
-    members = ArrayField(models.CharField(
-        max_length=255), blank=True, default=list)
+    # Creating a random color as profile picture until changed
+    organization_profile_picture_inital = models.CharField(
+        max_length=20, default='#fb1c48')
+    profile_picture = models.CharField(max_length=255, blank=True, null=True)
     organization_url = models.CharField(
         max_length=255, default='', blank=True)
     organization_id = models.CharField(
         max_length=255, unique=True, db_index=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+
+class OrganizatinMembers(models.Model):
+    wallet_address = models.CharField(max_length=255)
+    organization = models.ForeignKey(Organization, on_delete=models.CASCADE)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
 
 
 class Bounty(models.Model):

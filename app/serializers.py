@@ -10,7 +10,8 @@ from .models import (
     Coupon,
     Transaction,
     CompletedBounty,
-    Organization
+    Organization,
+    OrganizatinMembers,
 )
 
 
@@ -66,3 +67,8 @@ class OrganizationSerializer(serializers.ModelSerializer):
     class Meta:
         model = Organization
         fields = '__all__'
+
+class OrganizationMembersSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = OrganizatinMembers
+        fields = '__all__'    
