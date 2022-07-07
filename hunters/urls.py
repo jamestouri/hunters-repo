@@ -37,4 +37,6 @@ urlpatterns = [
     path('api/coupon/<code>/', views.coupon),
     path('api/completed_bounties/', views.completed_bounties),
     url(r'^api/completed_bounties/?', views.completed_bounties),
+    path('api/organizations/', views.organizations),
+    path('api/organization/<org_id>/', views.organization)
 ]
