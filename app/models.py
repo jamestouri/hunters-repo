@@ -22,7 +22,7 @@ class Profile(models.Model):
 class Organization(models.Model):
     name = models.CharField(max_length=255)
     # Creating a random color as profile picture until changed
-    organization_profile_picture_inital = models.CharField(
+    organization_profile_picture_initial = models.CharField(
         max_length=20, default='#fb1c48')
     profile_picture = models.CharField(max_length=255, blank=True, null=True)
     organization_url = models.CharField(

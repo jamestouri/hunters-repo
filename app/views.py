@@ -75,23 +75,27 @@ def bounties(request):
     if request.method == 'GET':
         bounty_creator = request.GET.get('bounty_creator')
         bounty_owner = request.GET.get('bounty_owner')
+        organization = request.GET.get('organization')
+
         if bounty_creator is not None:
             bounties = Bounty.objects.filter(
                 bounty_creator=bounty_creator).order_by('-id')
 
-            bounty_serializer = BountySerializer(bounties, many=True)
-            return JsonResponse(bounty_serializer.data, safe=False)
         if bounty_owner is not None:
             # bounty_owner_wallet is an array so needing to see if it contains
             # owner
             bounties = Bounty.objects.filter(
                 bounty_owner_wallet__contains=[bounty_owner]).order_by('-id')
-            bounty_serializer = BountySerializer(bounties, many=True)
-            return JsonResponse(bounty_serializer.data, safe=False)
 
-        # Home page for bounties
-        bounties = Bounty.objects.filter().order_by('-id')
-        # bounties = Bounty.objects.all()
+        if organization is not None:
+            bounties = Bounty.objects.filter(
+                organization=organization
+            ).order_by('-id')
+        
+        else:
+            # Home page for bounties
+            bounties = Bounty.objects.filter().order_by('-id')
+            # bounties = Bounty.objects.all()
         bounty_serializer = BountySerializer(bounties, many=True)
         return JsonResponse(bounty_serializer.data, safe=False)
     elif request.method == 'POST':
@@ -337,9 +341,17 @@ def organization(request, org_id):
 def organization_members(request):
     if request.method == 'GET':
         wallet_address = request.GET.get('wallet_address')
+        org_id = request.GET.get('organization_id')
         if wallet_address is not None:
             members = OrganizatinMembers.objects.filter(
                 wallet_address=wallet_address)
+            if members:
+                member_serializer = OrganizationMembersSerializer(
+                    members, many=True)
+                return JsonResponse(member_serializer.data, safe=False)
+            return JsonResponse([], safe=False)
+        if org_id is not None:
+            members = OrganizatinMembers.objects.filter(organization=org_id)
             if members:
                 member_serializer = OrganizationMembersSerializer(
                     members, many=True)
@@ -368,11 +380,11 @@ def _create_organization_member(org_member):
         return JsonResponse(org_member_serialzer.data, status=status.HTTP_200_OK)
     return JsonResponse(org_member_serialzer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+
 def _create_org_id(name):
     underscore_name = name.replace(' ', '_')
-    unique = Organization.objects.filter(name=name).order_by('-organization_id')
-    print(unique)
-    print('\n\n\n\n\n\n✅')
+    unique = Organization.objects.filter(
+        name=name).order_by('-organization_id')
     if len(unique) <= 0:
         return underscore_name
     elif len(unique) == 1:
@@ -380,9 +392,6 @@ def _create_org_id(name):
     else:
         largest_number = unique.first()
         org = OrganizationSerializer(largest_number)
-    
         last_org_id = org.data['organization_id'].split('_')
         last_number = int(last_org_id[-1]) + 1
         return underscore_name + '_' + str(last_number)
-
-
