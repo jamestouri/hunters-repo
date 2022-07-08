@@ -231,6 +231,17 @@ class Transaction(models.Model):
     bounty = models.ForeignKey(Bounty, on_delete=models.CASCADE)
 
 
+class TransactionIntoEscrow(models.Model):
+    txn_hash = models.CharField(
+        max_length=255, unique=True, null=True, default=None)
+    wallet_address = models.CharField(max_length=255)
+    amount_usd = models.DecimalField(max_digits=100, decimal_places=2)
+    amount_eth = models.DecimalField(max_digits=50, decimal_places=10)
+    bounty = models.ForeignKey(Bounty, on_delete=models.SET_NULL, db_index=True, null=True)
+    description = models.TextField(default='', blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+
 class CompletedBounty(models.Model):
     bounty = models.ForeignKey(
         Bounty, on_delete=models.SET_NULL, db_index=True, null=True)
