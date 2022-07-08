@@ -319,9 +319,11 @@ def organizations(request):
 
 @api_view(['GET', 'PATCH'])
 def organization(request, org_id):
-    organization = Organization.objects.filter(id=org_id).first()
+    organization = Organization.objects.filter(organization_id=org_id).first()
+    if organization is None:
+        organization = Organization.objects.filter(id=org_id).first()
     if request.method == 'GET':
-        organization_serializer = BountySerializer(organization_serializer)
+        organization_serializer = OrganizationSerializer(organization)
         return JsonResponse(organization_serializer.data, safe=False)
     if request.method == 'PATCH':
         organization_serializer = OrganizationSerializer(
