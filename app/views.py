@@ -302,9 +302,8 @@ def organizations(request):
     if request.method == 'POST':
         data = JSONParser().parse(request)
         organization = data['organization']
-        check = _check_if_organization_name_is_unique(organization['name'])
-        if check:
-            organization.update({'organization_id': organization['name']})
+        unique_org_id = _create_org_id(organization['name'])
+        organization.update({'organization_id': unique_org_id})
         organization_serializer = OrganizationSerializer(data=organization)
         if organization_serializer.is_valid():
             organization_serializer.save()
@@ -369,9 +368,21 @@ def _create_organization_member(org_member):
         return JsonResponse(org_member_serialzer.data, status=status.HTTP_200_OK)
     return JsonResponse(org_member_serialzer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+def _create_org_id(name):
+    underscore_name = name.replace(' ', '_')
+    unique = Organization.objects.filter(name=name).order_by('-organization_id')
+    print(unique)
+    print('\n\n\n\n\n\n✅')
+    if len(unique) <= 0:
+        return underscore_name
+    elif len(unique) == 1:
+        return underscore_name + '_1'
+    else:
+        largest_number = unique.first()
+        org = OrganizationSerializer(largest_number)
+    
+        last_org_id = org.data['organization_id'].split('_')
+        last_number = int(last_org_id[-1]) + 1
+        return underscore_name + '_' + str(last_number)
 
-def _check_if_organization_name_is_unique(name):
-    orgs = Organization.objects.filter(organization_id=name)
-    if len(orgs) > 0:
-        return False
-    return True
+
