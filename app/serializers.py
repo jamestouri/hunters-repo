@@ -1,7 +1,6 @@
 from statistics import mode
 from rest_framework import serializers
 from .models import (
-    Organization,
     Profile,
     Bounty,
     Activity,

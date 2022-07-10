@@ -63,13 +63,13 @@ class Bounty(models.Model):
     ]
     BOUNTY_TYPES = [
         ('Bug', 'Bug'),
-        ('Project', 'Project'),
-        ('Feature', 'Feature'),
+        ('Feature Request', 'Feature Request'),
         ('Security', 'Security'),
         ('Improvement', 'Improvement'),
         ('Design', 'Design'),
         ('Docs', 'Docs'),
         ('Code review', 'Code review'),
+        ('Good first issue', 'Good first issue'),
         ('Other', 'Other'),
     ]
     EXPERIENCE_LEVELS = [
@@ -193,6 +193,7 @@ class WorkSubmission(models.Model):
     accepted = models.BooleanField(
         default=False, help_text='If false and rejected is false, submission has not been reviewed yet')
     created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
 
 
 class FunderRating(models.Model):
@@ -216,6 +217,7 @@ class Coupon(models.Model):
         return self.code
 
 
+# DEPRECATE
 class Transaction(models.Model):
     TXN_TYPE = (
         ('Bounty Creation', 'Bounty Creation'),
@@ -237,8 +239,21 @@ class TransactionIntoEscrow(models.Model):
     wallet_address = models.CharField(max_length=255)
     amount_usd = models.DecimalField(max_digits=100, decimal_places=2)
     amount_eth = models.DecimalField(max_digits=50, decimal_places=10)
-    bounty = models.ForeignKey(Bounty, on_delete=models.SET_NULL, db_index=True, null=True)
     description = models.TextField(default='', blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+
+class FundBounty(models.Model):
+    bounty = models.ForeignKey(
+        Bounty, on_delete=models.SET_NULL, db_index=True, null=True)
+    TransactionIntoEscrow = models.ForeignKey(
+        TransactionIntoEscrow, on_delete=models.CASCADE, db_index=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+class BackingBounty(models.Model):
+    bounty = models.ForeignKey(
+        Bounty, on_delete=models.SET_NULL, db_index=True, null=True)
+    wallet_address = models.CharField(max_length=255)
     created_at = models.DateTimeField(auto_now_add=True)
 
 
