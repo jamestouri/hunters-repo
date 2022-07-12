@@ -15,6 +15,9 @@ from .serializers import(
     WorkSubmissionSerializer,
     TransactionSerializer,
     OrganizationSerializer,
+    TransactionIntoEscrowSerializer,
+    FundBountySerializer,
+    BackingBountySerializer,
 )
 from django.http.response import JsonResponse
 from .models import (
@@ -27,6 +30,9 @@ from .models import (
     CompletedBounty,
     Organization,
     OrganizatinMembers,
+    TransactionIntoEscrow,
+    FundBounty,
+    BackingBounty,
 )
 from rest_framework import status
 from rest_framework.decorators import api_view
@@ -361,6 +367,55 @@ def organization_members(request):
         data = JSONParser().parse(request)
         org_member = data['organization_member']
         return _create_organization_member(org_member=org_member)
+
+
+@api_view(['GET', 'POST'])
+def transactions_into_escrow(request):
+    if request.method == 'GET':
+        transactions = TransactionIntoEscrow.objects.all()
+        transactions_serializer = TransactionIntoEscrowSerializer(transactions, many=True)
+        return JsonResponse(transactions_serializer.data, safe=False)
+    if request.method == 'POST':
+        data = JSONParser().parse(request)
+        transaction_serializer = TransactionIntoEscrowSerializer(data=data)
+        if transaction_serializer.is_valid():
+            transaction_serializer.save()
+            return JsonResponse(transaction_serializer.data, status=status.HTTP_200_OK)
+        return JsonResponse(transaction_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(['GET', 'POST'])
+def fund_bounties(request):
+    if request.method == 'GET':
+        funders = FundBounty.objects.all()
+        funders_serializer = FundBountySerializer(funders, many=True)
+        return JsonResponse(funders_serializer.data, safe=False)
+    if request.method == 'POST':
+        data = JSONParser().parse(request)
+        funder_serializer = FundBountySerializer(data=data)
+        if funder_serializer.is_valid():
+            funder_serializer.save()
+            return JsonResponse(funder_serializer.data, status=status.HTTP_200_OK)
+        return JsonResponse(funder_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(['GET', 'POST'])
+def backing_bounties(request):
+    if request.method == 'GET':
+        bounty_id = request.GET.get('bounty')
+        if bounty is not None: 
+            backers = BackingBounty.objects.filter(bounty=bounty_id)
+            if backers:
+                backer_serializer = BackingBountySerializer(backers, many=True)
+                return JsonResponse(backer_serializer.data, safe=False)
+            return JsonResponse([], safe=False)
+    if request.method == 'POST':
+        data = JSONParser().parse(request)
+        backer_serializer = BackingBountySerializer(data=data)
+        if backer_serializer.is_valid():
+            backer_serializer.save()
+            return JsonResponse(backer_serializer.data, status=status.HTTP_200_OK)
+        return JsonResponse(backer_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 # Helpers

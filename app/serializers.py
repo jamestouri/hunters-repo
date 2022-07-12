@@ -11,6 +11,9 @@ from .models import (
     CompletedBounty,
     Organization,
     OrganizatinMembers,
+    TransactionIntoEscrow,
+    FundBounty,
+    BackingBounty
 )
 
 
@@ -71,3 +74,19 @@ class OrganizationMembersSerializer(serializers.ModelSerializer):
     class Meta:
         model = OrganizatinMembers
         fields = '__all__'    
+
+class TransactionIntoEscrowSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = TransactionIntoEscrow
+        fields = '__all__'
+
+
+class BackingBountySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = BackingBounty 
+        fields = '__all__'
+
+class FundBountySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = FundBounty 
+        fields = '__all__'

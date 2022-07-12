@@ -10,7 +10,10 @@ from .models import (
     Transaction,
     CompletedBounty,
     Organization,
-    OrganizatinMembers
+    OrganizatinMembers,
+    FundBounty,
+    BackingBounty,
+    TransactionIntoEscrow,
 )
 
 # Register your models here.
@@ -145,3 +148,28 @@ class OrganizationMembersAdmin(admin.ModelAdmin):
         'organization',
     )
 admin.site.register(OrganizatinMembers, OrganizationMembersAdmin)
+
+class TransactionIntoEscrowAdmin(admin.ModelAdmin):
+    transaction_into_escrow_admin = (
+        'txn_hash',
+        'wallet_address',
+        'amount_usd',
+        'amount_eth',
+        'description'
+    )
+
+
+class FundBountyAdmin(admin.ModelAdmin):
+    member_admin = (
+        'bounty',
+        'transaction_into_escrow',
+    )
+admin.site.register(FundBounty, FundBountyAdmin)
+
+class BackingBountyAdmin(admin.ModelAdmin):
+    backing_bounty_admin = (
+        'bounty',
+        'wallet_address'
+    )
+
+admin.site.register(BackingBounty, BackingBountyAdmin)

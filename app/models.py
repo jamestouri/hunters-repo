@@ -125,9 +125,9 @@ class Bounty(models.Model):
         default=False, help_text='Whether this bounty is featured')
     other_owners = models.ManyToManyField(Profile, blank=True, default=None)
     bounty_type = models.CharField(
-        max_length=50, choices=BOUNTY_TYPES, blank=True, db_index=True)
+        max_length=50, choices=BOUNTY_TYPES, blank=True, db_index=True, null=True)
     project_length = models.CharField(
-        max_length=50, choices=PROJECT_LENGTHS, blank=True, db_index=True)
+        max_length=50, choices=PROJECT_LENGTHS, blank=True, db_index=True, null=True)
     bounty_category = ArrayField(models.CharField(
         max_length=50, choices=BOUNTY_CATEGORIES), default=list, blank=True)
     # Want to keep things as much web3 as possible and therefore make it specifically
@@ -138,7 +138,7 @@ class Bounty(models.Model):
     bounty_value_in_usd = models.DecimalField(
         max_digits=100,
         decimal_places=2,
-        help_text="The amount in usd users bounty creators want to pay out for the bounty")
+        help_text="The amount in usd users bounty creators want to pay out for the bounty", null=True)
     # Added in Views.py
     repo_type = models.CharField(
         max_length=10, choices=REPO_TYPES, default='public')
@@ -239,16 +239,17 @@ class TransactionIntoEscrow(models.Model):
     wallet_address = models.CharField(max_length=255)
     amount_usd = models.DecimalField(max_digits=100, decimal_places=2)
     amount_eth = models.DecimalField(max_digits=50, decimal_places=10)
-    description = models.TextField(default='', blank=True)
+    description = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
 
 
 class FundBounty(models.Model):
     bounty = models.ForeignKey(
         Bounty, on_delete=models.SET_NULL, db_index=True, null=True)
-    TransactionIntoEscrow = models.ForeignKey(
+    transaction_into_escrow = models.ForeignKey(
         TransactionIntoEscrow, on_delete=models.CASCADE, db_index=True)
     created_at = models.DateTimeField(auto_now_add=True)
+
 
 class BackingBounty(models.Model):
     bounty = models.ForeignKey(

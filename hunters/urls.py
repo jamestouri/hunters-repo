@@ -41,4 +41,7 @@ urlpatterns = [
     path('api/organization/<org_id>/', views.organization),
     path('api/organization_members/', views.organization_members),
     url(r'^api/organization_members/?', views.organization_members),
+    path('api/transactions_into_escrow/', views.transactions_into_escrow),
+    path('api/backing_bounties/', views.backing_bounties),
+    path('api/fund_bounties/', views.fund_bounties),
 ]
