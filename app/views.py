@@ -3,11 +3,11 @@ from this import d
 from time import time
 from types import NoneType
 from urllib import response
+from urllib.request import parse_keqv_list
 from django.shortcuts import render
 from rest_framework.parsers import JSONParser
 from .serializers import(
     ActivitySerializer,
-    CompletedBountySerializer,
     CouponSerializer,
     OrganizationMembersSerializer,
     ProfileSerializer,
@@ -27,9 +27,8 @@ from .models import (
     Bounty,
     WorkSubmission,
     Transaction,
-    CompletedBounty,
     Organization,
-    OrganizatinMembers,
+    OrganizationMembers,
     TransactionIntoEscrow,
     FundBounty,
     BackingBounty,
@@ -59,7 +58,7 @@ def profiles(request):
 
 @api_view(['GET', 'PATCH', 'DELETE'])
 def profile(request, address):
-    profile = Profile.objects.filter(wallet_address=address).first()
+    profile = Profile.objects.filter(user_id=address).first()
     if profile is None:
         profile = Profile.objects.get(id=address)
     if request.method == 'GET':
@@ -85,19 +84,20 @@ def bounties(request):
 
         if bounty_creator is not None:
             bounties = Bounty.objects.filter(
-                bounty_creator=bounty_creator).order_by('-id')
+                creator_profile=bounty_creator).order_by('-id')
+            print(bounties)
 
-        if bounty_owner is not None:
+        elif bounty_owner is not None:
             # bounty_owner_wallet is an array so needing to see if it contains
             # owner
             bounties = Bounty.objects.filter(
                 bounty_owner_wallet__contains=[bounty_owner]).order_by('-id')
 
-        if organization is not None:
+        elif organization is not None:
             bounties = Bounty.objects.filter(
                 organization=organization
             ).order_by('-id')
-        
+
         else:
             # Home page for bounties
             bounties = Bounty.objects.filter().order_by('-id')
@@ -111,10 +111,8 @@ def bounties(request):
         if bounty_serializer.is_valid():
             bounty_serializer.save()
             bounty_validated = bounty_serializer.validated_data
-            profile = Profile.objects.filter(
-                wallet_address=bounty_validated['bounty_creator']).first()
             activity_object = {
-                'bounty': bounty_serializer.data['id'], 'profile': profile.id, 'activity_type': 'Bounty Created'}
+                'bounty': bounty_serializer.data['id'], 'profile': bounty_validated['creator_profile'].id, 'activity_type': 'Bounty Created'}
             activity_serializer = ActivitySerializer(data=activity_object)
             if activity_serializer.is_valid():
                 activity_serializer.save()
@@ -137,11 +135,11 @@ def bounty(request, bounty_id):
             bounty, data=request.data['bounty'], partial=True)
         if bounty_serializer.is_valid():
             bounty_serializer.save()
+            bounty_validated = bounty_serializer.validated_data
             if 'activities' in request.data:
                 activity = request.data['activities']
-                profile = Profile.objects.filter(
-                    wallet_address=activity['wallet_address']).first()
-                _create_activity_object(activity, profile.id)
+
+                _create_activity_object(activity, bounty_validated['creator_profile'].id)
             return JsonResponse(bounty_serializer.data, status=status.HTTP_200_OK)
         print(bounty_serializer.errors)
         return JsonResponse(bounty_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
@@ -275,32 +273,6 @@ def transactions(request):
         return JsonResponse(transaction_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-@ api_view(['GET', 'POST'])
-def completed_bounties(request):
-    if request.method == 'GET':
-        bounty_id = request.GET.get('bounty_id')
-        if bounty_id is not None:
-            completed_bounties = CompletedBounty.objects.filter(
-                bounty=bounty_id)
-            completed_bounties_serializer = CompletedBountySerializer(
-                completed_bounties, many=True)
-        else:
-            completed_bounties = CompletedBounty.objects.all()
-            completed_bounties_serializer = CompletedBountySerializer(
-                completed_bounties, many=True)
-        return JsonResponse(completed_bounties_serializer.data, safe=False)
-
-    if request.method == 'POST':
-        data = JSONParser().parse(request)
-        completed_bounty = data['completed_bounty']
-        completed_bounty_serializer = CompletedBountySerializer(
-            data=completed_bounty)
-        if completed_bounty_serializer.is_valid():
-            completed_bounty_serializer.save()
-            return JsonResponse(completed_bounty_serializer.data, status=status.HTTP_201_CREATED)
-        return JsonResponse(completed_bounty_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-
 @api_view(['GET', 'POST'])
 def organizations(request):
     if request.method == 'GET':
@@ -319,7 +291,7 @@ def organizations(request):
             organization_serializer.save()
 
             org_member = {
-                'wallet_address': data['wallet_address'], 'organization': organization_serializer.data['id']}
+                'profile': data['profile'], 'organization': organization_serializer.data['id']}
             _create_organization_member(org_member=org_member)
 
             return JsonResponse(organization_serializer.data, status=status.HTTP_201_CREATED)
@@ -335,8 +307,9 @@ def organization(request, org_id):
         organization_serializer = OrganizationSerializer(organization)
         return JsonResponse(organization_serializer.data, safe=False)
     if request.method == 'PATCH':
+        organization_data = request.data['organization']
         organization_serializer = OrganizationSerializer(
-            organization, data=request.data['organization'], partial=True)
+            organization, data=organization_data, partial=True)
         if organization_serializer.is_valid():
             organization_serializer.save()
             return JsonResponse(organization_serializer.data, status=status.HTTP_200_OK)
@@ -348,8 +321,9 @@ def organization_members(request):
     if request.method == 'GET':
         wallet_address = request.GET.get('wallet_address')
         org_id = request.GET.get('organization_id')
+        user_id = request.GET.get('user_id')
         if wallet_address is not None:
-            members = OrganizatinMembers.objects.filter(
+            members = OrganizationMembers.objects.filter(
                 wallet_address=wallet_address)
             if members:
                 member_serializer = OrganizationMembersSerializer(
@@ -357,12 +331,19 @@ def organization_members(request):
                 return JsonResponse(member_serializer.data, safe=False)
             return JsonResponse([], safe=False)
         if org_id is not None:
-            members = OrganizatinMembers.objects.filter(organization=org_id)
+            members = OrganizationMembers.objects.filter(organization=org_id)
             if members:
                 member_serializer = OrganizationMembersSerializer(
                     members, many=True)
                 return JsonResponse(member_serializer.data, safe=False)
             return JsonResponse([], safe=False)
+        if user_id is not None: 
+            members = OrganizationMembers.objects.filter(profile=user_id)
+            if members:
+                member_serializer = OrganizationMembersSerializer(
+                    members, many=True)
+                return JsonResponse(member_serializer.data, safe=False)
+            return JsonResponse([], safe=False)            
     if request.method == 'POST':
         data = JSONParser().parse(request)
         org_member = data['organization_member']
@@ -373,7 +354,8 @@ def organization_members(request):
 def transactions_into_escrow(request):
     if request.method == 'GET':
         transactions = TransactionIntoEscrow.objects.all()
-        transactions_serializer = TransactionIntoEscrowSerializer(transactions, many=True)
+        transactions_serializer = TransactionIntoEscrowSerializer(
+            transactions, many=True)
         return JsonResponse(transactions_serializer.data, safe=False)
     if request.method == 'POST':
         data = JSONParser().parse(request)
@@ -403,7 +385,7 @@ def fund_bounties(request):
 def backing_bounties(request):
     if request.method == 'GET':
         bounty_id = request.GET.get('bounty')
-        if bounty is not None: 
+        if bounty is not None:
             backers = BackingBounty.objects.filter(bounty=bounty_id)
             if backers:
                 backer_serializer = BackingBountySerializer(backers, many=True)
@@ -433,6 +415,8 @@ def _create_organization_member(org_member):
     if org_member_serialzer.is_valid():
         org_member_serialzer.save()
         return JsonResponse(org_member_serialzer.data, status=status.HTTP_200_OK)
+    print(org_member_serialzer.errors)
+    print('\n\n\nn\n\n\n\n ✅')
     return JsonResponse(org_member_serialzer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 

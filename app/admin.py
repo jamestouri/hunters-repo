@@ -5,22 +5,27 @@ from .models import (
     Profile,
     Bounty,
     WorkSubmission,
-    FunderRating,
     Coupon,
     Transaction,
-    CompletedBounty,
     Organization,
-    OrganizatinMembers,
+    OrganizationMembers,
     FundBounty,
     BackingBounty,
-    TransactionIntoEscrow,
 )
 
 # Register your models here.
 
 
 class ProfileAdmin(admin.ModelAdmin):
-    profile_display = ('wallet_address', 'created_at')
+    profile_display = (
+        'wallet_address',
+        'name',
+        'created_at', 
+        'user_id',
+        'profile_picture',
+        'email',
+        'nickname',
+        )
 
 
 admin.site.register(Profile, ProfileAdmin)
@@ -33,6 +38,7 @@ class BountyAdmin(admin.ModelAdmin):
         'funding_orgnanization',
         'organization',
         'ways_to_contact',
+        'profile',
         'bounty_creator',
         'is_featured',
         'bounty_value_in_eth',
@@ -73,19 +79,6 @@ class WorkSubmissionAdmin(admin.ModelAdmin):
 admin.site.register(WorkSubmission, WorkSubmissionAdmin)
 
 
-class FunderRatingAdmin(admin.ModelAdmin):
-    funder_rating_admin = (
-        'id',
-        'star_rating',
-        'rating_creator',
-        'rating_receiver',
-        'created_at',
-    )
-
-
-admin.site.register(FunderRating, FunderRatingAdmin)
-
-
 class CouponAdmin(admin.ModelAdmin):
     coupon_admin = (
         'id',
@@ -115,18 +108,6 @@ class TransactionAdmin(admin.ModelAdmin):
 admin.site.register(Transaction, TransactionAdmin)
 
 
-class CompletedBountyAdmin(admin.ModelAdmin):
-    completed_bounty_admin = (
-        'id',
-        'bounty',
-        'profile_wallet',
-        'created_at'
-    )
-
-
-admin.site.register(CompletedBounty, CompletedBountyAdmin)
-
-
 class OrganizationAdmin(admin.ModelAdmin):
     org_admin = (
         'id',
@@ -145,9 +126,13 @@ admin.site.register(Organization, OrganizationAdmin)
 class OrganizationMembersAdmin(admin.ModelAdmin):
     member_admin = (
         'wallet_address',
+        'profile',
         'organization',
     )
-admin.site.register(OrganizatinMembers, OrganizationMembersAdmin)
+
+
+admin.site.register(OrganizationMembers, OrganizationMembersAdmin)
+
 
 class TransactionIntoEscrowAdmin(admin.ModelAdmin):
     transaction_into_escrow_admin = (
@@ -155,7 +140,8 @@ class TransactionIntoEscrowAdmin(admin.ModelAdmin):
         'wallet_address',
         'amount_usd',
         'amount_eth',
-        'description'
+        'description',
+        'profile',
     )
 
 
@@ -164,12 +150,17 @@ class FundBountyAdmin(admin.ModelAdmin):
         'bounty',
         'transaction_into_escrow',
     )
+
+
 admin.site.register(FundBounty, FundBountyAdmin)
+
 
 class BackingBountyAdmin(admin.ModelAdmin):
     backing_bounty_admin = (
         'bounty',
         'wallet_address'
+        'profile',
     )
+
 
 admin.site.register(BackingBounty, BackingBountyAdmin)

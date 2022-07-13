@@ -9,11 +9,13 @@ from django.core.validators import MaxValueValidator, MinValueValidator
 
 class Profile(models.Model):
     wallet_address = models.CharField(
-        max_length=255, unique=True, blank=False, db_index=True)
+        max_length=255, unique=True, blank=False, db_index=True, null=True)
+    name = models.CharField(max_length=255)
+    # slowly transition to Auth0 user sub 
+    user_id = models.CharField(max_length=255, unique=True, null=True)
     profile_picture = models.CharField(max_length=255, blank=True, null=True)
-    # Creating a random color as profile picture until changed
-    profile_picture_initial = models.CharField(
-        max_length=20, default='#1DB3F9')
+    email = models.CharField(max_length=255, unique=True, null=True)
+    nickname = models.CharField(max_length=255, unique=True, null=True)
     # Eventually add scores and other ways of building out a profile
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -29,12 +31,15 @@ class Organization(models.Model):
         max_length=255, default='', blank=True)
     organization_id = models.CharField(
         max_length=255, unique=True, db_index=True)
+    wallet_address = models.CharField(max_length=255, blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
 
-class OrganizatinMembers(models.Model):
-    wallet_address = models.CharField(max_length=255)
+class OrganizationMembers(models.Model):
+    wallet_address = models.CharField(max_length=255, null=True, blank=True)
+    profile = models.ForeignKey(Profile, on_delete=models.CASCADE)
+    profile_picture = models.CharField(max_length=255, blank=True, null=True)
     organization = models.ForeignKey(Organization, on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -120,19 +125,19 @@ class Bounty(models.Model):
     # Want to keep things as much web3 as possible and therefore make it specifically
     # the wallet Address to identify users creating the bounty rather than
     # the Profile
+
+    #DEPRECATE
     bounty_creator = models.CharField(max_length=255, db_index=True, null=True)
     is_featured = models.BooleanField(
         default=False, help_text='Whether this bounty is featured')
-    other_owners = models.ManyToManyField(Profile, blank=True, default=None)
     bounty_type = models.CharField(
         max_length=50, choices=BOUNTY_TYPES, blank=True, db_index=True, null=True)
     project_length = models.CharField(
         max_length=50, choices=PROJECT_LENGTHS, blank=True, db_index=True, null=True)
     bounty_category = ArrayField(models.CharField(
         max_length=50, choices=BOUNTY_CATEGORIES), default=list, blank=True)
-    # Want to keep things as much web3 as possible and therefore make it specifically
-    # the wallet Address to identify users working on the bounty rather than
-    # the Profile
+
+    creator_profile = models.ForeignKey(Profile, on_delete=models.SET_NULL, null=True)
     bounty_owner_wallet = ArrayField(models.CharField(
         max_length=255), blank=True, default=list)
     bounty_value_in_usd = models.DecimalField(
@@ -183,7 +188,7 @@ class Activity(models.Model):
 
 class WorkSubmission(models.Model):
     bounty = models.ForeignKey(Bounty, on_delete=models.CASCADE)
-    profile = models.ForeignKey(Profile, on_delete=models.CASCADE)
+    profile = models.ForeignKey(Profile, on_delete=models.SET_NULL, null=True)
     submission_header = models.CharField(max_length=255, default='')
     project_link = models.CharField(max_length=255, blank=True, default='')
     additional_text = models.TextField(default='', blank=True)
@@ -194,16 +199,6 @@ class WorkSubmission(models.Model):
         default=False, help_text='If false and rejected is false, submission has not been reviewed yet')
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-
-
-class FunderRating(models.Model):
-    star_rating = models.PositiveSmallIntegerField(
-        default=0, validators=[MinValueValidator(0), MaxValueValidator(5)])
-    rating_creator = models.ForeignKey(Profile, on_delete=models.CASCADE, related_name='creator_id',
-                                       null=True, default=None, help_text="Profile creating the rating")
-    rating_receiver = models.ForeignKey(Profile, on_delete=models.CASCADE, related_name='receiver_id',
-                                        null=True, default=None, help_text="Profile receiving the rating")
-    created_at = models.DateTimeField(auto_now_add=True)
 
 
 class Coupon(models.Model):
@@ -237,8 +232,9 @@ class TransactionIntoEscrow(models.Model):
     txn_hash = models.CharField(
         max_length=255, unique=True, null=True, default=None)
     wallet_address = models.CharField(max_length=255)
+    # Transition to the profile Object
+    profile = models.ForeignKey(Profile, on_delete=models.SET_NULL, null=True)
     amount_usd = models.DecimalField(max_digits=100, decimal_places=2)
-    amount_eth = models.DecimalField(max_digits=50, decimal_places=10)
     description = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
 
@@ -254,12 +250,8 @@ class FundBounty(models.Model):
 class BackingBounty(models.Model):
     bounty = models.ForeignKey(
         Bounty, on_delete=models.SET_NULL, db_index=True, null=True)
+    # Transition to the profile Object
+    profile = models.ForeignKey(Profile, on_delete=models.SET_NULL, null=True)
     wallet_address = models.CharField(max_length=255)
     created_at = models.DateTimeField(auto_now_add=True)
 
-
-class CompletedBounty(models.Model):
-    bounty = models.ForeignKey(
-        Bounty, on_delete=models.SET_NULL, db_index=True, null=True)
-    profile_wallet = models.CharField(max_length=255)
-    created_at = models.DateTimeField(auto_now_add=True)

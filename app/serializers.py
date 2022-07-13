@@ -5,12 +5,10 @@ from .models import (
     Bounty,
     Activity,
     WorkSubmission,
-    FunderRating,
     Coupon,
     Transaction,
-    CompletedBounty,
     Organization,
-    OrganizatinMembers,
+    OrganizationMembers,
     TransactionIntoEscrow,
     FundBounty,
     BackingBounty
@@ -40,13 +38,6 @@ class WorkSubmissionSerializer(serializers.ModelSerializer):
         model = WorkSubmission
         fields = '__all__'
 
-
-class FunderRatingSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = FunderRating
-        fields = '__all__'
-
-
 class CouponSerializer(serializers.ModelSerializer):
     class Meta:
         model = Coupon
@@ -58,13 +49,6 @@ class TransactionSerializer(serializers.ModelSerializer):
         model = Transaction
         fields = '__all__'
 
-
-class CompletedBountySerializer(serializers.ModelSerializer):
-    class Meta:
-        model = CompletedBounty
-        fields = '__all__'
-
-
 class OrganizationSerializer(serializers.ModelSerializer):
     class Meta:
         model = Organization
@@ -72,7 +56,7 @@ class OrganizationSerializer(serializers.ModelSerializer):
 
 class OrganizationMembersSerializer(serializers.ModelSerializer):
     class Meta:
-        model = OrganizatinMembers
+        model = OrganizationMembers
         fields = '__all__'    
 
 class TransactionIntoEscrowSerializer(serializers.ModelSerializer):
