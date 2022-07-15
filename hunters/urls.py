@@ -43,4 +43,5 @@ urlpatterns = [
     path('api/backing_bounties/', views.backing_bounties),
     url(r'^api/backing_bounties/?', views.backing_bounties),
     path('api/fund_bounties/', views.fund_bounties),
+    url(r'^api/fund_bounty/?', views.fund_bounty),
 ]

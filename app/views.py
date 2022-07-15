@@ -33,6 +33,7 @@ from .models import (
     FundBounty,
     BackingBounty,
 )
+from .payment import fund_payment
 from rest_framework import status
 from rest_framework.decorators import api_view
 from django.views import View
@@ -400,6 +401,14 @@ def backing_bounties(request):
         return JsonResponse(backer_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
+@api_view(['POST'])
+def fund_bounty(request):
+    organization = request.GET.get('organization')
+    bounty = request.GET.get('bounty')
+    fund = fund_payment(organization, bounty)
+    return JsonResponse(fund, safe=False)
+
+
 # Helpers
 def _create_activity_object(activity, profile_id):
     activity.update({'profile': profile_id})
@@ -415,8 +424,6 @@ def _create_organization_member(org_member):
     if org_member_serialzer.is_valid():
         org_member_serialzer.save()
         return JsonResponse(org_member_serialzer.data, status=status.HTTP_200_OK)
-    print(org_member_serialzer.errors)
-    print('\n\n\nn\n\n\n\n ✅')
     return JsonResponse(org_member_serialzer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 

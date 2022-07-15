@@ -32,6 +32,7 @@ class Organization(models.Model):
     organization_id = models.CharField(
         max_length=255, unique=True, db_index=True)
     wallet_address = models.CharField(max_length=255, blank=True, null=True)
+    external_url_of_requests = models.CharField(max_length=255, blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
