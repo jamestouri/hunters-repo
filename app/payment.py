@@ -2,7 +2,7 @@ import stripe
 import os
 
 
-def fund_payment(org, bounty):
+def create_payment_account(fund_info):
     stripe.api_key = 'sk_test_51LLchqAFvevI7J9Px3hWuPqYnMLgXNdQNDU5Nu0o7MWjQCjMlakIdIWAYTw3R5S28XehX5GfNBr5C6Vzcf5Df0zq00cBO6Ldpf'
 
     stripe.client_id = 'ca_M405zEqANdkCzmOmcRQKGbd78bvX55qq'
@@ -15,11 +15,13 @@ def fund_payment(org, bounty):
             "transfers": {"requested": True},
         },
         business_type="individual",
+        email=fund_info['email'],
     )
     print(account)
     return stripe.AccountLink.create(
         account=account['id'],
-        refresh_url='https://localhost:3000/',
-        return_url='https://localhost:3000/',
+        refresh_url='http://localhost:3000/',
+        return_url='http://localhost:3000/organization/' +
+        fund_info['org'] + '/bounty/' + fund_info['bounty'] + '/',
         type="account_onboarding",
     )

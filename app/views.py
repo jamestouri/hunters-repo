@@ -402,10 +402,9 @@ def backing_bounties(request):
 
 
 @api_view(['POST'])
-def fund_bounty(request):
-    organization = request.GET.get('organization')
-    bounty = request.GET.get('bounty')
-    fund = fund_payment(organization, bounty)
+def create_payment_account(request):
+    fund_info = JSONParser().parse(request)
+    fund = fund_payment(fund_info)
     return JsonResponse(fund, safe=False)
 
 
