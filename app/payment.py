@@ -15,13 +15,15 @@ def create_payment_account(fund_info):
         },
         business_type="individual",
         email=fund_info['email'],
+        settings={"payouts": {"schedule": {"interval": "manual"}}},
     )
     return account
 
 
 def account_link_generator(fund_info):
+    account_id = fund_info['account_id']
     return stripe.AccountLink.create(
-        account=fund_info['account_id'],
+        account=account_id,
         refresh_url='http://localhost:3000/',
         return_url='http://localhost:3000/organization/' +
         str(fund_info['org']) + '/',
