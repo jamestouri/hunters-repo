@@ -40,6 +40,7 @@ class WorkSubmissionSerializer(serializers.ModelSerializer):
         model = WorkSubmission
         fields = '__all__'
 
+
 class CouponSerializer(serializers.ModelSerializer):
     class Meta:
         model = Coupon
@@ -51,15 +52,18 @@ class TransactionSerializer(serializers.ModelSerializer):
         model = Transaction
         fields = '__all__'
 
+
 class OrganizationSerializer(serializers.ModelSerializer):
     class Meta:
         model = Organization
         fields = '__all__'
 
+
 class OrganizationMembersSerializer(serializers.ModelSerializer):
     class Meta:
         model = OrganizationMembers
-        fields = '__all__'    
+        fields = '__all__'
+
 
 class TransactionIntoEscrowSerializer(serializers.ModelSerializer):
     class Meta:
@@ -69,16 +73,17 @@ class TransactionIntoEscrowSerializer(serializers.ModelSerializer):
 
 class BackingBountySerializer(serializers.ModelSerializer):
     class Meta:
-        model = BackingBounty 
+        model = BackingBounty
         fields = '__all__'
+
 
 class FundBountySerializer(serializers.ModelSerializer):
     class Meta:
-        model = FundBounty 
+        model = FundBounty
         fields = '__all__'
+
 
 class StripeAccountSerializer(serializers.ModelSerializer):
     class Meta:
         model = StripeAccount
         fields = '__all__'
-

@@ -37,9 +37,9 @@ from .models import (
     StripeAccount,
 )
 from .payment import (
-    create_account_link,
+    account_link_generator,
     create_payment_account,
-    check_if_details_submitted
+    check_details
 )
 from rest_framework import status
 from rest_framework.decorators import api_view
@@ -410,10 +410,11 @@ def backing_bounties(request):
 
 # Stripe
 
+
 @api_view(['POST'])
 def create_account_link(request):
     account_link_info = JSONParser().parse(request)
-    account_link = create_account_link(account_link_info)
+    account_link = account_link_generator(account_link_info)
     return JsonResponse(account_link, safe=False)
 
 
@@ -429,7 +430,7 @@ def stripe_accounts(request):
         stripe_account = {
             'organization': data['organization'],
             'account_creator': data['account_creator'],
-            'stripe_account_id': account
+            'stripe_account_id': account['id']
         }
         account_serializer = StripeAccountSerializer(data=stripe_account)
         if account_serializer.is_valid():
@@ -437,23 +438,23 @@ def stripe_accounts(request):
             return JsonResponse(account_serializer.data, status=status.HTTP_200_OK)
         return JsonResponse(account_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+
 @api_view(['GET'])
 def stripe_account(request, org_id):
     if request.method == 'GET':
         account = StripeAccount.objects.filter(organization=org_id).first()
         if account is None:
-            return JsonResponse([], safe=False)
+            return JsonResponse(None, safe=False)
         account_serializer = StripeAccountSerializer(account)
         return JsonResponse(account_serializer.data)
-        
+
 
 @api_view(['GET'])
 def check_if_details_submitted(request, account_id):
     # stripe api has a details_submitted boolean
     # to determine if the user has created their account_link
-    check_details = check_if_details_submitted(account_id)
-    detail_submitted = {'details_submitted': check_details}
-    return JsonResponse(detail_submitted, safe=False)
+    submitted = check_details(account_id)
+    return JsonResponse( {'details_submitted': submitted}, safe=False)
 
 
 # Helpers

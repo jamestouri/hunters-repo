@@ -19,16 +19,16 @@ def create_payment_account(fund_info):
     return account
 
 
-def create_account_link(fund_info):
+def account_link_generator(fund_info):
     return stripe.AccountLink.create(
         account=fund_info['account_id'],
         refresh_url='http://localhost:3000/',
         return_url='http://localhost:3000/organization/' +
-        fund_info['org'] + '/',
+        str(fund_info['org']) + '/',
         type="account_onboarding",
     )
 
 
-def check_if_details_submitted(account_id):
+def check_details(account_id):
     account = stripe.Account.retrieve(account_id)
     return account['details_submitted']
