@@ -1,3 +1,4 @@
+from pyexpat import model
 from statistics import mode
 from rest_framework import serializers
 from .models import (
@@ -11,7 +12,8 @@ from .models import (
     OrganizationMembers,
     TransactionIntoEscrow,
     FundBounty,
-    BackingBounty
+    BackingBounty,
+    StripeAccount,
 )
 
 
@@ -74,3 +76,9 @@ class FundBountySerializer(serializers.ModelSerializer):
     class Meta:
         model = FundBounty 
         fields = '__all__'
+
+class StripeAccountSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = StripeAccount
+        fields = '__all__'
+

@@ -11,6 +11,7 @@ from .models import (
     OrganizationMembers,
     FundBounty,
     BackingBounty,
+    StripeAccount,
 )
 
 # Register your models here.
@@ -164,3 +165,13 @@ class BackingBountyAdmin(admin.ModelAdmin):
 
 
 admin.site.register(BackingBounty, BackingBountyAdmin)
+
+
+class StripeAccountAdmin(admin.ModelAdmin):
+    stripe_account_admin = (
+        'organization',
+        'account_creator',
+        'stripe_account_id',
+    )
+
+admin.site.register(StripeAccount, StripeAccountAdmin)

@@ -11,7 +11,7 @@ class Profile(models.Model):
     wallet_address = models.CharField(
         max_length=255, unique=True, blank=False, db_index=True, null=True)
     name = models.CharField(max_length=255)
-    # slowly transition to Auth0 user sub 
+    # slowly transition to Auth0 user sub
     user_id = models.CharField(max_length=255, unique=True, null=True)
     profile_picture = models.CharField(max_length=255, blank=True, null=True)
     email = models.CharField(max_length=255, unique=True, null=True)
@@ -32,14 +32,17 @@ class Organization(models.Model):
     organization_id = models.CharField(
         max_length=255, unique=True, db_index=True)
     wallet_address = models.CharField(max_length=255, blank=True, null=True)
-    external_url_of_requests = models.CharField(max_length=255, blank=True, null=True)
+    external_url_of_requests = models.CharField(
+        max_length=255, blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
 
 class OrganizationMembers(models.Model):
+    # DEPRECATE
     wallet_address = models.CharField(max_length=255, null=True, blank=True)
     profile = models.ForeignKey(Profile, on_delete=models.CASCADE)
+    # DEPRECATE
     profile_picture = models.CharField(max_length=255, blank=True, null=True)
     organization = models.ForeignKey(Organization, on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
@@ -127,7 +130,7 @@ class Bounty(models.Model):
     # the wallet Address to identify users creating the bounty rather than
     # the Profile
 
-    #DEPRECATE
+    # DEPRECATE
     bounty_creator = models.CharField(max_length=255, db_index=True, null=True)
     is_featured = models.BooleanField(
         default=False, help_text='Whether this bounty is featured')
@@ -138,7 +141,8 @@ class Bounty(models.Model):
     bounty_category = ArrayField(models.CharField(
         max_length=50, choices=BOUNTY_CATEGORIES), default=list, blank=True)
 
-    creator_profile = models.ForeignKey(Profile, on_delete=models.SET_NULL, null=True)
+    creator_profile = models.ForeignKey(
+        Profile, on_delete=models.SET_NULL, null=True)
     bounty_owner_wallet = ArrayField(models.CharField(
         max_length=255), blank=True, default=list)
     bounty_value_in_usd = models.DecimalField(
@@ -256,3 +260,11 @@ class BackingBounty(models.Model):
     wallet_address = models.CharField(max_length=255)
     created_at = models.DateTimeField(auto_now_add=True)
 
+
+class StripeAccount(models.Model):
+    organization = models.ForeignKey(
+        Organization, on_delete=models.CASCADE, db_index=True)
+    account_creator = models.ForeignKey(Profile, on_delete=models.CASCADE)
+    stripe_account_id = models.CharField(max_length=255, db_index=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)

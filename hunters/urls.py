@@ -43,5 +43,9 @@ urlpatterns = [
     path('api/backing_bounties/', views.backing_bounties),
     url(r'^api/backing_bounties/?', views.backing_bounties),
     path('api/fund_bounties/', views.fund_bounties),
-    path('api/create_payment_account/', views.create_payment_account),
+    path('api/create_account_link/', views.create_account_link),
+    path('api/stripe_accounts/', views.stripe_accounts),
+    path('api/stripe_account/<org_id>/', views.stripe_account),
+    path('api/check_if_details_submitted/<account_id>/',
+         views.check_if_details_submitted)
 ]

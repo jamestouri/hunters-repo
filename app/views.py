@@ -1,4 +1,5 @@
 from os import stat
+from re import A
 from this import d
 from time import time
 from types import NoneType
@@ -12,6 +13,7 @@ from .serializers import(
     OrganizationMembersSerializer,
     ProfileSerializer,
     BountySerializer,
+    StripeAccountSerializer,
     WorkSubmissionSerializer,
     TransactionSerializer,
     OrganizationSerializer,
@@ -32,8 +34,13 @@ from .models import (
     TransactionIntoEscrow,
     FundBounty,
     BackingBounty,
+    StripeAccount,
 )
-from .payment import fund_payment
+from .payment import (
+    create_account_link,
+    create_payment_account,
+    check_if_details_submitted
+)
 from rest_framework import status
 from rest_framework.decorators import api_view
 from django.views import View
@@ -140,7 +147,8 @@ def bounty(request, bounty_id):
             if 'activities' in request.data:
                 activity = request.data['activities']
 
-                _create_activity_object(activity, bounty_validated['creator_profile'].id)
+                _create_activity_object(
+                    activity, bounty_validated['creator_profile'].id)
             return JsonResponse(bounty_serializer.data, status=status.HTTP_200_OK)
         print(bounty_serializer.errors)
         return JsonResponse(bounty_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
@@ -338,13 +346,13 @@ def organization_members(request):
                     members, many=True)
                 return JsonResponse(member_serializer.data, safe=False)
             return JsonResponse([], safe=False)
-        if user_id is not None: 
+        if user_id is not None:
             members = OrganizationMembers.objects.filter(profile=user_id)
             if members:
                 member_serializer = OrganizationMembersSerializer(
                     members, many=True)
                 return JsonResponse(member_serializer.data, safe=False)
-            return JsonResponse([], safe=False)            
+            return JsonResponse([], safe=False)
     if request.method == 'POST':
         data = JSONParser().parse(request)
         org_member = data['organization_member']
@@ -386,7 +394,7 @@ def fund_bounties(request):
 def backing_bounties(request):
     if request.method == 'GET':
         bounty_id = request.GET.get('bounty')
-        if bounty is not None:
+        if bounty_id is not None:
             backers = BackingBounty.objects.filter(bounty=bounty_id)
             if backers:
                 backer_serializer = BackingBountySerializer(backers, many=True)
@@ -400,12 +408,52 @@ def backing_bounties(request):
             return JsonResponse(backer_serializer.data, status=status.HTTP_200_OK)
         return JsonResponse(backer_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+# Stripe
 
 @api_view(['POST'])
-def create_payment_account(request):
-    fund_info = JSONParser().parse(request)
-    fund = fund_payment(fund_info)
-    return JsonResponse(fund, safe=False)
+def create_account_link(request):
+    account_link_info = JSONParser().parse(request)
+    account_link = create_account_link(account_link_info)
+    return JsonResponse(account_link, safe=False)
+
+
+@api_view(['GET', 'POST'])
+def stripe_accounts(request):
+    if request.method == 'GET':
+        accounts = StripeAccount.objects.all()
+        account_serializer = StripeAccountSerializer(accounts)
+        return JsonResponse(account_serializer.data, safe=False)
+    if request.method == 'POST':
+        data = JSONParser().parse(request)
+        account = create_payment_account(data)
+        stripe_account = {
+            'organization': data['organization'],
+            'account_creator': data['account_creator'],
+            'stripe_account_id': account
+        }
+        account_serializer = StripeAccountSerializer(data=stripe_account)
+        if account_serializer.is_valid():
+            account_serializer.save()
+            return JsonResponse(account_serializer.data, status=status.HTTP_200_OK)
+        return JsonResponse(account_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+@api_view(['GET'])
+def stripe_account(request, org_id):
+    if request.method == 'GET':
+        account = StripeAccount.objects.filter(organization=org_id).first()
+        if account is None:
+            return JsonResponse([], safe=False)
+        account_serializer = StripeAccountSerializer(account)
+        return JsonResponse(account_serializer.data)
+        
+
+@api_view(['GET'])
+def check_if_details_submitted(request, account_id):
+    # stripe api has a details_submitted boolean
+    # to determine if the user has created their account_link
+    check_details = check_if_details_submitted(account_id)
+    detail_submitted = {'details_submitted': check_details}
+    return JsonResponse(detail_submitted, safe=False)
 
 
 # Helpers
