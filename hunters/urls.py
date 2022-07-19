@@ -47,5 +47,6 @@ urlpatterns = [
     path('api/stripe_accounts/', views.stripe_accounts),
     path('api/stripe_account/<org_id>/', views.stripe_account),
     path('api/check_if_details_submitted/<account_id>/',
-         views.check_if_details_submitted)
+         views.check_if_details_submitted),
+    path('api/start_destination_charge/', views.start_destination_charge),
 ]

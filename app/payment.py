@@ -34,3 +34,39 @@ def account_link_generator(fund_info):
 def check_details(account_id):
     account = stripe.Account.retrieve(account_id)
     return account['details_submitted']
+
+# Charge
+
+
+def fund_a_bounty(charge_info):
+    amount = int(charge_info['amount']) * 100
+    print(charge_info)
+    print('\n\n\n\n\n\n ✅')
+
+    account_id = charge_info['account_id']
+    bounty_id = charge_info['bounty_id']
+    org = charge_info['org']
+
+
+    session = stripe.checkout.Session.create(
+        line_items=[{
+            'name': 'Funding Via Unwall',
+            'amount': amount,
+            'currency': 'usd',
+            'quantity': 1,
+        }],
+        payment_intent_data={
+            'application_fee_amount': int(amount * 0.075),
+            'transfer_data': {
+                'destination': account_id,
+            },
+        },
+        mode='payment',
+        success_url='http://localhost:3000/organization/' +
+        str(org) + '/bounty/' + str(bounty_id) + '/',
+        cancel_url='http://localhost:3000/organization/' +
+        str(org) + '/',
+    )
+    print(session)
+    print('✅')
+    return session

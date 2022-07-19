@@ -39,7 +39,8 @@ from .models import (
 from .payment import (
     account_link_generator,
     create_payment_account,
-    check_details
+    check_details,
+    fund_a_bounty
 )
 from rest_framework import status
 from rest_framework.decorators import api_view
@@ -456,6 +457,11 @@ def check_if_details_submitted(request, account_id):
     submitted = check_details(account_id)
     return JsonResponse( {'details_submitted': submitted}, safe=False)
 
+@api_view(['POST'])
+def start_destination_charge(request):
+    charge_info = JSONParser().parse(request)
+    charge = fund_a_bounty(charge_info)
+    return JsonResponse(charge, safe=False)
 
 # Helpers
 def _create_activity_object(activity, profile_id):
