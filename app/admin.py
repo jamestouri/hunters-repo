@@ -6,11 +6,9 @@ from .models import (
     Bounty,
     WorkSubmission,
     Coupon,
-    Transaction,
+    FundingTransaction,
     Organization,
     OrganizationMembers,
-    FundBounty,
-    BackingBounty,
     StripeAccount,
 )
 
@@ -93,20 +91,18 @@ class CouponAdmin(admin.ModelAdmin):
 admin.site.register(Coupon, CouponAdmin)
 
 
-class TransactionAdmin(admin.ModelAdmin):
+class FundingTransactionAdmin(admin.ModelAdmin):
     transaction_admin = (
         'id',
-        'txn_hash',
-        'sender_wallet_address',
-        'receiver_wallet_address',
-        'amount_usd',
-        'amount_eth',
-        'txn_type',
+        'profile',
+        'amount',
         'bounty',
+        'organization',
+        'paid_out',
     )
 
 
-admin.site.register(Transaction, TransactionAdmin)
+admin.site.register(FundingTransaction, FundingTransactionAdmin)
 
 
 class OrganizationAdmin(admin.ModelAdmin):
@@ -133,38 +129,6 @@ class OrganizationMembersAdmin(admin.ModelAdmin):
 
 
 admin.site.register(OrganizationMembers, OrganizationMembersAdmin)
-
-
-class TransactionIntoEscrowAdmin(admin.ModelAdmin):
-    transaction_into_escrow_admin = (
-        'txn_hash',
-        'wallet_address',
-        'amount_usd',
-        'amount_eth',
-        'description',
-        'profile',
-    )
-
-
-class FundBountyAdmin(admin.ModelAdmin):
-    member_admin = (
-        'bounty',
-        'transaction_into_escrow',
-    )
-
-
-admin.site.register(FundBounty, FundBountyAdmin)
-
-
-class BackingBountyAdmin(admin.ModelAdmin):
-    backing_bounty_admin = (
-        'bounty',
-        'wallet_address'
-        'profile',
-    )
-
-
-admin.site.register(BackingBounty, BackingBountyAdmin)
 
 
 class StripeAccountAdmin(admin.ModelAdmin):

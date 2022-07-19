@@ -217,47 +217,14 @@ class Coupon(models.Model):
         return self.code
 
 
-# DEPRECATE
-class Transaction(models.Model):
-    TXN_TYPE = (
-        ('Bounty Creation', 'Bounty Creation'),
-        ('Bounty Payout', 'Bounty Payout')
-    )
-    txn_hash = models.CharField(
-        max_length=255, unique=True, null=True, default=None)
-    sender_wallet_address = models.CharField(max_length=255)
-    receiver_wallet_address = models.CharField(max_length=255)
-    amount_usd = models.DecimalField(max_digits=100, decimal_places=2)
-    amount_eth = models.DecimalField(max_digits=50, decimal_places=10)
-    txn_type = models.CharField(max_length=100, choices=TXN_TYPE)
-    bounty = models.ForeignKey(Bounty, on_delete=models.CASCADE)
-
-
-class TransactionIntoEscrow(models.Model):
-    txn_hash = models.CharField(
-        max_length=255, unique=True, null=True, default=None)
-    wallet_address = models.CharField(max_length=255)
-    # Transition to the profile Object
+class FundingTransaction(models.Model):
     profile = models.ForeignKey(Profile, on_delete=models.SET_NULL, null=True)
-    amount_usd = models.DecimalField(max_digits=100, decimal_places=2)
-    description = models.TextField()
-    created_at = models.DateTimeField(auto_now_add=True)
-
-
-class FundBounty(models.Model):
+    amount = models.DecimalField(max_digits=100, decimal_places=2)
     bounty = models.ForeignKey(
         Bounty, on_delete=models.SET_NULL, db_index=True, null=True)
-    transaction_into_escrow = models.ForeignKey(
-        TransactionIntoEscrow, on_delete=models.CASCADE, db_index=True)
-    created_at = models.DateTimeField(auto_now_add=True)
-
-
-class BackingBounty(models.Model):
-    bounty = models.ForeignKey(
-        Bounty, on_delete=models.SET_NULL, db_index=True, null=True)
-    # Transition to the profile Object
-    profile = models.ForeignKey(Profile, on_delete=models.SET_NULL, null=True)
-    wallet_address = models.CharField(max_length=255)
+    organization = models.ForeignKey(
+        Organization, on_delete=models.CASCADE, db_index=True)
+    paid_out = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
 
 

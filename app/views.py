@@ -15,11 +15,8 @@ from .serializers import(
     BountySerializer,
     StripeAccountSerializer,
     WorkSubmissionSerializer,
-    TransactionSerializer,
     OrganizationSerializer,
-    TransactionIntoEscrowSerializer,
-    FundBountySerializer,
-    BackingBountySerializer,
+    FundingTransactionSerializer,
 )
 from django.http.response import JsonResponse
 from .models import (
@@ -28,12 +25,9 @@ from .models import (
     Profile,
     Bounty,
     WorkSubmission,
-    Transaction,
     Organization,
     OrganizationMembers,
-    TransactionIntoEscrow,
-    FundBounty,
-    BackingBounty,
+    FundingTransaction,
     StripeAccount,
 )
 from .payment import (
@@ -266,17 +260,17 @@ def coupon(request, code):
 
 
 @ api_view(['GET', 'POST'])
-def transactions(request):
+def funding_transactions(request):
     if request.method == 'GET':
-        transactions = Transaction.objects.all()
-        transactions_serializer = TransactionSerializer(
+        transactions = FundingTransaction.objects.all()
+        transactions_serializer = FundingTransactionSerializer(
             data=transactions, many=True)
         if transactions_serializer.is_valid():
             return JsonResponse(transactions_serializer.data, safe=False)
     elif request.method == 'POST':
         data = JSONParser().parse(request)
         transaction = data['transaction']
-        transaction_serializer = TransactionSerializer(data=transaction)
+        transaction_serializer = FundingTransactionSerializer(data=transaction)
         if transaction_serializer.is_valid():
             transaction_serializer.save()
             return JsonResponse(transaction_serializer.data, status=status.HTTP_201_CREATED)
@@ -358,56 +352,6 @@ def organization_members(request):
         data = JSONParser().parse(request)
         org_member = data['organization_member']
         return _create_organization_member(org_member=org_member)
-
-
-@api_view(['GET', 'POST'])
-def transactions_into_escrow(request):
-    if request.method == 'GET':
-        transactions = TransactionIntoEscrow.objects.all()
-        transactions_serializer = TransactionIntoEscrowSerializer(
-            transactions, many=True)
-        return JsonResponse(transactions_serializer.data, safe=False)
-    if request.method == 'POST':
-        data = JSONParser().parse(request)
-        transaction_serializer = TransactionIntoEscrowSerializer(data=data)
-        if transaction_serializer.is_valid():
-            transaction_serializer.save()
-            return JsonResponse(transaction_serializer.data, status=status.HTTP_200_OK)
-        return JsonResponse(transaction_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-
-@api_view(['GET', 'POST'])
-def fund_bounties(request):
-    if request.method == 'GET':
-        funders = FundBounty.objects.all()
-        funders_serializer = FundBountySerializer(funders, many=True)
-        return JsonResponse(funders_serializer.data, safe=False)
-    if request.method == 'POST':
-        data = JSONParser().parse(request)
-        funder_serializer = FundBountySerializer(data=data)
-        if funder_serializer.is_valid():
-            funder_serializer.save()
-            return JsonResponse(funder_serializer.data, status=status.HTTP_200_OK)
-        return JsonResponse(funder_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-
-@api_view(['GET', 'POST'])
-def backing_bounties(request):
-    if request.method == 'GET':
-        bounty_id = request.GET.get('bounty')
-        if bounty_id is not None:
-            backers = BackingBounty.objects.filter(bounty=bounty_id)
-            if backers:
-                backer_serializer = BackingBountySerializer(backers, many=True)
-                return JsonResponse(backer_serializer.data, safe=False)
-            return JsonResponse([], safe=False)
-    if request.method == 'POST':
-        data = JSONParser().parse(request)
-        backer_serializer = BackingBountySerializer(data=data)
-        if backer_serializer.is_valid():
-            backer_serializer.save()
-            return JsonResponse(backer_serializer.data, status=status.HTTP_200_OK)
-        return JsonResponse(backer_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 # Stripe
 

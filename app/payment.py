@@ -37,12 +37,8 @@ def check_details(account_id):
 
 # Charge
 
-
 def fund_a_bounty(charge_info):
     amount = int(charge_info['amount']) * 100
-    print(charge_info)
-    print('\n\n\n\n\n\n ✅')
-
     account_id = charge_info['account_id']
     bounty_id = charge_info['bounty_id']
     org = charge_info['org']
@@ -70,3 +66,6 @@ def fund_a_bounty(charge_info):
     print(session)
     print('✅')
     return session
+
+def get_checkout_session(session_id):
+    'cs_test_a1nPTOWmP9HkqGINtXKZWSf5YuHawnhcHewDrHyTa5MF7LwI7MLhUD9xFB'

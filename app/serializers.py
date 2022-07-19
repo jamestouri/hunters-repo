@@ -7,13 +7,10 @@ from .models import (
     Activity,
     WorkSubmission,
     Coupon,
-    Transaction,
     Organization,
     OrganizationMembers,
-    TransactionIntoEscrow,
-    FundBounty,
-    BackingBounty,
     StripeAccount,
+    FundingTransaction
 )
 
 
@@ -46,13 +43,6 @@ class CouponSerializer(serializers.ModelSerializer):
         model = Coupon
         fields = '__all__'
 
-
-class TransactionSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Transaction
-        fields = '__all__'
-
-
 class OrganizationSerializer(serializers.ModelSerializer):
     class Meta:
         model = Organization
@@ -64,22 +54,9 @@ class OrganizationMembersSerializer(serializers.ModelSerializer):
         model = OrganizationMembers
         fields = '__all__'
 
-
-class TransactionIntoEscrowSerializer(serializers.ModelSerializer):
+class FundingTransactionSerializer(serializers.ModelSerializer):
     class Meta:
-        model = TransactionIntoEscrow
-        fields = '__all__'
-
-
-class BackingBountySerializer(serializers.ModelSerializer):
-    class Meta:
-        model = BackingBounty
-        fields = '__all__'
-
-
-class FundBountySerializer(serializers.ModelSerializer):
-    class Meta:
-        model = FundBounty
+        model = FundingTransaction
         fields = '__all__'
 
 
