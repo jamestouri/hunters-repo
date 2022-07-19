@@ -33,6 +33,7 @@ urlpatterns = [
     url(r'^api/work_submissions/?', views.work_submissions),
     path('api/work_submission/<work_submission_id>/', views.work_submission),
     path('api/funding_transactions/', views.funding_transactions),
+    url(r'^api/funding_transactions/?', views.funding_transactions),
     path('api/coupons/', views.coupons),
     path('api/coupon/<code>/', views.coupon),
     path('api/organizations/', views.organizations),

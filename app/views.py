@@ -264,11 +264,22 @@ def coupon(request, code):
 @ api_view(['GET', 'POST'])
 def funding_transactions(request):
     if request.method == 'GET':
-        transactions = FundingTransaction.objects.all()
+        org_id = request.GET.get('organization_id')
+        bounty_id = request.GET.get('bounty_id')
+        if bounty_id is not None:
+            transactions = FundingTransaction.objects.filter(bounty=bounty_id)
+            if transactions is None:
+                return JsonResponse([], safe=False)
+        elif org_id is not None: 
+            transactions = FundingTransaction.objects.filter(organization=org_id)
+            if transactions is None:
+                return JsonResponse([], safe=False)
+        else:
+            transactions = FundingTransaction.objects.all()
         transactions_serializer = FundingTransactionSerializer(
-            data=transactions, many=True)
-        if transactions_serializer.is_valid():
-            return JsonResponse(transactions_serializer.data, safe=False)
+            transactions, many=True)
+        return JsonResponse(transactions_serializer.data, safe=False)
+
     elif request.method == 'POST':
         data = JSONParser().parse(request)
         transaction = data['transaction']
@@ -415,7 +426,7 @@ def completed_checkout(request):
     if request.method == 'POST':
         payload = request.data
         sig_header = request.headers['STRIPE_SIGNATURE']
-        checkout = get_checkout_session(payload, sig_header)
+        checkout = get_checkout_session(payload)
         return checkout
 
 # Helpers

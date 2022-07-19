@@ -4,10 +4,12 @@ import os
 from .serializers import FundingTransactionSerializer
 from .models import FundingTransaction, Profile
 from rest_framework import status
+from dotenv import load_dotenv
 
-stripe.api_key = 'sk_test_51LLchqAFvevI7J9Px3hWuPqYnMLgXNdQNDU5Nu0o7MWjQCjMlakIdIWAYTw3R5S28XehX5GfNBr5C6Vzcf5Df0zq00cBO6Ldpf'
-stripe.client_id = 'ca_M405zEqANdkCzmOmcRQKGbd78bvX55qq'
+load_dotenv()
 
+stripe.api_key = os.environ.get('API_KEY')
+stripe.client_id = os.environ.get('CLIENT_KEY')
 
 def create_payment_account(fund_info):
     account = stripe.Account.create(
@@ -67,13 +69,11 @@ def fund_a_bounty(charge_info):
         cancel_url='http://localhost:3000/organization/' +
         str(org) + '/',
     )
-    print(session)
-    print('✅')
     return session
 
 
-def get_checkout_session(payload, sig_header):
-    endpoint_secret = 'whsec_7e6986c998953ff82b0dd38e03183fda93268823ebc765709a7e2ad3708f84a3'
+def get_checkout_session(payload):
+    endpoint_secret = os.environ.get('WEBHOOK_ENDPOINT_KEY')
     try:
         event = stripe.Event.construct_from(
             payload, endpoint_secret
@@ -96,8 +96,6 @@ def _set_funding_transaction(session):
     email = session['customer_details']['email']
     profile = Profile.objects.filter(email=email).first()
 
-    print(profile.id)
-    print('\n\n\n\n\n\n\n\n ✅')
     amount = session['amount_total']
     paid_out = True if session['payment_status'] == 'paid' else False
     success_url = session['success_url']
