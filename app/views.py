@@ -34,8 +34,10 @@ from .payment import (
     account_link_generator,
     create_payment_account,
     check_details,
-    fund_a_bounty
+    fund_a_bounty,
+    get_checkout_session
 )
+from django.views.decorators.csrf import csrf_exempt
 from rest_framework import status
 from rest_framework.decorators import api_view
 from django.views import View
@@ -406,6 +408,15 @@ def start_destination_charge(request):
     charge_info = JSONParser().parse(request)
     charge = fund_a_bounty(charge_info)
     return JsonResponse(charge, safe=False)
+
+@api_view(['POST'])
+@csrf_exempt
+def completed_checkout(request):
+    if request.method == 'POST':
+        payload = request.data
+        sig_header = request.headers['STRIPE_SIGNATURE']
+        checkout = get_checkout_session(payload, sig_header)
+        return checkout
 
 # Helpers
 def _create_activity_object(activity, profile_id):

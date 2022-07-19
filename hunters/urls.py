@@ -45,4 +45,5 @@ urlpatterns = [
     path('api/check_if_details_submitted/<account_id>/',
          views.check_if_details_submitted),
     path('api/start_destination_charge/', views.start_destination_charge),
+    path('v1/webhook_completed_checkout/', views.completed_checkout)
 ]
