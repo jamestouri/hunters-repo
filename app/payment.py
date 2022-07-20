@@ -11,6 +11,7 @@ load_dotenv()
 stripe.api_key = os.environ.get('STRIPE_API_KEY')
 stripe.client_id = os.environ.get('CLIENT_KEY')
 
+
 def create_payment_account(fund_info):
     account = stripe.Account.create(
         country="US",
@@ -30,8 +31,8 @@ def account_link_generator(fund_info):
     account_id = fund_info['account_id']
     return stripe.AccountLink.create(
         account=account_id,
-        refresh_url='http://localhost:3000/',
-        return_url='http://localhost:3000/organization/' +
+        refresh_url=os.environ.get('URL'),
+        return_url=os.environ.get('URL') + 'organization/' +
         str(fund_info['org']) + '/',
         type="account_onboarding",
     )
@@ -64,9 +65,9 @@ def fund_a_bounty(charge_info):
             },
         },
         mode='payment',
-        success_url='http://localhost:3000/organization/' +
+        success_url=os.environ.get('URL') + 'organization/' +
         str(org) + '/bounty/' + str(bounty_id) + '/',
-        cancel_url='http://localhost:3000/organization/' +
+        cancel_url=os.environ.get('URL') + 'organization/' +
         str(org) + '/',
     )
     return session
