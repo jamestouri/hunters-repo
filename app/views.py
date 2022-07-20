@@ -373,7 +373,11 @@ def organization_members(request):
 def create_account_link(request):
     account_link_info = JSONParser().parse(request)
     account_link = account_link_generator(account_link_info)
-    return JsonResponse(account_link, safe=False)
+    try:
+        return JsonResponse(account_link, safe=False)
+    except Exception as e:
+        return JsonResponse({'error': e.args[0]}, status=status.HTTP_400_BAD_REQUEST)
+
 
 
 @api_view(['GET', 'POST'])
