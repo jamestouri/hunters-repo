@@ -8,7 +8,7 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-stripe.api_key = os.environ.get('API_KEY')
+stripe.api_key = os.environ.get('STRIPE_API_KEY')
 stripe.client_id = os.environ.get('CLIENT_KEY')
 
 def create_payment_account(fund_info):
