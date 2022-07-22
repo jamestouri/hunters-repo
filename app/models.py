@@ -142,10 +142,6 @@ class Bounty(models.Model):
         Profile, on_delete=models.SET_NULL, null=True)
     bounty_owner_wallet = ArrayField(models.CharField(
         max_length=255), blank=True, default=list)
-    bounty_value_in_usd = models.DecimalField(
-        max_digits=100,
-        decimal_places=2,
-        help_text="The amount in usd users bounty creators want to pay out for the bounty", null=True)
     # Added in Views.py
     repo_type = models.CharField(
         max_length=10, choices=REPO_TYPES, default='public')

@@ -39,8 +39,6 @@ class BountyAdmin(admin.ModelAdmin):
         'ways_to_contact',
         'profile',
         'is_featured',
-        'bounty_value_in_eth',
-        'bounty_value_in_usd',
         'attached_job_url',
         'state'
     )
