@@ -41,6 +41,7 @@ class BountyAdmin(admin.ModelAdmin):
         'is_featured',
         'bounty_value_in_eth',
         'bounty_value_in_usd',
+        'attached_job_url',
         'state'
     )
 
