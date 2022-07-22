@@ -129,9 +129,6 @@ class Bounty(models.Model):
     # Want to keep things as much web3 as possible and therefore make it specifically
     # the wallet Address to identify users creating the bounty rather than
     # the Profile
-
-    # DEPRECATE
-    bounty_creator = models.CharField(max_length=255, db_index=True, null=True)
     is_featured = models.BooleanField(
         default=False, help_text='Whether this bounty is featured')
     bounty_type = models.CharField(

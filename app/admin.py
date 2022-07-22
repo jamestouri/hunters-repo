@@ -38,7 +38,6 @@ class BountyAdmin(admin.ModelAdmin):
         'organization',
         'ways_to_contact',
         'profile',
-        'bounty_creator',
         'is_featured',
         'bounty_value_in_eth',
         'bounty_value_in_usd',
