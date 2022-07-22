@@ -97,7 +97,8 @@ def _set_funding_transaction(session):
     email = session['customer_details']['email']
     profile = Profile.objects.filter(email=email).first()
 
-    amount = session['amount_total']
+    # Amount is in cents
+    amount = session['amount_total'] / 100
     paid_out = True if session['payment_status'] == 'paid' else False
     success_url = session['success_url']
     url_split = success_url.split('/')
